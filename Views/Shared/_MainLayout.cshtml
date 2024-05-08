@@ -1,0 +1,65 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<header class="main-header">
+    <div class="container">
+        <div class="row justify-content-center align-content-center header-col">
+            <div class="col-6">
+                <div class="search">
+                    <i class="fa fa-search"></i>
+                    <input type="text" class="form-control" placeholder="Search Just Now!">
+                    <button class="btn btn-primary">
+                        <img class="header-icon" src="https://drive.google.com/thumbnail?id=10lGHPP1ti0eq3tP4BurEmT6MDbOjz4YP">
+                    </button>
+                </div>
+            </div>
+            <div class="col">
+                <select class="form-control region-select">
+                    <option>All</option>
+                    <option>Books</option>
+                    <option>Coins</option>
+                </select>
+            </div>
+            <div class="col">
+                <select class="form-control region-select">
+                    <option>Uzb</option>
+                    <option>Rus</option>
+                </select>
+            </div>
+        </div>
+        <div class="row justify-content-center align-content-center header-col">
+            <div class="col-2 d-flex justify-content-center">
+                <a href="@Url.Action("index","catalogList")" class="btn-style-header-smaller btn-main-header-color">
+                    <img class="header-icon" src="https://drive.google.com/thumbnail?id=1-KcJ0gz9x93kyS-7GnnuhF6q8DW6dulQ">
+                </a>
+            </div>
+            <div class="col-2 d-flex justify-content-center">
+                <a href="@Url.Action("index","itemList")" class="btn-style-header-smaller btn-main-header-color">
+                    <img class="header-icon" src="https://drive.google.com/thumbnail?id=10El_7lD2iMaRV7DXmD1_doxzNTP_Rwku">
+                </a>
+            </div>
+            <div class="col-2 d-flex justify-content-center">
+                <a href="@Url.Action("index","users")" class="btn-style-header-smaller btn-main-header-color">
+                    <img class="header-icon" src="https://drive.google.com/thumbnail?id=1-RDZsLeISJ2KOgkUh6nz10s7vOKS0uV_" alt="Изображение">
+                </a>
+            </div>
+            <div class="col-2 d-flex justify-content-center">
+                <a href="@Url.Action("index","cabinet")" class="btn-style-header-smaller btn-main-header-color">
+                    <img class="header-icon" src="https://drive.google.com/thumbnail?id=10idOA2TIa7Ck45lpRiZbiTtmGiYdpl7T">
+                </a>
+            </div>
+            <div class="col-2 d-flex justify-content-center">
+                <a href="@Url.Action("index","login")" class="btn-style-header-smaller btn-main-header-color btn-enter-color">
+                    <img class="header-icon" src="https://drive.google.com/thumbnail?id=10T8IIsIcTwnLWNMQhvNbRq0XxqESQ48S">
+                </a>
+            </div>
+            <div class="col-2 d-flex justify-content-center">
+                <a href="@Url.Action("index","logout")" class="btn-style-header-smaller btn-main-header-color btn-exit-color">
+                    <img class="header-icon" src="https://drive.google.com/thumbnail?id=10SY0jN3FltdGXftvjxe4ng9I5WNm4ZW3">
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+@RenderBody()

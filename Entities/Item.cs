@@ -1,4 +1,4 @@
-﻿using CourseProject_backend.Entities.interfaces;
+﻿using CourseProject_backend.Interfaces.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,7 +18,7 @@ namespace CourseProject_backend.Entities
     [Index(nameof(CustomBool2))]
     [Index(nameof(CustomBool3))]
     [Index(nameof(CreatedTime))]
-    public class Item : IItem
+    public class Item : IDBModel
     {
         [Key]
         public string Id { get; set; }

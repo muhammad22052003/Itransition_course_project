@@ -1,4 +1,4 @@
-﻿using CourseProject_backend.Entities.interfaces;
+﻿using CourseProject_backend.Interfaces.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,7 +7,7 @@ namespace CourseProject_backend.Entities
 {
     [Table("collections")]
     [Index(nameof(CreatedTime))]
-    public class MyCollection : IMyCollection
+    public class MyCollection : IDBModel
     {
         [Key]
         public string Id { get; set; }
@@ -41,5 +41,6 @@ namespace CourseProject_backend.Entities
         public string CustomBool2_name { get; set; }
         public bool CustomBool3_state { get; set; }
         public string CustomBool3_name { get; set; }
+        public bool IsDeleted {  get; set; }
     }
 }

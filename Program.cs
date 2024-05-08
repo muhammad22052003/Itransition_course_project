@@ -1,4 +1,5 @@
-using CourseProject_backend.DbContexts;
+using CourseProject_backend.CustomDbContext;
+using CourseProject_backend.Enums.CustomDbContext;
 using CourseProject_backend.Models;
 using MySql.Data.MySqlClient;
 using System.Globalization;
@@ -37,6 +38,11 @@ internal class Program
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Start}/{action=Index}/{id?}");
+
+        using (var con = new CollectionDBContext(app.Configuration.GetValue<string>("DBConnections:mysql"), DBSystem.MYSQL))
+        {
+
+        }
 
         app.Run();
     }

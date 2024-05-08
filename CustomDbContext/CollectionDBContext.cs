@@ -1,23 +1,41 @@
 ﻿using CourseProject_backend.Entities;
+using CourseProject_backend.Enums.CustomDbContext;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Common;
 
-namespace CourseProject_backend.DbContexts
+namespace CourseProject_backend.CustomDbContext
 {
-    public class MySqlContext : DbContext
+    public delegate void OnConfiguring(DbContextOptionsBuilder optionsBuilder);
+
+    public class CollectionDBContext : DbContext
     {
         private readonly string _connectionString;
 
-        public MySqlContext(string connectionString)
+        public readonly DBSystem CurrentDbSystem;
+
+        public CollectionDBContext(string connectionString, DBSystem dBSystem)
         {
+            CurrentDbSystem = dBSystem;
             _connectionString = connectionString;
+
             Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL(_connectionString);
+            switch (CurrentDbSystem)
+            {
+                case DBSystem.MYSQL:
+                    optionsBuilder.UseMySQL(_connectionString);
+                    break;
+                case DBSystem.POSTGRES:
+                    optionsBuilder.UseNpgsql(_connectionString);
+                    break;
+                default: throw new ArgumentException("Such a database is not supported");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

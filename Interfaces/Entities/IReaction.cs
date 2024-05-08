@@ -1,6 +1,6 @@
 ﻿using CourseProject_backend.Entities;
 
-namespace CourseProject_backend.Entities.interfaces
+namespace CourseProject_backend.Interfaces.Entities
 {
     public interface IReaction : IDBModel
     {

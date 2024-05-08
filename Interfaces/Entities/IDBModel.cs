@@ -1,4 +1,4 @@
-﻿namespace CourseProject_backend.Entities.interfaces
+﻿namespace CourseProject_backend.Interfaces.Entities
 {
     public interface IDBModel
     {

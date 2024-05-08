@@ -1,4 +1,4 @@
-﻿using CourseProject_backend.Entities.interfaces;
+﻿using CourseProject_backend.Interfaces.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace CourseProject_backend.Entities

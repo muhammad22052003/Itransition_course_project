@@ -1,3 +1,6 @@
+using CourseProject_backend.DbContexts;
+using CourseProject_backend.Models;
+using MySql.Data.MySqlClient;
 using System.Globalization;
 
 internal class Program

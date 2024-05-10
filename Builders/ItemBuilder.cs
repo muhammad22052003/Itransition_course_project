@@ -10,7 +10,7 @@ namespace CourseProject_backend.Builders
         protected IDBModel _model { get; set; }
         protected IConfiguration _configuration { get; set; }
 
-        public ItemBuilder(IConfiguration configuration)
+        public ItemBuilder(IConfiguration configuration = null)
         {
             _configuration = configuration; 
 
@@ -34,9 +34,9 @@ namespace CourseProject_backend.Builders
         public void SetParameters
         (
             string name,
-            string imageUrl,
             MyCollection collection,
-            ICollection<Tag> tags,
+            string imageUrl = null,
+            ICollection<Tag> tags = null,
             ICollection<PositiveReaction> positiveReacts = null,
             ICollection<NegativeReaction> negativeReacts = null,
             ICollection<Comment> comments = null,

@@ -9,7 +9,7 @@ namespace CourseProject_backend.Builders
         protected IDBModel _model { get; set; }
         protected IConfiguration _configuration { get; set; }
 
-        public CollectionBuilder(IConfiguration configuration)
+        public CollectionBuilder(IConfiguration configuration = null)
         {
             _configuration = configuration;
 
@@ -29,10 +29,10 @@ namespace CourseProject_backend.Builders
         public void SetParameters
         (
             string name,
-            string imageUrl,
             string description,
             User user,
             Category category,
+            string imageUrl = "",
             bool isDeleted = false
         )
         {

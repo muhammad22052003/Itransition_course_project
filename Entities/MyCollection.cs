@@ -10,12 +10,21 @@ namespace CourseProject_backend.Entities
     public class MyCollection : IDBModel
     {
         [Key]
+        [Required]
         public string Id { get; set; }
+        [Required]
         public string Description { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string ImageUrl { get; set; }
+        [Required]
         public User User { get; set; }
+        [Required]
+        public ICollection<Item> Items { get; set; }
+        [Required]
         public Category Category { get; set; }
+        [Required]
         public DateTime CreatedTime { get; set; }
         public bool CustomString1_state { get; set; }
         public string CustomString1_name { get; set; }
@@ -41,6 +50,12 @@ namespace CourseProject_backend.Entities
         public string CustomBool2_name { get; set; }
         public bool CustomBool3_state { get; set; }
         public string CustomBool3_name { get; set; }
+        [Required]
         public bool IsDeleted {  get; set; }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }

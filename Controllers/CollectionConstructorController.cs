@@ -7,13 +7,13 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CourseProject_backend.Controllers
 {
-    public class ItemConstructorController : Controller
+    public class CollectionConstructorController : Controller
     {
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
         private readonly CollectionDBContext _dbContext;
 
-        public ItemConstructorController
+        public CollectionConstructorController
         (
             [FromServices] IConfiguration configuration,
             [FromServices] UserService userService,

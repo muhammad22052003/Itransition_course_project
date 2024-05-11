@@ -18,12 +18,14 @@ namespace CourseProject_backend.Builders
 
             user.Id = Guid.NewGuid().ToString().Replace("-", "");
             user.Role = UserRoles.Viewer.ToString();
-            user.RegistrationTime = DateTime.Now;
+            user.RegistrationTime = DateTime.UtcNow;
             user.Comments = new List<Comment>();
             user.PositiveReactions = new List<PositiveReaction>();
             user.NegativeReactions = new List<NegativeReaction>();
             user.Collections = new List<MyCollection>();
             user.IsBlocked = false;
+
+            _model = user;
         }
 
         public void SetParameters

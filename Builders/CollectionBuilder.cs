@@ -20,7 +20,7 @@ namespace CourseProject_backend.Builders
             try { collection.ImageUrl = _configuration.GetValue<string>("urls:no_image"); }
             catch (Exception ex) { collection.ImageUrl = ""; }
             collection.Description = "no description";
-            collection.CreatedTime = DateTime.Now;
+            collection.CreatedTime = DateTime.UtcNow;
             collection.IsDeleted = false;
 
             _model = collection;

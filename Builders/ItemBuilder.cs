@@ -20,7 +20,7 @@ namespace CourseProject_backend.Builders
             item.Name = "untitled";
             try { item.ImageUrl = _configuration.GetValue<string>("urls:no_image"); }
             catch (Exception ex) { item.ImageUrl = ""; }
-            item.CreatedTime = DateTime.Now;
+            item.CreatedTime = DateTime.UtcNow;
             item.Collection = null;
             item.IsDeleted = false;
             item.PositiveReact = new List<PositiveReaction>();

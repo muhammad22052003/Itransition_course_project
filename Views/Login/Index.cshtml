@@ -1,6 +1,8 @@
 ﻿@{
     Layout = "_Layout";
+    ViewData["Title"] = "Login";
 }
+@model KeyValuePair<int,IDictionary<string, string>>
 
 <div class="container registration-grid">
     <div class="row">
@@ -8,35 +10,38 @@
             <div class="container text-white">
                 <div class="row">
                     <div class="col-12">
-                        <h1>Login</h1>
+                        <h1>@Model.Value["login_word"]</h1>
                     </div>
                     <div class="col-12">
                         <div class="mb-3">
-                            <label for="" class="form-label">Email</label>
-                            <input type="text"
+                            <label for="email_field" class="form-label">Email</label>
+                            <input type="email"
                                    class="form-control"
                                    name=""
-                                   id=""
+                                   id="email_field"
                                    placeholder="" />
                         </div>
+                        <label for="password_field" id="email_errorMessage" class="form-label text-danger"></label>
+
                         <div class="mb-3">
-                            <label for="" class="form-label">Password</label>
-                            <input type="text"
+                            <label for="password_field" class="form-label">Password</label>
+                            <input type="password"
                                    class="form-control"
                                    name=""
-                                   id=""
+                                   id="password_field"
                                    placeholder="" />
+                            <label for="password_field" id="password_errorMessage" class="form-label text-danger"></label>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="mb-3">
-                            <button class="button btn-style-large btn-submit-color">Submit</button>
+                            <button onclick="login()" class="button btn-style-large btn-submit-color">@Model.Value["submit_word"]</button>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="mb-3">
-                            <a href="@Url.Action("index","registration")">
-                                <button class="button btn-style-medium btn-redirect-login">Registration</button>
+                            <a href="@(Url.Action("index","registration", new {lang = Model.Key}))">
+                                <button class="button btn-style-medium btn-redirect-login">@Model.Value["registration_word"]</button>
                             </a>
                         </div>
                     </div>
@@ -45,3 +50,4 @@
         </div>
     </div>
 </div>
+<script src="~/js/authorization.js"></script>            

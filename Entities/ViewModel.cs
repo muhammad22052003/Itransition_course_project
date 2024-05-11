@@ -10,7 +10,7 @@ namespace CourseProject_backend.Entities
             Id = Guid.NewGuid().ToString().Replace("-","");
             User = user;
             Item = item;
-            ViewTime = DateTime.Now;
+            ViewTime = DateTime.UtcNow;
         }
 
         public ViewModel() { }

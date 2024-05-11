@@ -1,27 +1,43 @@
+using CourseProject_backend.Enums.Packages;
 using CourseProject_backend.Models;
+using CourseProject_backend.Packages;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
 namespace CourseProject_backend.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IConfiguration _configuration;
+        public HomeController
+        (
+            [FromServices] IConfiguration configuration
+        )
         {
-            _logger = logger;
+            _configuration = configuration;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(int lang = 0)
         {
-            return View();
-        }
+            var langPackSingleton = LanguagePackSingleton.GetInstance();
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            try
+            {
+                var langPackCollection = langPackSingleton.GetLanguagePack((AppLanguage)lang);
+
+                if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
+
+                var langDataPair = new KeyValuePair
+                                   <int, IDictionary<string, string>>(lang, langPackCollection);
+
+                return View(langDataPair);
+            }
+            catch (FileNotFoundException)
+            {
+                return NotFound();
+            }
         }
     }
 }

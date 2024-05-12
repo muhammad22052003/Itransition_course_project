@@ -2,6 +2,7 @@ using CourseProject_backend.Builders;
 using CourseProject_backend.CustomDbContext;
 using CourseProject_backend.Entities;
 using CourseProject_backend.Enums.CustomDbContext;
+using CourseProject_backend.Enums.Entities;
 using CourseProject_backend.Enums.Packages;
 using CourseProject_backend.Helpers;
 using CourseProject_backend.Interfaces.Helpers;
@@ -15,21 +16,47 @@ using System.Globalization;
 
 internal class Program
 {
-    private static void Main(string[] args)
+    public static void Main(string[] args)
     {
+
+
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en-US");
         CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
 
         var builder = WebApplication.CreateBuilder(args);
+
+        IConfiguration configuration = builder.Configuration;
 
         CollectionDBContext dbContext = new CollectionDBContext
                                         (
                                         builder.Configuration.GetValue<string>("DBConnections:npgsql"),
                                         DBSystem.POSTGRES
                                         );
+        CollectionBuilder collectionBuilder = new CollectionBuilder(configuration);
+        Category category = new Category("Books", "Books Category");
+        UserBuilder userBuilder = new UserBuilder(configuration);
+        userBuilder.SetParameters("Muhammad", "muh22@amail.com", "pass", UserRoles.User);
+        User user = userBuilder.Build() as User;
+
+        collectionBuilder.SetParameters("MyCOL", "dESC", user, category);
+
+        MyCollection myCollection = collectionBuilder.Build() as MyCollection;
+
+        ItemBuilder itemBuilder = new ItemBuilder(configuration);
+
+        itemBuilder.SetParameters("Kitob", myCollection);
+
+        Item item = itemBuilder.Build() as Item;
+
+        dbContext.Users.Add(user);
+        dbContext.Categories.Add(category);
+        dbContext.Items.Add(item);
+        dbContext.Collections.Add(myCollection);
+
+        dbContext.SaveChanges();
+
         IJwtTokenHelper jwtTokenHelper = new JwtTokenHelper();
         IPasswordHasher passwordHasher = new Sha3_256PasswordHasher();
-        IConfiguration configuration = builder.Configuration;
 
         CollectionRepository collectionRepository = new CollectionRepository(dbContext);
         ItemRepository itemRepository = new ItemRepository(dbContext);
@@ -90,7 +117,7 @@ internal class Program
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Start}/{action=Index}/{lang=0}");
+            pattern: "{controller=Start}/{action=Index}/{lang}/{id?}");
 
         app.Run();
     }

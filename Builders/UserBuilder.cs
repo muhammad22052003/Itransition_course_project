@@ -37,7 +37,7 @@ namespace CourseProject_backend.Builders
             bool isBlocked = false
         )
         {
-            User user = new User();
+            User user = _model as User;
 
             user.Name = name;
             user.Email = email;

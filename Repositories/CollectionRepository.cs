@@ -29,13 +29,23 @@ namespace CourseProject_backend.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<MyCollection>> GetValue(Expression<Func<MyCollection, bool>> predicat)
+        public async Task<IEnumerable<MyCollection>> GetValue(Expression<Func<MyCollection, bool>> predicat = null)
         {
-            var collection = (await _dbContext.Collections
+            IEnumerable<MyCollection> collections;
+
+            if(predicat == null)
+            {
+                collections = _dbContext.Collections;
+            }
+            else
+            {
+                collections = (await _dbContext.Collections
                          .Where(predicat)
                          .ToListAsync());
+            }
 
-            return collection;
+
+            return collections;
         }
 
         public async Task SaveUpdates()

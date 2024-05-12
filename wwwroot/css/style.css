@@ -231,6 +231,20 @@ textarea {
         background-color: #91a3f0;
     }
 
+.btn-page {
+    background-color: #fff;
+    border: 1px solid #aaaaaa;
+}
+
+    .btn-page:hover {
+        background-color: var(--color3);
+        border: 1px solid #aaaaaa;
+    }
+
+.btn-page-current {
+    background-color: var(--color3);
+}
+
 .search {
     position: relative;
     box-shadow: 0 0 40px rgba(51, 51, 51, .1);
@@ -242,6 +256,7 @@ textarea {
         text-indent: 25px;
         border: 2px solid #d6d4d4;
     }
+
 
         .search input:focus {
             box-shadow: none;

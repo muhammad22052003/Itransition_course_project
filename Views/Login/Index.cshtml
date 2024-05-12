@@ -1,8 +1,10 @@
-﻿@{
+﻿@model KeyValuePair<int,IDictionary<string, string>>
+@{
     Layout = "_Layout";
     ViewData["Title"] = "Login";
+    ViewData.Add("Lang", Model.Key);
+
 }
-@model KeyValuePair<int,IDictionary<string, string>>
 
 <div class="container registration-grid">
     <div class="row">

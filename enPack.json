@@ -4,5 +4,13 @@
   "registration_word": "Registration",
   "loginAccount": "Login to your account",
   "login_word": "Login",
-  "submit_word": "Submit"
+  "submit_word": "Submit",
+  "created_word": "Created",
+  "select_all": "Select All",
+  "cancel_all": "Cancel All",
+  "collection_word": "Collections",
+  "list_empty": "List Empty",
+  "items_word": "Items",
+  "category_word": "Category"
+
 }

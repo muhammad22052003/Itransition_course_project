@@ -1,4 +1,7 @@
-﻿@{
+﻿@model KeyValuePair<int,IDictionary<string, string>>
+@{
     Layout = "_MainLayoutWithController";
     ViewData["Title"] = "Item";
+    ViewData.Add("Lang", Model.Key);
+
 }

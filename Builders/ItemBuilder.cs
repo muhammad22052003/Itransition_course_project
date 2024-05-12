@@ -43,12 +43,12 @@ namespace CourseProject_backend.Builders
             bool isDeleted = false
         )
         {
-            Item item = new Item();
+            Item item = _model as Item;
 
             item.Name = name;
             item.ImageUrl = imageUrl;
             item.Collection = collection;
-            item.Tags = tags;
+            item.Tags = tags != null ? tags : item.Tags;
             item.PositiveReact = positiveReacts != null ? positiveReacts : item.PositiveReact;
             item.NegativeReact = negativeReacts != null ? negativeReacts : item.NegativeReact;
             item.Comments = comments != null ? comments : item.Comments;

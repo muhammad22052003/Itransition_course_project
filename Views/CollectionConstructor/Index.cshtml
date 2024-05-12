@@ -1,5 +1,6 @@
-﻿@{
+﻿@model KeyValuePair<int,IDictionary<string, string>>
+@{
     Layout = "_MainLayout";
     ViewData["Title"] = "Collection constructor";
-
+    ViewData.Add("Lang", Model.Key);
 }

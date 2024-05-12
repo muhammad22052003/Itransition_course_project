@@ -59,6 +59,100 @@ namespace CourseProject_backend.Services
             return true;
         }
 
+        public async Task<IEnumerable<MyCollection>> GetCollections(CollectionDataFilter filter,
+                                                                     string filterValue)
+        {
+            List<MyCollection> collections = new List<MyCollection>();
+
+            switch (filter)
+            {
+                case CollectionDataFilter.byCategory:
+                    {
+                        collections = (await _repository
+                            .GetValue((c) => c.Category.Name == filterValue))
+                            .ToList();
+                    }break;
+                case CollectionDataFilter.byName:
+                    {
+                        collections = (await _repository
+                            .GetValue((c) => c.Name == filterValue))
+                            .ToList();
+                    }
+                    break;
+                case CollectionDataFilter.byId:
+                    {
+                        collections = (await _repository
+                            .GetValue((c) => c.Id == filterValue))
+                            .ToList();
+                    }break;
+                case CollectionDataFilter.byDefault:
+                    {
+                        collections = (await _repository
+                            .GetValue())
+                            .ToList();
+                    }
+                    break;
+            }
+
+            return collections;
+        }
+
+        public List<MyCollection> SortData(IEnumerable<MyCollection> collections,
+                                                        DataSort sort)
+        {
+            List<MyCollection> newCollections = collections.ToList();
+
+            switch (sort)
+            {
+                case DataSort.byDate:
+                    {
+                        newCollections.Sort((x, y) =>
+                        {
+                            if(x.CreatedTime < y.CreatedTime) { return -1; }
+                            if (x.CreatedTime > y.CreatedTime) { return 1; }
+                            return 0;
+                        });
+                    }
+                    break;
+                case DataSort.bySize:
+                    {
+                        newCollections.Sort((x, y) =>
+                        {
+                            if (x.Items.Count < y.Items.Count) { return -1; }
+                            if (x.Items.Count > y.Items.Count) { return 1; }
+                            return 0;
+                        });
+                    }
+                    break;
+                case DataSort.byName:
+                    {
+                        newCollections.Sort((x, y) =>
+                        {
+                            if (x.Name[0] < y.Name[0]) { return -1; }
+                            if (x.Name[0] > y.Name[0]) { return 1; }
+                            return 0;
+                        });
+                    }
+                    break;
+            }
+
+            return newCollections;
+        }
+
+        public List<MyCollection> GetForPage(List<MyCollection> collections, int page)
+        {
+            List<MyCollection> newCollections = new List<MyCollection>();
+
+            int startIndex = (page - 1) * 10;
+
+            for (int i = startIndex; i < collections.Count && i - startIndex <= 10; i++)
+            {
+                newCollections.Add(collections[i]);
+            }
+
+            return newCollections;
+        }
+
         public async Task<bool> UpdateCollection(CollectionUpdateModel updateModel)
         {
             var collection = (await _repository.GetValue((c) => c.Id.Equals(updateModel.Id))).FirstOrDefault();

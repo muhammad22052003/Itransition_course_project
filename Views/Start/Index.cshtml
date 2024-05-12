@@ -1,8 +1,9 @@
-﻿@{
+﻿@model KeyValuePair<int,IDictionary<string, string>>
+@{
     Layout = "_Layout";
     ViewData["Title"] = "Welcome";
+    ViewData.Add("Lang", Model.Key);
 }
-@model KeyValuePair<int,IDictionary<string, string>>
 
 <main>
     <header>

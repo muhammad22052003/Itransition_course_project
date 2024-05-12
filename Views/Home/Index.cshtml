@@ -1,4 +1,7 @@
-﻿@{
+﻿@model KeyValuePair<int,IDictionary<string, string>>
+@{
     Layout = "_MainLayout";
     ViewData["Title"] = "Home";
+    ViewData.Add("Lang", Model.Key);
 }
+<script src="~/js/HomeController.js"></script>

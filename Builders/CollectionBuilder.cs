@@ -36,7 +36,7 @@ namespace CourseProject_backend.Builders
             bool isDeleted = false
         )
         {
-            MyCollection collection = new MyCollection();
+            MyCollection collection = _model as MyCollection;
 
             collection.Name = name;
             collection.ImageUrl = imageUrl;

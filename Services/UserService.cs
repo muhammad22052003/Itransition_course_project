@@ -1,11 +1,13 @@
 ﻿using CourseProject_backend.Builders;
 using CourseProject_backend.Entities;
+using CourseProject_backend.Enums;
 using CourseProject_backend.Enums.Entities;
 using CourseProject_backend.Helpers;
 using CourseProject_backend.Interfaces.Helpers;
 using CourseProject_backend.Interfaces.Repositories;
 using CourseProject_backend.Interfaces.Services;
 using CourseProject_backend.Models.RequestModels;
+using CourseProject_backend.Repositories;
 using System.Linq.Expressions;
 using System.Net;
 using System.Security.Claims;
@@ -134,6 +136,55 @@ namespace CourseProject_backend.Services
                 .FirstOrDefault();
 
             return user;
+        }
+
+        public async Task<List<User>> GetUsers(UsersDataFilter filter, string value, int countLimit)
+        {
+            List<User> users = new List<User>();
+
+            switch (filter)
+            {
+                case UsersDataFilter.byName:
+                    {
+                        users = (await _repository
+                            .GetValue((p) => p.Name == value)).ToList();
+                    }break;
+                case UsersDataFilter.byStatus:
+                    {
+                        if(Enum.TryParse(value, out UserRoles parseData)){
+                            users = (await _repository
+                                    .GetValue((p) => p.Role.ToLower() == value.ToLower())).ToList();
+                        }
+                        else
+                        {
+                            users = (await _repository
+                                    .GetValue((p) => true)).ToList();
+                        }
+                    }
+                    break;
+                case UsersDataFilter.byId:
+                    {
+                        users = (await _repository
+                            .GetValue((p) => p.Id == value)).ToList();
+                    }
+                    break;
+                case UsersDataFilter.byDefault:
+                    {
+                        users = (await _repository
+                            .GetValue((p) => true)).ToList();
+                    }
+                    break;
+            }
+
+            return users;
+        }
+
+        public List<User> SortData(List<User> users, DataSort sort)
+        {
+            switch (sort)
+            {
+                
+            }
         }
 
         public async Task SaveUpdates()

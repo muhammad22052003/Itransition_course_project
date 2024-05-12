@@ -2,6 +2,7 @@
 using CourseProject_backend.CustomDbContext;
 using CourseProject_backend.Delegates;
 using CourseProject_backend.Entities;
+using CourseProject_backend.Enums;
 using CourseProject_backend.Enums.CustomDbContext;
 using CourseProject_backend.Interfaces.Helpers;
 using CourseProject_backend.Interfaces.Repositories;
@@ -9,6 +10,7 @@ using CourseProject_backend.Interfaces.Services;
 using CourseProject_backend.Models.RequestModels;
 using CourseProject_backend.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MySql.EntityFrameworkCore.Extensions;
 
 namespace CourseProject_backend.Services
@@ -81,6 +83,65 @@ namespace CourseProject_backend.Services
             await SaveUpdates();
 
             return true;
+        }
+
+        public async Task<List<Item>> GetItems(ItemsDataFilter filter,
+                                               string value)
+        {
+            List<Item> items = new List<Item>();
+
+            switch (filter)
+            {
+                case ItemsDataFilter.byCollectionId:
+                    {
+                        items.AddRange(await _repository
+                            .GetValue((it) => it.Collection.Id == value));
+                    }break;
+                case ItemsDataFilter.byTag:
+                    {
+                        items.AddRange(await _repository
+                            .GetValue((item) => item.Tags.FirstOrDefault((x)=>x.Name == value) != null));
+                    }break;
+            }
+
+            return items;
+        }
+
+        public List<Item> SortData(IEnumerable<Item> collections,
+                                                        DataSort sort)
+        {
+            List<Item> newCollections = collections.ToList();
+
+            switch (sort)
+            {
+                case DataSort.byDate:
+                    {
+                        newCollections.Sort((x, y) =>
+                        {
+                            if (x.CreatedTime < y.CreatedTime) { return -1; }
+                            if (x.CreatedTime > y.CreatedTime) { return 1; }
+                            return 0;
+                        });
+                    }
+                    break;
+                case DataSort.byName:
+                    {
+                        newCollections.Sort((x, y) =>
+                        {
+                            if (x.Name[0] < y.Name[0]) { return -1; }
+                            if (x.Name[0] > y.Name[0]) { return 1; }
+                            return 0;
+                        });
+                    }
+                    break;
+            }
+
+            return newCollections;
+        }
+
+        public List<Item> GetForPage(List<Item> collections, int page)
+        {
+            return collections.Slice((page - 1) * 10, (page - 1) * 10 + 10);
         }
 
         public async Task<List<Item>> FullTextSearch(string text)

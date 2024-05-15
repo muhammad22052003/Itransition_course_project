@@ -5,6 +5,7 @@
         byDefault,
         byCategory,
         byName,
-        byId
+        byId,
+        byAuthorId
     }
 }

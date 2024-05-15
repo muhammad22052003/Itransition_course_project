@@ -1,4 +1,5 @@
 ﻿using CourseProject_backend.Enums.Packages;
+using CourseProject_backend.Extensions;
 using CourseProject_backend.Packages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +21,9 @@ namespace CourseProject_backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int lang = 0)
         {
+            this.DefineCategories();
+            this.SetItemSearch();
+
             var langPackSingleton = LanguagePackSingleton.GetInstance();
 
             try

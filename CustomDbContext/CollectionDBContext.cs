@@ -1,4 +1,5 @@
-﻿using CourseProject_backend.Entities;
+﻿using CourseProject_backend.Delegates;
+using CourseProject_backend.Entities;
 using CourseProject_backend.Enums.CustomDbContext;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -41,6 +42,20 @@ namespace CourseProject_backend.CustomDbContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+        }
+
+        public LikeDelegate GetLikeDelegate()
+        {
+            switch (CurrentDbSystem)
+            {
+                case DBSystem.MYSQL:
+                    return EF.Functions.Like;
+                case DBSystem.POSTGRES:
+                    return EF.Functions.ILike;
+                default:
+                    throw new NotImplementedException("Undefined DbSytem");
+            }
+               
         }
 
         public DbSet<Category> Categories { get; set; }

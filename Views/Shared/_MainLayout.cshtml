@@ -1,31 +1,51 @@
-﻿@{
+﻿@using CourseProject_backend.Enums.Packages;
+@{
     Layout = "_Layout";
+    var languages = Enum.GetNames(typeof(AppLanguage));
 }
 
+<form action="~/@ViewData["searchUrl"]" method="post">
 <header class="main-header">
     <div class="container">
         <div class="row justify-content-center align-content-center header-col">
             <div class="col-6">
-                <div class="search">
-                    <i class="fa fa-search"></i>
-                    <input type="text" class="form-control" placeholder="Search Just Now!">
-                    <button class="btn btn-primary">
-                        <img class="header-icon" src="https://drive.google.com/thumbnail?id=10lGHPP1ti0eq3tP4BurEmT6MDbOjz4YP">
-                    </button>
-                </div>
+                    <div class="search">
+                        <i class="fa fa-search"></i>
+                        <input name="searchText" type="text" class="form-control" placeholder="Search Just Now!">
+                        <button type="submit" class="btn btn-primary">
+                            <img class="header-icon" src="https://drive.google.com/thumbnail?id=10lGHPP1ti0eq3tP4BurEmT6MDbOjz4YP">
+                        </button>
+                    </div>
             </div>
             <div class="col">
                 <select id="select-categories" class="form-control region-select">
+                    @{
+                        if (ViewData.ContainsKey("categories"))
+                        {
+                            List<string> categories = ViewData["categories"] as List<string>;
+
+                            for (int i = 0; i < categories.Count; i++)
+                            {
+                                <option value="@categories[i]">@categories[i]</option>
+                            }
+                        }
+                    }
                 </select>
             </div>
             <div class="col">
-                <select onchange="changeLang()" id="select-regions" class="form-control region-select">
+                <select name="lang" onchange="changeLang()" id="select-regions" class="form-control region-select">
+                    @{
+                        for (int i = 0; i < languages.Length; i++)
+                        {
+                            <option>@languages[i].ToUpper()</option>
+                        }
+                    }
                 </select>
             </div>
         </div>
         <div class="row justify-content-center align-content-center header-col">
             <div class="col-2 d-flex justify-content-center">
-                <a href="@Url.Action("index","catalogList")" class="btn-style-header-smaller btn-main-header-color">
+                <a href="@Url.Action("index","collectionlist")" class="btn-style-header-smaller btn-main-header-color">
                     <img class="header-icon" src="https://drive.google.com/thumbnail?id=1-KcJ0gz9x93kyS-7GnnuhF6q8DW6dulQ">
                 </a>
             </div>
@@ -50,12 +70,13 @@
                 </a>
             </div>
             <div class="col-2 d-flex justify-content-center">
-                <a href="@Url.Action("index","logout")" class="btn-style-header-smaller btn-main-header-color btn-exit-color">
+                <a href="@Url.Action("logout","login")" class="btn-style-header-smaller btn-main-header-color btn-exit-color">
                     <img class="header-icon" src="https://drive.google.com/thumbnail?id=10SY0jN3FltdGXftvjxe4ng9I5WNm4ZW3">
                 </a>
             </div>
         </div>
     </div>
 </header>
+</form>
 @RenderBody()
 <script src="~/js/controller.js"></script>

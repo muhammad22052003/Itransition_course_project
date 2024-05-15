@@ -19,6 +19,9 @@ namespace CourseProject_backend.Entities
     [Index(nameof(CustomBool1))]
     [Index(nameof(CustomBool2))]
     [Index(nameof(CustomBool3))]
+    [Index(nameof(CustomDate1))]
+    [Index(nameof(CustomDate2))]
+    [Index(nameof(CustomDate3))]
     [Index(nameof(CreatedTime))]
     public class Item : IDBModel
     {
@@ -52,6 +55,9 @@ namespace CourseProject_backend.Entities
         public bool? CustomBool1 { get; set; }
         public bool? CustomBool2 { get; set; }
         public bool? CustomBool3 { get; set; }
+        public DateTime? CustomDate1 { get; set; }
+        public DateTime? CustomDate2 { get; set; }
+        public DateTime? CustomDate3 { get; set; }
 
         public ulong ViewsCount {  get; set; }
 

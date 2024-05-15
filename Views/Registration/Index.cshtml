@@ -1,17 +1,19 @@
-﻿@model KeyValuePair<int,IDictionary<string, string>>
+﻿@using CourseProject_backend.Controllers
+@model RegistrationModel
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Registration";
-    ViewData.Add("Lang", Model.Key);
+    ViewData.Add("Lang", Model.LanguagePack.Key);
 }
 
+<form action="~/registration/index/@Model.LanguagePack.Key" method="post">
 <div class="container registration-grid">
     <div class="row">
             <div class="col-12 registration-panel">
                 <div class="container text-white">
                     <div class="row">
                         <div class="col-12">
-                        <h1>@Model.Value["registration_word"]</h1>
+                        <h1>@Model.LanguagePack.Value["registration_word"]</h1>
                         </div>
                         <div class="col-12">
                             <div class="mb-3">
@@ -19,10 +21,16 @@
                                 <input
                                     type="text"
                                     class="form-control"
-                                    name=""
+                                    name="Name"
                                     id="name_field"
                                     placeholder=""
                                 />
+                                @{
+                                    if(Model.Errors.ContainsKey("Name"))
+                                    {
+                                        <label for="" class="form-label text-danger">* @Model.Errors["Name"]</label>
+                                    }
+                                }
                             </div>
                         </div>
                         <div class="col-12">
@@ -31,10 +39,16 @@
                                 <input
                                     type="text"
                                     class="form-control"
-                                    name=""
+                                    name="Lastname"
                                     id="lastname_field"
                                     placeholder=""
                                 />
+                                @{
+                                    if (Model.Errors.ContainsKey("Lastname"))
+                                    {
+                                        <label for="" class="form-label text-danger">* @Model.Errors["Lastname"]</label>
+                                    }
+                                }
                             </div>
                         </div>
                         <div class="col-12">
@@ -43,41 +57,59 @@
                                 <input
                                     type="email"
                                     class="form-control"
-                                    name=""
+                                    name="Email"
                                     id="email_field"
                                     placeholder=""
                                 />
+                                @{
+                                    if (Model.Errors.ContainsKey("Email"))
+                                    {
+                                        <label for="" class="form-label text-danger">* @Model.Errors["Email"]</label>
+                                    }
+                                }
                             </div>
                             <div class="mb-3">
                                 <label for="" class="form-label">Password</label>
                                 <input
                                     type="password"
                                     class="form-control"
-                                    name=""
+                                    name="Password"
                                     id="password_field"
                                     placeholder=""
                                 />
+                                @{
+                                    if (Model.Errors.ContainsKey("Password"))
+                                    {
+                                        <label for="" class="form-label text-danger">* @Model.Errors["Password"]</label>
+                                    }
+                                }
                             </div>
                             <div class="mb-3">
                                 <label for="" class="form-label">Confirm Password</label>
                                 <input
                                     type="password"
                                     class="form-control"
-                                    name=""
+                                    name="ConfirmPassword"
                                     id="confirmPassword_field"
                                     placeholder=""
                                 />
+                                @{
+                                    if (Model.Errors.ContainsKey("ConfirmPassword"))
+                                    {
+                                        <label for="" class="form-label text-danger">* @Model.Errors["ConfirmPassword"]</label>
+                                    }
+                                }
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="mb-3">
-                            <button onclick="registration()" class="button btn-style-large btn-submit-color">@Model.Value["submit_word"]</button>
+                                <button type="submit" class="button btn-style-large btn-submit-color">@Model.LanguagePack.Value["submit_word"]</button>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="mb-3">
-                            <a href="@(Url.Action("index","login", new {lang = Model.Key}))">
-                                <button class="button btn-style-medium btn-redirect-login">@Model.Value["login_word"]</button>
+                                <a href="@(Url.Action("index","login", new {lang = Model.LanguagePack.Key}))">
+                                    <div class="button btn-style-medium btn-redirect-login text-center">@Model.LanguagePack.Value["login_word"]</div>
                             </a>
                             </div>
                         </div>
@@ -86,4 +118,5 @@
             </div>
     </div>
 </div>
+</form>
 <script src="~/js/authorization.js"></script>

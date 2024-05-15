@@ -13,6 +13,7 @@ namespace CourseProject_backend.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
+        private readonly int _pageSize = 20;
 
         public UsersController
         (
@@ -26,10 +27,10 @@ namespace CourseProject_backend.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index([FromRoute] AppLanguage lang,
-                                               ItemsDataFilter filter,
+                                               UsersDataFilter filter,
                                                string value,
                                                DataSort sort,
-                                               int page)
+                                               int page = 1)
         {
             var langPackSingleton = LanguagePackSingleton.GetInstance();
             var langPackCollection = langPackSingleton.GetLanguagePack(lang);
@@ -39,25 +40,24 @@ namespace CourseProject_backend.Controllers
                                <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
 
             int pagesCount = 1;
-            var users = (await _userService
-                              .GetUsers(filter, value)).ToList();
+            var users = (await _userService.GetUsersList
+                              (filter, value, sort, page, _pageSize)).ToList();
 
             if (!users.IsNullOrEmpty())
             {
-                users = _userService.SortData(users, sort);
-                pagesCount = (int)Math.Ceiling((double)(users.Count / 20.0));
-                users = users.GetForPage(page, 20);
+                pagesCount = (int)Math.Ceiling(await _userService
+                             .GetUsersCount(filter, value, sort) * 1.0 / (_pageSize * 1.0));
             }
 
-            UsersViewModel viewModel = new ItemsViewModel()
+            UsersViewModel viewModel = new UsersViewModel()
             {
                 LanguagePack = langDataPair,
-                Items = users,
+                Users = users,
                 PagesCount = pagesCount,
                 CurrentPage = page,
                 Filter = filter,
                 Sort = sort,
-                Value = value
+                Value = value,
             };
 
             return View(viewModel);

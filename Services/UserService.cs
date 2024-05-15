@@ -8,6 +8,7 @@ using CourseProject_backend.Interfaces.Repositories;
 using CourseProject_backend.Interfaces.Services;
 using CourseProject_backend.Models.RequestModels;
 using CourseProject_backend.Repositories;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Linq.Expressions;
 using System.Net;
 using System.Security.Claims;
@@ -16,14 +17,14 @@ namespace CourseProject_backend.Services
 {
     public class UserService : IModelService
     {
-        private readonly IRepository<User> _repository;
+        private readonly UserRepository _repository;
         private readonly IJwtTokenHelper _jwtTokenHelper;
         private readonly IConfiguration _configuration;
         private readonly IPasswordHasher _passwordHasher;
 
         public UserService
         (
-            IRepository<User> repository,
+            UserRepository repository,
             IJwtTokenHelper tokenHelper,
             IConfiguration configuration,
             IPasswordHasher passwordHasher
@@ -90,7 +91,7 @@ namespace CourseProject_backend.Services
         {
             User? user = await GetUserFromToken(token);
 
-            if(user.IsBlocked) { return false; }
+            if(user == null || user.IsBlocked) { return false; }
 
             return true;
         }
@@ -138,53 +139,26 @@ namespace CourseProject_backend.Services
             return user;
         }
 
-        public async Task<List<User>> GetUsers(UsersDataFilter filter, string value, int countLimit)
+        public async Task<List<User>> GetUsersList(UsersDataFilter filter,
+                                                   string value,
+                                                   DataSort sort,
+                                                   int page,
+                                                   int pageSize)
         {
-            List<User> users = new List<User>();
-
-            switch (filter)
-            {
-                case UsersDataFilter.byName:
-                    {
-                        users = (await _repository
-                            .GetValue((p) => p.Name == value)).ToList();
-                    }break;
-                case UsersDataFilter.byStatus:
-                    {
-                        if(Enum.TryParse(value, out UserRoles parseData)){
-                            users = (await _repository
-                                    .GetValue((p) => p.Role.ToLower() == value.ToLower())).ToList();
-                        }
-                        else
-                        {
-                            users = (await _repository
-                                    .GetValue((p) => true)).ToList();
-                        }
-                    }
-                    break;
-                case UsersDataFilter.byId:
-                    {
-                        users = (await _repository
-                            .GetValue((p) => p.Id == value)).ToList();
-                    }
-                    break;
-                case UsersDataFilter.byDefault:
-                    {
-                        users = (await _repository
-                            .GetValue((p) => true)).ToList();
-                    }
-                    break;
-            }
+            var users = (await _repository.GetUsersList
+                              (filter, value, sort, page, pageSize)).ToList();
 
             return users;
         }
 
-        public List<User> SortData(List<User> users, DataSort sort)
+        public async Task<int> GetUsersCount(UsersDataFilter filter,
+                                                   string value,
+                                                   DataSort sort)
         {
-            switch (sort)
-            {
-                
-            }
+            var count = (await _repository.GetUsersCount
+                              (filter, value, sort));
+
+            return count;
         }
 
         public async Task SaveUpdates()

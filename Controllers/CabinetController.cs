@@ -1,7 +1,12 @@
 ﻿using CourseProject_backend.CustomDbContext;
+using CourseProject_backend.Entities;
+using CourseProject_backend.Enums;
 using CourseProject_backend.Enums.Packages;
+using CourseProject_backend.Extensions;
+using CourseProject_backend.Models.ViewModels;
 using CourseProject_backend.Packages;
 using CourseProject_backend.Services;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,49 +16,66 @@ namespace CourseProject_backend.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
-        private readonly CollectionDBContext _dbContext;
+        private readonly CollectionService _collectionService;
+        private readonly int _pageSize = 20;
 
         public CabinetController
         (
             [FromServices] IConfiguration configuration,
             [FromServices] UserService userService,
-            [FromServices] CollectionDBContext dBContext
+            [FromServices] CollectionService collectionService
         )
         {
             _configuration = configuration;
             _userService = userService;
-            _dbContext = dBContext;
+            _collectionService = collectionService;
         }
 
-        public async Task<IActionResult> Index(int lang = 0)
+        [HttpGet]
+        public async Task<IActionResult> Index([FromRoute] AppLanguage lang = AppLanguage.en,
+                                               string id = "",
+                                               DataSort sort = DataSort.byDate,
+                                               int page = 1)
         {
-            if (!Request.Cookies.TryGetValue("userDataBytech", out string? token))
+            this.DefineCategories();
+            this.SetItemSearch();
+
+            if (!Request.Cookies.TryGetValue("userData", out string? token))
             {
                 return RedirectToAction("index", "start", lang);
             }
 
-            if (!await _userService.AuthorizationFromToken(token))
-            {
-                return RedirectToAction("index", "start", lang);
-            }
+            User? user = await _userService.GetUserFromToken(token);
+
+            if(user == null) { return NotFound(); }
 
             var langPackSingleton = LanguagePackSingleton.GetInstance();
+            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
+            if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
 
-            try
+            var langDataPair = new KeyValuePair
+                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+
+            int pagesCount = 1;
+            var collections = (await _collectionService.GetCollectionList
+                              (CollectionDataFilter.byAuthorId, id, sort, page, _pageSize)).ToList();
+
+            if (!collections.IsNullOrEmpty())
             {
-                var langPackCollection = langPackSingleton.GetLanguagePack((AppLanguage)lang);
-
-                if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
-
-                var langDataPair = new KeyValuePair
-                                   <int, IDictionary<string, string>>(lang, langPackCollection);
-
-                return View(langDataPair);
+                pagesCount = (int)Math.Ceiling(await _collectionService
+                             .GetCollectionsCount(CollectionDataFilter.byAuthorId, id, sort) * 1.0 / (_pageSize * 1.0));
             }
-            catch (FileNotFoundException)
+
+            CabinetViewModel viewModel = new CabinetViewModel()
             {
-                return NotFound();
-            }
+                LanguagePack = langDataPair,
+                User = user,
+                Collections = collections,
+                CurrentPage = page,
+                PagesCount = pagesCount
+            };
+
+            return View(viewModel);
         }
     }
 }

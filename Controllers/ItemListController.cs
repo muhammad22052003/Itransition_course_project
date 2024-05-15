@@ -12,6 +12,7 @@ namespace CourseProject_backend.Controllers
 {
     public class ItemListController : Controller
     {
+        private readonly int _pageSize = 20;
         private readonly IConfiguration _configuration;
         private readonly ItemService _itemService;
 
@@ -26,12 +27,15 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromRoute] AppLanguage lang,
-                                               ItemsDataFilter filter,
-                                               string value,
-                                               DataSort sort,
-                                               int page)
+        public async Task<IActionResult> Index([FromRoute] AppLanguage lang = AppLanguage.en,
+                                               ItemsDataFilter filter = ItemsDataFilter.byTag,
+                                               string value = "all",
+                                               DataSort sort = DataSort.byDefault,
+                                               int page= 1)
         {
+            this.DefineCategories();
+            this.SetItemSearch();
+
             var langPackSingleton = LanguagePackSingleton.GetInstance();
             var langPackCollection = langPackSingleton.GetLanguagePack(lang);
             if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
@@ -40,14 +44,13 @@ namespace CourseProject_backend.Controllers
                                <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
 
             int pagesCount = 1;
-            var items = (await _itemService
-                              .GetItems(filter, value)).ToList();
+            var items = (await _itemService.GetItemsList
+                              (filter, value, sort, page, _pageSize)).ToList();
 
             if (!items.IsNullOrEmpty())
             {
-                items = _itemService.SortData(items, sort);
-                pagesCount = (int)Math.Ceiling((double)(items.Count / 20.0));
-                items = items.GetForPage(page, 20);
+                pagesCount = (int)Math.Ceiling(await _itemService
+                             .GetItemsCount(filter, value, sort) * 1.0 / (_pageSize * 1.0));
             }
 
             ItemsViewModel viewModel = new ItemsViewModel()
@@ -58,7 +61,7 @@ namespace CourseProject_backend.Controllers
                 CurrentPage = page,
                 Filter = filter,
                 Sort = sort,
-                Value = value
+                Value = value,
             };
 
             return View(viewModel);

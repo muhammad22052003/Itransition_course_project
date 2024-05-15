@@ -1,5 +1,7 @@
 ﻿<!DOCTYPE html>
-<html lang="@(ViewData["lang"] ?? 0)">
+<html lang="@(ViewData["lang"] ?? "en")" 
+      controller="@(ViewContext.RouteData.Values["controller"].ToString())"
+      action="@(ViewContext.RouteData.Values["action"].ToString())">
 
 <head>
     <meta charset="UTF-8">

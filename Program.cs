@@ -16,9 +16,8 @@ using System.Globalization;
 
 internal class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
-
 
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en-US");
         CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
@@ -32,28 +31,34 @@ internal class Program
                                         builder.Configuration.GetValue<string>("DBConnections:npgsql"),
                                         DBSystem.POSTGRES
                                         );
-        CollectionBuilder collectionBuilder = new CollectionBuilder(configuration);
-        Category category = new Category("Books", "Books Category");
-        UserBuilder userBuilder = new UserBuilder(configuration);
-        userBuilder.SetParameters("Muhammad", "muh22@amail.com", "pass", UserRoles.User);
-        User user = userBuilder.Build() as User;
 
-        collectionBuilder.SetParameters("MyCOL", "dESC", user, category);
+        for (int i = 0; i < 100; i++)
+        {
+            CollectionBuilder collectionBuilder = new CollectionBuilder(configuration);
+            Category category = new Category($"Books{i+1}", "Books Category");
+            UserBuilder userBuilder = new UserBuilder(configuration);
+            userBuilder.SetParameters("Muhammad", "muh22@amail.com", "pass", UserRoles.User);
+            User user = userBuilder.Build() as User;
 
-        MyCollection myCollection = collectionBuilder.Build() as MyCollection;
+            collectionBuilder.SetParameters($"MyCOL{i}", "dESC", user, category);
 
-        ItemBuilder itemBuilder = new ItemBuilder(configuration);
+            MyCollection myCollection = collectionBuilder.Build() as MyCollection;
 
-        itemBuilder.SetParameters("Kitob", myCollection);
+            ItemBuilder itemBuilder = new ItemBuilder(configuration);
 
-        Item item = itemBuilder.Build() as Item;
+            itemBuilder.SetParameters($"Kitob{i}", myCollection);
 
-        dbContext.Users.Add(user);
-        dbContext.Categories.Add(category);
-        dbContext.Items.Add(item);
-        dbContext.Collections.Add(myCollection);
+            Item item = itemBuilder.Build() as Item;
+
+            dbContext.Users.Add(user);
+            dbContext.Categories.Add(category);
+            dbContext.Items.Add(item);
+            dbContext.Collections.Add(myCollection);
+        }
 
         dbContext.SaveChanges();
+
+        await CategoriesPackage.Initialize(dbContext);
 
         IJwtTokenHelper jwtTokenHelper = new JwtTokenHelper();
         IPasswordHasher passwordHasher = new Sha3_256PasswordHasher();
@@ -61,16 +66,20 @@ internal class Program
         CollectionRepository collectionRepository = new CollectionRepository(dbContext);
         ItemRepository itemRepository = new ItemRepository(dbContext);
         UserRepository userRepository = new UserRepository(dbContext);
+        TagRepository tagRepository = new TagRepository(dbContext);
+
         UserService userService = new UserService(repository: userRepository,
                                                   tokenHelper: jwtTokenHelper,
                                                   configuration: configuration,
                                                   passwordHasher: passwordHasher);
         ItemService itemService = new ItemService(repository: itemRepository,
                                                   configuration: configuration,
-                                                  dbContext: dbContext);
+                                                  dbContext: dbContext,
+                                                  tagRepository);
         CollectionService collectionService = new CollectionService(repository: collectionRepository,
                                                                     configuration: configuration,
-                                                                    dbContext: dbContext);
+                                                                    dbContext: dbContext,
+                                                                    userService: userService);
 
         builder.Services.AddSingleton<UserService>((service) =>
         {
@@ -92,7 +101,7 @@ internal class Program
         {
             return configuration;
         });
-
+        
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
@@ -106,10 +115,16 @@ internal class Program
             app.UseHsts();
         }
 
+        //app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+        app.UseCors(x => x
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .SetIsOriginAllowed(origin => true)
+            .AllowCredentials());
+
         app.UseHttpsRedirection();
         app.UseStaticFiles();
-
-        app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
         app.UseRouting();
 
@@ -117,7 +132,7 @@ internal class Program
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Start}/{action=Index}/{lang}/{id?}");
+            pattern: "{controller=Start}/{action=Index}/{lang?}/{id?}");
 
         app.Run();
     }

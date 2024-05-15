@@ -1,5 +1,6 @@
 ﻿using CourseProject_backend.CustomDbContext;
 using CourseProject_backend.Enums.Packages;
+using CourseProject_backend.Extensions;
 using CourseProject_backend.Packages;
 using CourseProject_backend.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -25,35 +26,30 @@ namespace CourseProject_backend.Controllers
             _dbContext = dBContext;
         }
 
-        public async Task<IActionResult> Index(int lang = 0)
+        [HttpGet]
+        public async Task<IActionResult> Index(AppLanguage lang = AppLanguage.en)
         {
-            if (!Request.Cookies.TryGetValue("userDataBytech", out string? token))
+            this.DefineCategories();
+            this.SetCollectionSearch();
+
+            if (!Request.Cookies.TryGetValue("userData", out string? token))
             {
-                return RedirectToAction("index", "start", lang);
+                return RedirectToAction("Index", "home", new { lang = lang.ToString() });
             }
 
             if (!await _userService.AuthorizationFromToken(token))
             {
-                return RedirectToAction("index", "start", lang);
+                return RedirectToAction("index", "home", new { lang = lang.ToString()});
             }
 
             var langPackSingleton = LanguagePackSingleton.GetInstance();
+            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
+            if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
 
-            try
-            {
-                var langPackCollection = langPackSingleton.GetLanguagePack((AppLanguage)lang);
+            var langDataPair = new KeyValuePair
+                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
 
-                if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
-
-                var langDataPair = new KeyValuePair
-                                   <int, IDictionary<string, string>>(lang, langPackCollection);
-
-                return View(langDataPair);
-            }
-            catch (FileNotFoundException)
-            {
-                return NotFound();
-            }
+            return View(langDataPair);
         }
     }
 }

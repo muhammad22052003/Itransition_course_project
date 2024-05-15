@@ -11,6 +11,22 @@
   "collection_word": "Collections",
   "list_empty": "List Empty",
   "items_word": "Items",
-  "category_word": "Category"
+  "category_word": "Category",
+  "users_word": "Users",
+  "registrationDate_word": "Registration date",
+  "there_email": "There is a user with this email",
+  "there_email_incorrect": "Email or password is incorrect",
+  "enter_collection_name": "Enter your collection name",
+  "change_category": "Change category",
+  "enter_description": "Enter description",
+  "adding_new_column": "Adding new column",
+  "column_type": "Column type",
+  "column_name": "Column name",
+  "add_word": "Add",
+  "create_collection": "Create collection",
+  "description_word": "Description",
+  "item_constructor": "Item constructor",
+  "tags_word": "Tags",
+  "item_name": "Itam name"
 
 }

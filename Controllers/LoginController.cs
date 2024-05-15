@@ -1,41 +1,89 @@
 ﻿using CourseProject_backend.Enums.Packages;
 using CourseProject_backend.Packages;
 using Microsoft.AspNetCore.Mvc;
+using CourseProject_backend.Services;
 using Microsoft.IdentityModel.Tokens;
+using CourseProject_backend.Models.RequestModels;
+using CourseProject_backend.Extensions;
 
 namespace CourseProject_backend.Controllers
 {
     public class LoginController : Controller
     {
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
+        private readonly UserService _userService;
 
         public LoginController
         (
-            IConfiguration configuration
+            [FromServices] IConfiguration configuration,
+            [FromServices] UserService userService
         )
         {
             _configuration = configuration;
+            _userService = userService;
         }
 
         [HttpGet]
-        public IActionResult Index(int lang = 0)
+        public IActionResult Index([FromRoute] AppLanguage lang = AppLanguage.en)
         {
             var langPackSingleton = LanguagePackSingleton.GetInstance();
+            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
+            if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
 
-            try
+            var langDataPair = new KeyValuePair
+                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+
+            RegistrationModel registrationModel = new RegistrationModel()
             {
-                var langPackCollection = langPackSingleton.GetLanguagePack((AppLanguage)lang);
+                Errors = new Dictionary<string, string>(),
+                LanguagePack = langDataPair
+            };
 
-                if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
+            return View(registrationModel);
+        }
 
-                var langDataPair = new KeyValuePair
-                                   <int, IDictionary<string, string>>(lang, langPackCollection);
+        [HttpPost]
+        public async Task<IActionResult> Index([FromRoute] AppLanguage lang, UserLoginModel model)
+        {
+            var langPackSingleton = LanguagePackSingleton.GetInstance();
+            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
+            if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
 
-                return View(langDataPair);
+            var langDataPair = new KeyValuePair
+                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+
+            var errorsDictionary = ModelState.GetErrors();
+            RegistrationModel registrationModel = new RegistrationModel()
+            {
+                Errors = errorsDictionary,
+                LanguagePack = langDataPair
+            };
+            if (!ModelState.IsValid)
+            {
+                return View(registrationModel);
             }
-            catch (FileNotFoundException)
+
+            string token = await _userService.Login(model);
+
+            if (!token.IsNullOrEmpty())
             {
-                return NotFound();
+                UserLoginModel loginModel = new UserLoginModel()
+                {
+                    Email = model.Email,
+                    Password = model.Password
+                };
+                Response.Cookies.Append("userData", token);
+                return RedirectToAction("Index", "home", new { lang = lang });
+            }
+            else
+            {
+                errorsDictionary = ModelState.GetErrors();
+
+                errorsDictionary.Add("Email", $"{langPackCollection["there_email_incorrect"]}");
+
+                registrationModel.Errors = errorsDictionary;
+
+                return View(registrationModel);
             }
         }
     }

@@ -11,7 +11,7 @@ namespace CourseProject_backend.Models.RequestModels
         [Required]
         public string Name { get; set; }
 
-        public List<Tag>? Tags { get; set; }
+        public string? Tags { get; set; }
 
         public string? CustomString1 { get; set; }
         public string? CustomString2 { get; set; }
@@ -25,5 +25,8 @@ namespace CourseProject_backend.Models.RequestModels
         public bool? CustomBool1 { get; set; }
         public bool? CustomBool2 { get; set; }
         public bool? CustomBool3 { get; set; }
+        public DateTime? CustomDate1 { get; set; }
+        public DateTime? CustomDate2 { get; set; }
+        public DateTime? CustomDate3 { get; set; }
     }
 }

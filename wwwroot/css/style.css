@@ -55,6 +55,14 @@ section {
         background-color: #9097a5;
     }
 
+.section-catalog-info {
+    background-color: var(--color3);
+}
+
+    .section-catalog-info:hover {
+        background-color: var(--color3);
+    }
+
 .selection-comments {
     background-color: #e4e4e4;
 }
@@ -191,8 +199,19 @@ textarea {
         background-color: #d85e55;
     }
 
+.btn-constructor-yesNo-color {
+    background-color: #ffffff00;
+}
+
+    .btn-constructor-yesNo-color:hover {
+        background-color: #000;
+    }
+
+.btn-yesNo-selected {
+    background-color: #000;
+}
+
 .btn-submit-color:hover {
-    background-color: #000000;
     color: #ffffff;
 }
 

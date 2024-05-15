@@ -2,6 +2,7 @@
 using CourseProject_backend.CustomDbContext;
 using CourseProject_backend.Entities;
 using CourseProject_backend.Enums;
+using CourseProject_backend.Enums.Packages;
 using CourseProject_backend.Interfaces.Helpers;
 using CourseProject_backend.Interfaces.Repositories;
 using CourseProject_backend.Interfaces.Services;
@@ -16,29 +17,47 @@ namespace CourseProject_backend.Services
         private readonly CollectionRepository _repository;
         private readonly CollectionDBContext _dbContext;
         private readonly IConfiguration _configuration;
+        private readonly UserService _userService;
 
         public CollectionService
         (
             CollectionRepository repository,
             IConfiguration configuration,
-            CollectionDBContext dbContext
+            CollectionDBContext dbContext,
+            UserService userService
         )
         {
             _dbContext = dbContext;
             _repository = repository;
             _configuration = configuration;
+            _userService = userService;
         }
 
-        public async Task<bool> CreateCollection(CollectionCreateModel model)
+        public async Task<IEnumerable<MyCollection>> GetCollectionList(CollectionDataFilter filter,
+                                                                    string value,
+                                                                    DataSort sort,
+                                                                    int page,
+                                                                    int pageSize)
+        {
+            var collections = await _repository.GetCollectionList
+                              (filter, value, sort, page, pageSize);
+
+            return collections;
+        }
+
+        public async Task<int> GetCollectionsCount(CollectionDataFilter filter,
+                                                                    string value,
+                                                                    DataSort sort)
+        {
+            return await _repository.GetCollectionsSize(filter, value, sort);
+        }
+
+        public async Task<bool> CreateCollection(CollectionCreateModel model, User authorUser)
         {
             CollectionBuilder collectionBuilder = new CollectionBuilder(_configuration);
 
-            User? authorUser = (await _dbContext.Users
-                .Where((p) => p.Id == model.AuthorId)
-                .ToListAsync()).FirstOrDefault();
-
             Category? category = (await _dbContext.Categories
-                .Where((p) => p.Id == model.CategoryId)
+                .Where((p) => p.Name.ToLower() == model.CategoryName.ToLower())
                 .ToListAsync()).FirstOrDefault();
 
             if (authorUser == null || category == null)
@@ -52,150 +71,52 @@ namespace CourseProject_backend.Services
                                             category: category
                                             );
 
-            MyCollection myCollection = collectionBuilder.Build() as MyCollection;
+            MyCollection collection = collectionBuilder.Build() as MyCollection;
 
-            await _repository.Add(myCollection);
+            #region coolection inistializing
 
+            collection.Name = model.Name;
+            collection.Description = model.Description;
+
+            collection.CustomText1_state = model.CustomText1_name != null;
+            collection.CustomText1_name = model.CustomText1_name;
+            collection.CustomText2_state = model.CustomText2_name != null;
+            collection.CustomText2_name = model.CustomText2_name;
+            collection.CustomText3_state = model.CustomText3_name != null;
+            collection.CustomText3_name = model.CustomText3_name;
+
+            collection.CustomString1_state = model.CustomString1_name != null;
+            collection.CustomString1_name = model.CustomString1_name;
+            collection.CustomString2_state = model.CustomString2_name != null;
+            collection.CustomString2_name = model.CustomString2_name;
+            collection.CustomString3_state = model.CustomString3_name != null;
+            collection.CustomString3_name = model.CustomString3_name;
+
+            collection.CustomInt1_state = model.CustomInt1_name != null;
+            collection.CustomInt1_name = model.CustomInt1_name;
+            collection.CustomInt2_state = model.CustomInt2_name != null;
+            collection.CustomInt2_name = model.CustomInt2_name;
+            collection.CustomInt3_state = model.CustomInt3_name != null;
+            collection.CustomInt3_name = model.CustomInt3_name;
+
+            collection.CustomBool1_state = model.CustomBool1_name != null;
+            collection.CustomBool1_name = model.CustomBool1_name;
+            collection.CustomBool2_state = model.CustomBool2_name != null;
+            collection.CustomBool2_name = model.CustomBool2_name;
+            collection.CustomBool3_state = model.CustomBool3_name != null;
+            collection.CustomBool3_name = model.CustomBool3_name;
+
+            collection.CustomDate1_state = model.CustomDate1_name != null;
+            collection.CustomDate1_name = model.CustomDate1_name;
+            collection.CustomDate2_state = model.CustomDate2_name != null;
+            collection.CustomDate2_name = model.CustomDate2_name;
+            collection.CustomDate3_state = model.CustomDate3_name != null;
+            collection.CustomDate3_name = model.CustomDate3_name;
+            #endregion
+
+            await _repository.Add(collection);
             return true;
         }
-
-        public async Task<IEnumerable<MyCollection>> GetCollections(CollectionDataFilter filter,
-                                                                     string filterValue)
-        {
-            List<MyCollection> collections = new List<MyCollection>();
-
-            switch (filter)
-            {
-                case CollectionDataFilter.byCategory:
-                    {
-                        collections = (await _repository
-                            .GetValue((c) => c.Category.Name == filterValue))
-                            .ToList();
-                    }break;
-                case CollectionDataFilter.byName:
-                    {
-                        collections = (await _repository
-                            .GetValue((c) => c.Name == filterValue))
-                            .ToList();
-                    }
-                    break;
-                case CollectionDataFilter.byId:
-                    {
-                        collections = (await _repository
-                            .GetValue((c) => c.Id == filterValue))
-                            .ToList();
-                    }break;
-                case CollectionDataFilter.byDefault:
-                    {
-                        collections = (await _repository
-                            .GetValue())
-                            .ToList();
-                    }
-                    break;
-            }
-
-            return collections;
-        }
-
-        public List<MyCollection> SortData(IEnumerable<MyCollection> collections,
-                                                        DataSort sort)
-        {
-            List<MyCollection> newCollections = collections.ToList();
-
-            switch (sort)
-            {
-                case DataSort.byDate:
-                    {
-                        newCollections.Sort((x, y) =>
-                        {
-                            if(x.CreatedTime < y.CreatedTime) { return -1; }
-                            if (x.CreatedTime > y.CreatedTime) { return 1; }
-                            return 0;
-                        });
-                    }
-                    break;
-                case DataSort.bySize:
-                    {
-                        newCollections.Sort((x, y) =>
-                        {
-                            if (x.Items.Count < y.Items.Count) { return -1; }
-                            if (x.Items.Count > y.Items.Count) { return 1; }
-                            return 0;
-                        });
-                    }
-                    break;
-                case DataSort.byName:
-                    {
-                        newCollections.Sort((x, y) =>
-                        {
-                            if (x.Name[0] < y.Name[0]) { return -1; }
-                            if (x.Name[0] > y.Name[0]) { return 1; }
-                            return 0;
-                        });
-                    }
-                    break;
-            }
-
-            return newCollections;
-        }
-
-        public List<MyCollection> GetForPage(List<MyCollection> collections, int page)
-        {
-            List<MyCollection> newCollections = new List<MyCollection>();
-
-            int startIndex = (page - 1) * 10;
-
-            for (int i = startIndex; i < collections.Count && i - startIndex <= 10; i++)
-            {
-                newCollections.Add(collections[i]);
-            }
-
-            return newCollections;
-        }
-
-        public async Task<bool> UpdateCollection(CollectionUpdateModel updateModel)
-        {
-            var collection = (await _repository.GetValue((c) => c.Id.Equals(updateModel.Id))).FirstOrDefault();
-
-            if(collection == null) { return false; }
-
-            collection.Name = updateModel.Name;
-            collection.Description = updateModel.Description;
-            collection.IsDeleted = updateModel.IsDeleted;
-
-            collection.CustomText1_state = updateModel.CustomText1_name != null;
-            collection.CustomText1_name = updateModel.CustomText1_name;
-            collection.CustomText2_state = updateModel.CustomText2_name != null;
-            collection.CustomText2_name = updateModel.CustomText2_name;
-            collection.CustomText3_state = updateModel.CustomText3_name != null;
-            collection.CustomText3_name = updateModel.CustomText3_name;
-
-            collection.CustomString1_state = updateModel.CustomString1_name != null;
-            collection.CustomString1_name = updateModel.CustomString1_name;
-            collection.CustomString2_state = updateModel.CustomString2_name != null;
-            collection.CustomString2_name = updateModel.CustomString2_name;
-            collection.CustomString3_state = updateModel.CustomString3_name != null;
-            collection.CustomString3_name = updateModel.CustomString3_name;
-
-            collection.CustomInt1_state = updateModel.CustomInt1_name != null;
-            collection.CustomInt1_name = updateModel.CustomInt1_name;
-            collection.CustomInt2_state = updateModel.CustomInt2_name != null;
-            collection.CustomInt2_name = updateModel.CustomInt2_name;
-            collection.CustomInt3_state = updateModel.CustomInt3_name != null;
-            collection.CustomInt3_name = updateModel.CustomInt3_name;
-
-            collection.CustomBool1_state = updateModel.CustomBool1_name != null;
-            collection.CustomBool1_name = updateModel.CustomBool1_name;
-            collection.CustomBool2_state = updateModel.CustomBool2_name != null;
-            collection.CustomBool2_name = updateModel.CustomBool2_name;
-            collection.CustomBool3_state = updateModel.CustomBool3_name != null;
-            collection.CustomBool3_name = updateModel.CustomBool3_name;
-
-            await SaveUpdates();
-
-            return true;
-        }
-
         public async Task SaveUpdates()
         {
             await _repository.SaveUpdates();

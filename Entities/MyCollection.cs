@@ -50,6 +50,12 @@ namespace CourseProject_backend.Entities
         public string? CustomBool2_name { get; set; }
         public bool CustomBool3_state { get; set; }
         public string? CustomBool3_name { get; set; }
+        public bool CustomDate1_state { get; set; }
+        public string? CustomDate1_name { get; set; }
+        public bool CustomDate2_state { get; set; }
+        public string? CustomDate2_name { get; set; }
+        public bool CustomDate3_state { get; set; }
+        public string? CustomDate3_name { get; set; }
         [Required]
         public bool IsDeleted {  get; set; }
 

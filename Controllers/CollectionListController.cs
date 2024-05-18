@@ -16,16 +16,19 @@ namespace CourseProject_backend.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly CollectionService _collectionService;
+        private readonly UserService _userService;
         private int _pageSize = 20;
 
         public CollectionListController
         (
             [FromServices] IConfiguration configuration,
-            [FromServices] CollectionService collectionService
+            [FromServices] CollectionService collectionService,
+            [FromServices] UserService userService
         )
         {
             _configuration = configuration;
             _collectionService = collectionService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -33,28 +36,31 @@ namespace CourseProject_backend.Controllers
                                                CollectionDataFilter filter = CollectionDataFilter.byDefault,
                                                string value = "",
                                                DataSort sort = DataSort.byDefault,
-                                               int page = 1)
+                                               int page = 1,
+                                               string categoryName = "")
         {
             this.DefineCategories();
             this.SetCollectionSearch();
 
-            var langPackSingleton = LanguagePackSingleton.GetInstance();
-            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
-            if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 
-            var langDataPair = new KeyValuePair
-                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+            User? user = null;
+
+            if (Request.Cookies.TryGetValue("userData", out string? token))
+            {
+                user = await _userService.GetUserFromToken(token);
+            }
 
             int pagesCount = 1;
             var collections = (await _collectionService.GetCollectionList
-                              (filter, value, sort, page, _pageSize)).ToList();
+                              (filter, value, sort, page, _pageSize, categoryName)).ToList();
 
             if(!collections.IsNullOrEmpty())
             {
                 pagesCount = (int)Math.Ceiling(await _collectionService
-                             .GetCollectionsCount(filter, value, sort) * 1.0 / (_pageSize * 1.0));
+                             .GetCollectionsCount(filter, value, sort, categoryName) * 1.0 / (_pageSize * 1.0));
             }
-            
+
             CollectionListViewModel viewModel = new CollectionListViewModel()
             {
                 LanguagePack = langDataPair,
@@ -64,6 +70,7 @@ namespace CourseProject_backend.Controllers
                 Filter = filter,
                 Sort = sort,
                 Value = value,
+                User = user
             };
 
             return View(viewModel);

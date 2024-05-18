@@ -21,18 +21,21 @@ namespace CourseProject_backend.Services
         private readonly TagRepository _tagRepository;
         private readonly IConfiguration _configuration;
         private readonly CollectionDBContext _dbContext;
+        private readonly CommentRepository _commentRepository;
         public ItemService
         (
             ItemRepository repository,
             IConfiguration configuration,
             CollectionDBContext dbContext,
-            TagRepository tagRepository
+            TagRepository tagRepository,
+            CommentRepository commentRepository
         )
         {
             _dbContext = dbContext;
             _repository = repository;
             _configuration = configuration;
             _tagRepository = tagRepository;
+            _commentRepository = commentRepository;
         }
 
         public async Task<bool> CreateItem(ItemPostModel model)
@@ -80,6 +83,8 @@ namespace CourseProject_backend.Services
             if (collection.CustomDate2_state) { item.CustomDate2 = model.CustomDate2?.ToUniversalTime(); }
             if (collection.CustomDate3_state) { item.CustomDate3 = model.CustomDate3?.ToUniversalTime(); }
 
+            //collection.Items.Add(item);
+
             await _repository.Add(item);
 
             return true;
@@ -96,6 +101,14 @@ namespace CourseProject_backend.Services
                 .ToListAsync()).FirstOrDefault();
 
             if (collection == null) { return false; }
+
+            string[]? tagsStrings = model?.Tags?.Split(' ');
+
+            if (tagsStrings == null) { return false; }
+
+            List<Tag> tags = (await _tagRepository.GetAndCreate(tagsStrings, item)).ToList();
+
+            item.Tags = tags;
 
             if (collection.CustomText1_state) { item.CustomText1 = model.CustomText1; }
             if (collection.CustomText2_state) { item.CustomText2 = model.CustomText2; }
@@ -126,10 +139,11 @@ namespace CourseProject_backend.Services
                                                string value,
                                                DataSort sort,
                                                int page,
-                                               int pageSize)
+                                               int pageSize,
+                                               string categoryName)
         {
             List<Item> items = (await _repository
-                .GetItemsList(filter, value, sort, page, pageSize))
+                .GetItemsList(filter, value, sort, page, pageSize, categoryName))
                 .ToList();
 
             return items;
@@ -137,12 +151,28 @@ namespace CourseProject_backend.Services
 
         public async Task<int> GetItemsCount(ItemsDataFilter filter,
                                                string value,
-                                               DataSort sort)
+                                               DataSort sort,
+                                               string categoryName)
         {
-            int count = (await _repository
-                .GetItemsCount(filter, value, sort));
+            int count = await _repository
+                .GetItemsCount(filter, value, sort, categoryName);
 
             return count;
+        }
+
+        public async Task<List<Comment>> GetComentsList(Item item, ComentariesDataFilter filter, DateTime? fromTime = null)
+        {
+            return await _commentRepository.GetComentsList(item, filter, fromTime);
+        }
+
+        public async Task<Item?> GetById(string id)
+        {
+            return (await _repository.GetValue((x) => x.Id == id)).FirstOrDefault();
+        }
+
+        public async Task DeleteRange(string[] itemsId, string userId)
+        {
+            await _repository.DeleteRangeById(itemsId, userId);
         }
 
         public async Task SaveUpdates()

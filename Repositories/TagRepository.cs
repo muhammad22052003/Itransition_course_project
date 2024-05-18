@@ -19,23 +19,15 @@ namespace CourseProject_backend.Repositories
         {
             List<Tag> resultTags = new List<Tag>();
 
-            foreach (var tag in tags)
-            {
-                Tag? newTag = (await _dBContext.Tags.Where((t)=>t.Name == tag)
-                    .ToListAsync())
-                    .FirstOrDefault();
+            tags = tags.Distinct().ToArray();
 
-                if(newTag == null)
-                {
-                    newTag = new Tag(tag, item);
-                }
+            foreach (var tag in tags)
+
+            {
+                Tag newTag = new Tag(tag, item);
 
                 resultTags.Add(newTag);
-
-                _dBContext.Add(newTag);
             }
-
-            await _dBContext.SaveChangesAsync();
 
             return resultTags;
         }

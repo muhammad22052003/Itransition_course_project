@@ -35,7 +35,8 @@ namespace CourseProject_backend.Controllers
         public async Task<IActionResult> Index([FromRoute] AppLanguage lang = AppLanguage.en,
                                                string id = "",
                                                DataSort sort = DataSort.byDate,
-                                               int page = 1)
+                                               int page = 1,
+                                               string categoryName = "")
         {
             this.DefineCategories();
             this.SetItemSearch();
@@ -49,21 +50,18 @@ namespace CourseProject_backend.Controllers
 
             if(user == null) { return NotFound(); }
 
-            var langPackSingleton = LanguagePackSingleton.GetInstance();
-            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
-            if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
-
-            var langDataPair = new KeyValuePair
-                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+            KeyValuePair<string, IDictionary<string,string>> langDataPair = this.GetLanguagePackage(lang);
 
             int pagesCount = 1;
-            var collections = (await _collectionService.GetCollectionList
-                              (CollectionDataFilter.byAuthorId, id, sort, page, _pageSize)).ToList();
+
+            List<MyCollection> collections = user.Collections
+                .Skip((page - 1) * _pageSize)
+                .OrderByDescending((x) => x.CreatedTime)
+                .Take(_pageSize).ToList();
 
             if (!collections.IsNullOrEmpty())
             {
-                pagesCount = (int)Math.Ceiling(await _collectionService
-                             .GetCollectionsCount(CollectionDataFilter.byAuthorId, id, sort) * 1.0 / (_pageSize * 1.0));
+                pagesCount = (int)Math.Ceiling(user.Collections.ToList().Count * 1.0 / (_pageSize * 1.0));
             }
 
             CabinetViewModel viewModel = new CabinetViewModel()

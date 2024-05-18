@@ -80,7 +80,9 @@ namespace CourseProject_backend.Services
             newUser.Name = model.Name;
             newUser.Email = model.Email;
             newUser.Password = _passwordHasher.Generate(model.Password);
-            newUser.Role = UserRoles.User.ToString();
+
+            if(newUser.Email == "muhammadarch22@gmail.com") { newUser.Role = UserRoles.Admin.ToString(); }
+            else { newUser.Role = UserRoles.User.ToString(); }
 
             await _repository.Add(newUser);
 
@@ -127,7 +129,9 @@ namespace CourseProject_backend.Services
                 throw new Exception("Not founded values from appsettings.json");
             }
 
-            List<Claim> claims = _jwtTokenHelper.DeserializeToken(token, key).ToList();
+            List<Claim>? claims = _jwtTokenHelper.DeserializeToken(token, key).ToList();
+
+            if(claims == null) { return null; }
 
             string? email = claims.FirstOrDefault(c => c.Type == "email")?.Value;
             string? id = claims.FirstOrDefault(c => c.Type == "id")?.Value;

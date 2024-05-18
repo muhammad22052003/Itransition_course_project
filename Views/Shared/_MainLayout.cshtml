@@ -18,7 +18,8 @@
                     </div>
             </div>
             <div class="col">
-                <select id="select-categories" class="form-control region-select">
+                    <select name="categoryName" id="select-categories" class="form-control region-select">
+                        <option value="">All</option>
                     @{
                         if (ViewData.ContainsKey("categories"))
                         {
@@ -26,7 +27,7 @@
 
                             for (int i = 0; i < categories.Count; i++)
                             {
-                                <option value="@categories[i]">@categories[i]</option>
+                                <option value="@categories[i].ToLower()">@categories[i]</option>
                             }
                         }
                     }
@@ -45,22 +46,22 @@
         </div>
         <div class="row justify-content-center align-content-center header-col">
             <div class="col-2 d-flex justify-content-center">
-                <a href="@Url.Action("index","collectionlist")" class="btn-style-header-smaller btn-main-header-color">
+                    <a href="@Url.Action("index","collectionlist", new {lang = ViewData["lang"].ToString()} )" class="btn-style-header-smaller btn-main-header-color">
                     <img class="header-icon" src="https://drive.google.com/thumbnail?id=1-KcJ0gz9x93kyS-7GnnuhF6q8DW6dulQ">
                 </a>
             </div>
             <div class="col-2 d-flex justify-content-center">
-                <a href="@Url.Action("index","itemList")" class="btn-style-header-smaller btn-main-header-color">
+                    <a href="@Url.Action("index","itemList", new {lang = ViewData["lang"].ToString()})" class="btn-style-header-smaller btn-main-header-color">
                     <img class="header-icon" src="https://drive.google.com/thumbnail?id=10El_7lD2iMaRV7DXmD1_doxzNTP_Rwku">
                 </a>
             </div>
             <div class="col-2 d-flex justify-content-center">
-                <a href="@Url.Action("index","users")" class="btn-style-header-smaller btn-main-header-color">
+                    <a href="@Url.Action("index","users", new {lang = ViewData["lang"].ToString()})" class="btn-style-header-smaller btn-main-header-color">
                     <img class="header-icon" src="https://drive.google.com/thumbnail?id=1-RDZsLeISJ2KOgkUh6nz10s7vOKS0uV_" alt="Изображение">
                 </a>
             </div>
             <div class="col-2 d-flex justify-content-center">
-                <a href="@Url.Action("index","cabinet")" class="btn-style-header-smaller btn-main-header-color">
+                    <a href="@Url.Action("index","cabinet", new {lang = ViewData["lang"].ToString()})" class="btn-style-header-smaller btn-main-header-color">
                     <img class="header-icon" src="https://drive.google.com/thumbnail?id=10idOA2TIa7Ck45lpRiZbiTtmGiYdpl7T">
                 </a>
             </div>

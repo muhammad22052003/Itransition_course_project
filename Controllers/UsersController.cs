@@ -32,12 +32,10 @@ namespace CourseProject_backend.Controllers
                                                DataSort sort,
                                                int page = 1)
         {
-            var langPackSingleton = LanguagePackSingleton.GetInstance();
-            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
-            if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
+            this.DefineCategories();
+            this.SetItemSearch();
 
-            var langDataPair = new KeyValuePair
-                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 
             int pagesCount = 1;
             var users = (await _userService.GetUsersList

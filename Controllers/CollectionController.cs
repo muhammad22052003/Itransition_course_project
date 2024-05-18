@@ -7,6 +7,7 @@ using CourseProject_backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using CourseProject_backend.Entities;
+using CourseProject_backend.Enums.Entities;
 
 namespace CourseProject_backend.Controllers
 {
@@ -16,47 +17,47 @@ namespace CourseProject_backend.Controllers
         private readonly IConfiguration _configuration;
         private readonly ItemService _itemService;
         private readonly CollectionService _collectionService;
+        private readonly UserService _userService;
         private readonly int pageSize = 20;
 
         public CollectionController
         (
             [FromServices] IConfiguration configuration,
             [FromServices] ItemService itemService,
-            [FromServices] CollectionService collectionService
+            [FromServices] CollectionService collectionService,
+            [FromServices] UserService userService
         )
         {
             _configuration = configuration;
             _itemService = itemService;
             _collectionService = collectionService;
+            _userService = userService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index([FromRoute] AppLanguage lang = AppLanguage.en,
                                                DataSort sort = DataSort.byDefault,
                                                string? id = null,
-                                               int page = 1)
+                                               int page = 1,
+                                               string categoryName = "")
         {
             if(id == null) { return NotFound(); }
 
             this.DefineCategories();
+            this.SetItemSearch();
 
-            var langPackSingleton = LanguagePackSingleton.GetInstance();
-            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
-            if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
+            User? user = null;
 
-            var langDataPair = new KeyValuePair
-                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+            if (Request.Cookies.TryGetValue("userData", out string? token))
+            {
+                user = await _userService.GetUserFromToken(token);
+            }
+
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 
             int pagesCount = 1;
 
-            MyCollection? collection = (await _collectionService.GetCollectionList
-                (
-                    filter: CollectionDataFilter.byId,
-                    value: id,
-                    DataSort.byDefault,
-                    page: 1,
-                    pageSize: _pageSize
-                )).FirstOrDefault();
+            MyCollection? collection = await _collectionService.GetById(id);
 
             if(collection == null) { return NotFound(); }
 
@@ -66,7 +67,8 @@ namespace CourseProject_backend.Controllers
                                 value: collection.Id,
                                 sort: sort,
                                 page: page,
-                                pageSize: _pageSize)).ToList();
+                                pageSize: _pageSize,
+                                categoryName: categoryName)).ToList();
 
             if (!items.IsNullOrEmpty())
             {
@@ -75,7 +77,8 @@ namespace CourseProject_backend.Controllers
                              (
                                 filter: ItemsDataFilter.byCollectionId,
                                 value: collection.Id,
-                                sort: sort) * 1.0 / (_pageSize * 1.0));
+                                sort: sort,
+                                categoryName: categoryName) * 1.0 / (_pageSize * 1.0));
             }
 
             CollectionViewModel viewModel = new CollectionViewModel()
@@ -85,10 +88,33 @@ namespace CourseProject_backend.Controllers
                 PagesCount = pagesCount,
                 CurrentPage = page,
                 Sort = sort,
-                Collection = collection
+                Collection = collection,
+                User = user
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string[] collectionId)
+        {
+            string? token = null;
+
+            if(Request.Cookies.TryGetValue("userData", out token))
+            {
+                User? user = await _userService.GetUserFromToken(token);
+
+                if(user == null)
+                {
+                    return NotFound();
+                }
+
+                await _collectionService.DeleteRange(collectionId, user.Id);
+
+                return RedirectToAction("index", "cabinet");
+            }
+
+            return NotFound();
         }
     }
 }

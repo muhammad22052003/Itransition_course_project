@@ -18,47 +18,51 @@ namespace CourseProject_backend.Services
         private readonly CollectionDBContext _dbContext;
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
+        private readonly CategoryRepository _categoryRepository;
 
         public CollectionService
         (
             CollectionRepository repository,
             IConfiguration configuration,
             CollectionDBContext dbContext,
-            UserService userService
+            UserService userService,
+            CategoryRepository categoryRepository
         )
         {
             _dbContext = dbContext;
             _repository = repository;
             _configuration = configuration;
             _userService = userService;
+            _categoryRepository = categoryRepository;
         }
 
         public async Task<IEnumerable<MyCollection>> GetCollectionList(CollectionDataFilter filter,
                                                                     string value,
                                                                     DataSort sort,
                                                                     int page,
-                                                                    int pageSize)
+                                                                    int pageSize,
+                                                                    string categoryName)
         {
             var collections = await _repository.GetCollectionList
-                              (filter, value, sort, page, pageSize);
+                              (filter, value, sort, page, pageSize, categoryName);
 
             return collections;
         }
 
         public async Task<int> GetCollectionsCount(CollectionDataFilter filter,
                                                                     string value,
-                                                                    DataSort sort)
+                                                                    DataSort sort,
+                                                                    string categoryName)
         {
-            return await _repository.GetCollectionsSize(filter, value, sort);
+            return await _repository.GetCollectionsSize(filter, value, sort, categoryName);
         }
 
         public async Task<bool> CreateCollection(CollectionCreateModel model, User authorUser)
         {
             CollectionBuilder collectionBuilder = new CollectionBuilder(_configuration);
 
-            Category? category = (await _dbContext.Categories
-                .Where((p) => p.Name.ToLower() == model.CategoryName.ToLower())
-                .ToListAsync()).FirstOrDefault();
+            Category? category = (await _categoryRepository
+                .GetValue(c=>c.Name.ToLower() == model.CategoryName.ToLower())).FirstOrDefault();
 
             if (authorUser == null || category == null)
             {
@@ -116,6 +120,25 @@ namespace CourseProject_backend.Services
 
             await _repository.Add(collection);
             return true;
+        }
+
+        public async Task<MyCollection?> GetById(string id = null)
+        {
+            if (id == null) { return null; }
+
+            return (await _repository.GetValue((x)=>x.Id == id)).FirstOrDefault();
+        }
+
+        public async Task<MyCollection?> GetByItemId(string id = null)
+        {
+            if (id == null) { return null; }
+
+            return (await _repository.GetValue((x) => x.Items.FirstOrDefault((i)=>i.Id == id) != null)).FirstOrDefault();
+        }
+
+        public async Task DeleteRange(string[] collectionsId, string userId)
+        {
+            await _repository.DeleteRangeById(collectionsId, userId);
         }
         public async Task SaveUpdates()
         {

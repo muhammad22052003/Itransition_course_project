@@ -25,13 +25,7 @@ namespace CourseProject_backend.Controllers
             this.DefineCategories();
             this.SetItemSearch();
 
-            var langPackSingleton = LanguagePackSingleton.GetInstance();
-
-            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
-            if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
-
-            var langDataPair = new KeyValuePair
-                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 
             return View(langDataPair);
         }

@@ -26,12 +26,7 @@ namespace CourseProject_backend.Controllers
         [HttpGet]
         public IActionResult Index([FromRoute] AppLanguage lang = AppLanguage.en)
         {
-            var langPackSingleton = LanguagePackSingleton.GetInstance();
-            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
-            if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
-
-            var langDataPair = new KeyValuePair
-                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 
             RegistrationModel registrationModel = new RegistrationModel()
             {

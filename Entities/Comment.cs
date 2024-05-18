@@ -19,6 +19,7 @@ namespace CourseProject_backend.Entities
             Text = text;
             User = user;
             Item = item;
+            CreatedTime = DateTime.UtcNow;
         }
 
         [Key]
@@ -30,6 +31,8 @@ namespace CourseProject_backend.Entities
         public User User { get; set; }
         [Required]
         public Item Item { get; set; }
+        [Required]
+        public DateTime CreatedTime { get; set; }
 
         public object Clone()
         {

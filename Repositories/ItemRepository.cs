@@ -3,10 +3,12 @@ using CourseProject_backend.Delegates;
 using CourseProject_backend.Entities;
 using CourseProject_backend.Enums;
 using CourseProject_backend.Enums.CustomDbContext;
+using CourseProject_backend.Enums.Entities;
 using CourseProject_backend.Interfaces.Repositories;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using System.Linq.Expressions;
 using static System.Net.Mime.MediaTypeNames;
@@ -36,11 +38,30 @@ namespace CourseProject_backend.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task DeleteRangeById(string[] itemsId, string userId)
+        {
+            IQueryable<Item> query = _dbContext.Items;
+
+            query = query.Where((it) => itemsId.Contains(it.Id) &&
+            (it.Collection.User.Role == UserRoles.Admin.ToString() ||
+            it.Collection.User.Id == userId));
+
+            var items = await query.ToListAsync();
+
+            _dbContext.RemoveRange(items);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<Item>> GetValue(Expression<Func<Item, bool>> predicat)
         {
-            var items = (await _dbContext.Items
+            var items = await _dbContext.Items
                          .Where(predicat)
-                         .ToListAsync());
+                         .Include(i => i.Tags)
+                         .Include(i => i.PositiveReact)
+                         .Include(i => i.Comments).ThenInclude((x)=>x.User)
+                         .Include(i => i.Views)
+                         .ToListAsync();
 
             return items;
         }
@@ -49,25 +70,57 @@ namespace CourseProject_backend.Repositories
                                                       string value,
                                                       DataSort sort,
                                                       int page,
-                                                      int pageSize)
+                                                      int pageSize,
+                                                      string categoryName)
         {
             var sortedQuery = SortData(sort);
             List<Item> items = new List<Item>();
 
             if (sortedQuery == null)
             {
-                sortedQuery = _dbContext.Items.Where((c) => true);
+                sortedQuery = _dbContext.Items;
+            }
+
+            if (!categoryName.IsNullOrEmpty())
+            {
+                sortedQuery = sortedQuery.Where(it => it.Collection.Category.Name.ToLower() == categoryName.ToLower());
             }
 
             switch (filter)
             {
+                case ItemsDataFilter.byDefault:
+                    {
+                        items = await sortedQuery
+                            .Where((item) => true)
+                            .Skip((page - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToListAsync();
+                    }
+                    break;
+                case ItemsDataFilter.byId:
+                    {
+                        items = await sortedQuery
+                            .Where((item) => item.Id == value)
+                            .Skip((page - 1) * pageSize)
+                            .Take(pageSize)
+                            .Include(i => i.Tags)
+                            .Include(i => i.PositiveReact)
+                            .Include(i => i.Comments)
+                            .Include(i => i.Views)
+                            .ToListAsync();
+                    }
+                    break;
                 case ItemsDataFilter.byTag:
                     {
                         items = await sortedQuery
-                            .Where((item) => item.Tags
+                            .Where((item) => item.Tags.Where(t => t.Name == value).FirstOrDefault() != null)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
-                            .FirstOrDefault((x) => x.Name == value) != null).ToListAsync();
+                            .Include(i => i.Tags)
+                            .Include(i => i.PositiveReact)
+                            .Include(i => i.Comments)
+                            .Include(i => i.Views)
+                            .ToListAsync();
                     }
                     break;
                 case ItemsDataFilter.byCollectionId:
@@ -76,12 +129,20 @@ namespace CourseProject_backend.Repositories
                             .Where((item) => item.Collection.Id == value)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
+                            .Include(i => i.Tags)
+                            .Include(i => i.PositiveReact)
+                            .Include(i => i.Comments)
+                            .Include(i => i.Views)
                             .ToListAsync();
                     }
                     break;
                 case ItemsDataFilter.bySearch:
                     {
                         items = await GetItemsBySearchTextQuery(sortedQuery, value, pageSize, page)
+                            .Include(i => i.Tags)
+                            .Include(i => i.PositiveReact)
+                            .Include(i => i.Comments)
+                            .Include(i => i.Views)
                             .ToListAsync();
                     }
                     break;
@@ -116,20 +177,40 @@ namespace CourseProject_backend.Repositories
 
         public async Task<int> GetItemsCount(ItemsDataFilter filter,
                                        string value,
-                                       DataSort sort)
+                                       DataSort sort,
+                                       string categoryName)
         {
+            IQueryable<Item> sortedQuery = _dbContext.Items;
+
+            if (!categoryName.IsNullOrEmpty())
+            {
+                sortedQuery = sortedQuery.Where(c => c.Collection.Category.Name.ToLower() == categoryName.ToLower());
+            }
+
             switch (filter)
             {
+                case ItemsDataFilter.byDefault:
+                    {
+                        return await sortedQuery
+                            .Where((item) => true)
+                            .CountAsync();
+                    }
+                case ItemsDataFilter.byId:
+                    {
+                        return await sortedQuery
+                            .Where((item) => item.Id == value)
+                            .CountAsync();
+                    }
                 case ItemsDataFilter.byTag:
                     {
-                        return await _dbContext.Items
+                        return await sortedQuery
                             .Where((item) => item.Tags
                             .FirstOrDefault((x) => x.Name == value) != null)
                             .CountAsync();
                     }
                 case ItemsDataFilter.byCollectionId:
                     {
-                        return await _dbContext.Items
+                        return await sortedQuery
                             .Where((item) => item.Collection.Id == value)
                             .CountAsync();
                     }
@@ -138,7 +219,7 @@ namespace CourseProject_backend.Repositories
                         //  EF.Functions.ILike delegate no supported by linq query
                         //LikeDelegate likeFunction = _dbContext.GetLikeDelegate();
 
-                        return await _dbContext.Items
+                        return await sortedQuery
                             .Where((x) => EF.Functions.ILike(x.Name.ToLower(), $"%{value.ToLower()}%")
                                        || EF.Functions.ILike(x.CustomText1.ToLower(), $"%{value.ToLower()}%")
                                        || EF.Functions.ILike(x.CustomText2.ToLower(), $"%{value.ToLower()}%")
@@ -172,7 +253,7 @@ namespace CourseProject_backend.Repositories
                     }
                 case DataSort.byDate:
                     {
-                        return _dbContext.Items.OrderBy((c) => c.CreatedTime);
+                        return _dbContext.Items.OrderByDescending((c) => c.CreatedTime);
                     }
                 case DataSort.bySize:
                     {

@@ -1,5 +1,6 @@
 ﻿using CourseProject_backend.Interfaces.Entities;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CourseProject_backend.Entities
 {
@@ -17,8 +18,8 @@ namespace CourseProject_backend.Entities
 
         [Key]
         public string Id { get; set; }
-        [Required]
-        public User User { get; set; }
+        
+        public User? User { get; set; }
         [Required]
         public Item Item { get; set; }
         [Required]

@@ -32,7 +32,7 @@ internal class Program
                                         DBSystem.POSTGRES
                                         );
 
-        for (int i = 0; i < 100; i++)
+        /*for (int i = 0; i < 2; i++)
         {
             CollectionBuilder collectionBuilder = new CollectionBuilder(configuration);
             Category category = new Category($"Books{i+1}", "Books Category");
@@ -56,7 +56,7 @@ internal class Program
             dbContext.Collections.Add(myCollection);
         }
 
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();*/
 
         await CategoriesPackage.Initialize(dbContext);
 
@@ -67,6 +67,8 @@ internal class Program
         ItemRepository itemRepository = new ItemRepository(dbContext);
         UserRepository userRepository = new UserRepository(dbContext);
         TagRepository tagRepository = new TagRepository(dbContext);
+        CategoryRepository categoryRepository = new CategoryRepository(dbContext);
+        CommentRepository commentRepository = new CommentRepository(dbContext);
 
         UserService userService = new UserService(repository: userRepository,
                                                   tokenHelper: jwtTokenHelper,
@@ -75,11 +77,13 @@ internal class Program
         ItemService itemService = new ItemService(repository: itemRepository,
                                                   configuration: configuration,
                                                   dbContext: dbContext,
-                                                  tagRepository);
+                                                  tagRepository: tagRepository,
+                                                  commentRepository: commentRepository);
         CollectionService collectionService = new CollectionService(repository: collectionRepository,
                                                                     configuration: configuration,
                                                                     dbContext: dbContext,
-                                                                    userService: userService);
+                                                                    userService: userService,
+                                                                    categoryRepository: categoryRepository);
 
         builder.Services.AddSingleton<UserService>((service) =>
         {
@@ -114,8 +118,6 @@ internal class Program
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
-
-        //app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
         app.UseCors(x => x
             .AllowAnyMethod()

@@ -27,6 +27,11 @@
   "description_word": "Description",
   "item_constructor": "Item constructor",
   "tags_word": "Tags",
-  "item_name": "Itam name"
-
+  "item_name": "Item name",
+  "create_word": "Create",
+  "author_email": "Author email",
+  "created_date": "Created date",
+  "send_word": "Send",
+  "new_comment": "New comment",
+  "comentaries_word": "Comentaries"
 }

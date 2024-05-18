@@ -22,7 +22,7 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Item([FromForm]string? searchText = null, [FromForm]AppLanguage lang = AppLanguage.en)
+        public IActionResult Item([FromForm]string searchText = "", string categoryName = "", [FromForm]AppLanguage lang = AppLanguage.en)
         {
             return RedirectToAction("index", "itemlist", new
             {
@@ -30,12 +30,13 @@ namespace CourseProject_backend.Controllers
                 filter = ItemsDataFilter.bySearch,
                 value = searchText,
                 sort = DataSort.byDefault,
-                page = 1
+                page = 1,
+                categoryName = categoryName
             });
         }
 
         [HttpPost]
-        public IActionResult Collection([FromForm] string? searchText = null, [FromForm] AppLanguage lang = AppLanguage.en)
+        public IActionResult Collection([FromForm] string searchText = "", string categoryName = "", [FromForm] AppLanguage lang = AppLanguage.en)
         {
             return RedirectToAction("index", "collectionList", new
             {
@@ -43,7 +44,8 @@ namespace CourseProject_backend.Controllers
                 filter = CollectionDataFilter.byName,
                 value = searchText,
                 sort = DataSort.byDefault,
-                page = 1
+                page = 1,
+                categoryName = categoryName
             });
         }
     }

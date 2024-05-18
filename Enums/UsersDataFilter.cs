@@ -5,6 +5,7 @@
         byDefault,
         byName,
         byId,
-        byStatus
+        byStatus,
+        byEmail
     }
 }

@@ -39,10 +39,81 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromRoute]AppLanguage lang = AppLanguage.en,
+        public async Task<IActionResult> Add([FromRoute]AppLanguage lang = AppLanguage.en,
                                                string? id = null)
         {
 
+            if (id == null) { return BadRequest("The request has no ID"); }
+
+            this.DefineCategories();
+            this.SetItemSearch();
+
+            if (!Request.Cookies.TryGetValue("userData", out string? token))
+            {
+                return RedirectToAction("Index", "home", new { lang = lang.ToString() });
+            }
+
+            User? user = await _userService.GetUserFromToken(token);
+
+            if (user == null)
+            {
+                return RedirectToAction("index", "home", new { lang = lang.ToString() });
+            }
+
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
+
+            MyCollection? collection = await _collectionService.GetById(id);
+
+            if (collection == null) { return NotFound(); }
+
+            if (user.Role.ToLower() != UserRoles.Admin.ToString().ToLower() && 
+                user.Collections.FirstOrDefault((x)=>x.Id == id) == null)
+            {
+                return BadRequest("You do not have access for this operation");
+            }
+
+            ItemConstructorViewModel constructorViewModel = new ItemConstructorViewModel()
+            {
+                LanguagePack = langDataPair,
+                Collection = collection
+            };
+
+            return View(constructorViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add([FromRoute] AppLanguage lang ,ItemPostModel model)
+        {
+            if (!Request.Cookies.TryGetValue("userData", out string? token))
+            {
+                return NotFound();
+            }
+
+            User? user = await _userService.GetUserFromToken(token);
+
+            MyCollection? collection = await _collectionService.GetById(model.CollectionId);
+
+            if(collection == null) { return BadRequest("Collection not founded"); }
+
+            if (user.Role.ToLower() != UserRoles.Admin.ToString().ToLower() &&
+                user.Collections.FirstOrDefault((x) => x.Id == collection.Id) == null)
+            {
+                return BadRequest("You do not have access for this operation");
+            }
+
+            if(!await _itemService.CreateItem(model))
+            {
+                return Problem("An error occurred. Item was not created.");
+            }
+
+            return RedirectToAction("index", "Home", lang);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Edit([FromRoute] AppLanguage lang = AppLanguage.en,
+                                               string? id = null)
+        {
             if (id == null) { return BadRequest("The request has no ID"); }
 
             this.DefineCategories();
@@ -67,62 +138,61 @@ namespace CourseProject_backend.Controllers
             var langDataPair = new KeyValuePair
                                <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
 
-            MyCollection? collection = (await _collectionService
-                .GetCollectionList(filter: CollectionDataFilter.byId,
-                                   value: id,
-                                   sort: DataSort.byDefault,
-                                   page: 1,
-                                   pageSize: 10)).FirstOrDefault();
+            Item? item = await _itemService.GetById(id);
 
-            if (collection == null) { return NotFound(); }
+            if (item == null) { return NotFound(); }
 
-            if (user.Role.ToLower() != UserRoles.Admin.ToString().ToLower() && 
-                user.Collections.FirstOrDefault((x)=>x.Id == id) == null)
+            if (user.Role.ToLower() != UserRoles.Admin.ToString().ToLower() &&
+                user.Collections
+                .Where((c)=>c.Items.FirstOrDefault((it)=>it.Id == id) != null)
+                .FirstOrDefault() == null)
             {
                 return BadRequest("You do not have access for this operation");
             }
 
-            ItemConstructorViewModel constructorViewModel = new ItemConstructorViewModel()
+            ItemEditViewModel editViewModel = new ItemEditViewModel()
             {
                 LanguagePack = langDataPair,
-                Collection = collection
+                Item = item
             };
 
-            return View(constructorViewModel);
+            return View(editViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromRoute] AppLanguage lang ,ItemPostModel model)
+        public async Task<IActionResult> Edit([FromRoute] AppLanguage lang, [FromForm]ItemPostModel model)
         {
-            if (!Request.Cookies.TryGetValue("userData", out string? token))
+            if (!Request.Cookies.TryGetValue("userData", out string? token) ||
+                model.Id == null)
             {
                 return NotFound();
             }
 
             User? user = await _userService.GetUserFromToken(token);
 
-            MyCollection? collection = (await _collectionService
-                .GetCollectionList(filter: CollectionDataFilter.byId,
-                                   value: model.CollectionId,
-                                   sort: DataSort.byDefault,
-                                   1, 1)).FirstOrDefault();
-
-            if(collection == null) { return BadRequest("Collection not founded"); }
+            if(user == null)
+            {
+                return RedirectToAction("index", "home", new { lang = lang.ToString() });
+            }
 
             if (user.Role.ToLower() != UserRoles.Admin.ToString().ToLower() &&
-                user.Collections.FirstOrDefault((x) => x.Id == collection.Id) == null)
+                user.Collections
+                .Where((c) => c.Items.FirstOrDefault((it) => it.Id == model.Id) != null)
+                .FirstOrDefault() == null)
             {
                 return BadRequest("You do not have access for this operation");
             }
 
-
-
-            if(!await _itemService.CreateItem(model))
+            if (!await _itemService.UpdateItem(model))
             {
-                return Problem("An error occurred. Item was not created.");
+                return Conflict("Error! Item don`t updated");
             }
 
-            return RedirectToAction("index", "Home", lang);
+            return RedirectToAction("index", "item", new
+            {
+                lang = lang,
+                id = model.Id
+            });
         }
     }
 }

@@ -38,9 +38,9 @@ namespace CourseProject_backend.Entities
         [Required]
         public ICollection<PositiveReaction> PositiveReact { get; set; }
         [Required]
-        public ICollection<NegativeReaction> NegativeReact { get; set; }
-        [Required]
         public ICollection<Comment> Comments { get; set; }
+        [Required] 
+        public ICollection<ViewModel> Views { get; set; }
         [Required]
         public ICollection<Tag> Tags { get; set; }
         public string? CustomString1 { get; set; }
@@ -58,8 +58,6 @@ namespace CourseProject_backend.Entities
         public DateTime? CustomDate1 { get; set; }
         public DateTime? CustomDate2 { get; set; }
         public DateTime? CustomDate3 { get; set; }
-
-        public ulong ViewsCount {  get; set; }
 
         [Required]
         public bool IsDeleted { get; set; }

@@ -21,7 +21,7 @@ namespace CourseProject_backend.CustomDbContext
             CurrentDbSystem = dBSystem;
             _connectionString = connectionString;
 
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -66,5 +66,6 @@ namespace CourseProject_backend.CustomDbContext
         public DbSet<NegativeReaction> NegativeReactions { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<ViewModel> Views { get; set; }
     }
 }

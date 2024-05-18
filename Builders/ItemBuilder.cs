@@ -24,9 +24,9 @@ namespace CourseProject_backend.Builders
             item.Collection = null;
             item.IsDeleted = false;
             item.PositiveReact = new List<PositiveReaction>();
-            item.NegativeReact = new List<NegativeReaction>();
             item.Comments = new List<Comment>();
             item.Tags = new List<Tag>();
+            item.Views = new List<ViewModel>();
 
             _model = item;
         }
@@ -39,6 +39,7 @@ namespace CourseProject_backend.Builders
             ICollection<Tag> tags = null,
             ICollection<PositiveReaction> positiveReacts = null,
             ICollection<NegativeReaction> negativeReacts = null,
+            ICollection<ViewModel> views = null,
             ICollection<Comment> comments = null,
             bool isDeleted = false
         )
@@ -50,8 +51,8 @@ namespace CourseProject_backend.Builders
             item.Collection = collection;
             item.Tags = tags != null ? tags : item.Tags;
             item.PositiveReact = positiveReacts != null ? positiveReacts : item.PositiveReact;
-            item.NegativeReact = negativeReacts != null ? negativeReacts : item.NegativeReact;
             item.Comments = comments != null ? comments : item.Comments;
+            item.Views = views != null ? views : item.Views;
             item.IsDeleted = isDeleted;
 
             _model = item;

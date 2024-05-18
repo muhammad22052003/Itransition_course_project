@@ -24,12 +24,21 @@ namespace CourseProject_backend.Helpers
             return tokenValue;
         }
 
-        public IEnumerable<Claim> DeserializeToken(string token, string key)
+        public IEnumerable<Claim>? DeserializeToken(string token, string key)
         {
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadJwtToken(token);
+            if(token.IsNullOrEmpty()) return null;
 
-            var result = jsonToken.Claims;
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            JwtSecurityToken? jsonToken = handler.ReadJwtToken(token);
+
+            var expiresTime = jsonToken.ValidTo;
+
+            if(expiresTime < DateTime.UtcNow)
+            {
+                return null;
+            }
+
+            IEnumerable<Claim> result = jsonToken.Claims;
 
             return result;
         }

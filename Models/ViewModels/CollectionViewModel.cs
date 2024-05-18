@@ -9,6 +9,8 @@ namespace CourseProject_backend.Models.ViewModels
 
         public List<Item> Items {  get; set; }
 
+        public User User { get; set; }
+
         public MyCollection Collection {  get; set; }
 
         public int CurrentPage {  get; set; }
@@ -16,5 +18,6 @@ namespace CourseProject_backend.Models.ViewModels
         public int PagesCount { get; set; }
 
         public DataSort Sort {  get; set; }
+
     }
 }

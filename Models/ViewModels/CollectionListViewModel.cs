@@ -9,6 +9,8 @@ namespace CourseProject_backend.Models.ViewModels
 
         public List<MyCollection> Collections {  get; set; }
 
+        public User User { get; set; }
+
         public int CurrentPage {  get; set; }
 
         public int PagesCount { get; set; }

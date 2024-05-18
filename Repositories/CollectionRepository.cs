@@ -9,6 +9,8 @@ using CourseProject_backend.Delegates;
 using CourseProject_backend.Enums.CustomDbContext;
 using MySql.EntityFrameworkCore.Extensions;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.IdentityModel.Tokens;
+using CourseProject_backend.Enums.Entities;
 
 namespace CourseProject_backend.Repositories
 {
@@ -35,11 +37,28 @@ namespace CourseProject_backend.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task DeleteRangeById(string[] collectionsId, string userId)
+        {
+            IQueryable<MyCollection> query = _dbContext.Collections;
+
+            query = query.Where((col) => collectionsId.Contains(col.Id) &&
+            (col.User.Role == UserRoles.Admin.ToString() ||
+            col.User.Id == userId));
+
+            var collections = await query.ToListAsync();
+
+            _dbContext.RemoveRange(collections);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<MyCollection>> GetValue(Expression<Func<MyCollection, bool>> predicat)
         {
-            var collections = (await _dbContext.Collections
+            var collections = await _dbContext.Collections
                          .Where(predicat)
-                         .ToListAsync());
+                         .Include(c => c.Items)
+                         .Include(c => c.User)
+                         .ToListAsync();
 
             return collections;
         }
@@ -48,7 +67,8 @@ namespace CourseProject_backend.Repositories
                                                                     string value,
                                                                     DataSort sort,
                                                                     int page,
-                                                                    int pageSize)
+                                                                    int pageSize,
+                                                                    string categoryName)
         {
 
             var sortedQuery = SortData(sort);
@@ -56,7 +76,12 @@ namespace CourseProject_backend.Repositories
 
             if(sortedQuery == null)
             {
-                sortedQuery = _dbContext.Collections.Where((c) => true);
+                sortedQuery = _dbContext.Collections;
+            }
+
+            if (!categoryName.IsNullOrEmpty())
+            {
+                sortedQuery = sortedQuery.Where((c) => c.Category.Name.ToLower() == categoryName.ToLower());
             }
 
             switch (filter)
@@ -69,15 +94,8 @@ namespace CourseProject_backend.Repositories
                         collections = await sortedQuery
                             .Where((c) => EF.Functions.ILike(c.Name.ToLower(), $"%{value.ToLower()}%"))
                             .Skip((page - 1) * pageSize)
-                            .Take(pageSize).ToListAsync();
-                    }
-                    break;
-                case CollectionDataFilter.byCategory:
-                    {
-                        collections = await sortedQuery
-                            .Where((c) => c.Category.Name.ToLower() == value.ToLower())
-                            .Skip((page - 1) * pageSize)
                             .Take(pageSize)
+                            .Include(c => c.Items)
                             .ToListAsync();
                     }
                     break;
@@ -86,7 +104,9 @@ namespace CourseProject_backend.Repositories
                         collections = await sortedQuery
                             .Where((c) => c.Id == value)
                             .Skip((page - 1) * pageSize)
-                            .Take(pageSize).ToListAsync();
+                            .Take(pageSize)
+                            .Include(c => c.Items)
+                            .ToListAsync();
                     }
                     break;
                 case CollectionDataFilter.byAuthorId:
@@ -95,6 +115,7 @@ namespace CourseProject_backend.Repositories
                             .Where((c) => c.User.Id == value)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
+                            .Include(c => c.Items)
                             .ToListAsync();
                     }
                     break;
@@ -104,6 +125,7 @@ namespace CourseProject_backend.Repositories
                             .Where((c) => true)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
+                            .Include(c => c.Items)
                             .ToListAsync();
                     }
                     break;
@@ -114,38 +136,40 @@ namespace CourseProject_backend.Repositories
 
         public async Task<int> GetCollectionsSize(CollectionDataFilter filter,
                                                                     string value,
-                                                                    DataSort sort)
+                                                                    DataSort sort,
+                                                                    string categoryName)
         {
+            IQueryable<MyCollection> sortedQuery = _dbContext.Collections;
+
+            if (!categoryName.IsNullOrEmpty())
+            {
+                sortedQuery = _dbContext.Collections.Where(c => c.Category.Name.ToLower() == categoryName.ToLower());
+            }
+
             switch (filter)
             {
                 case CollectionDataFilter.byName:
                     {
-                         return await _dbContext.Collections
+                         return await sortedQuery
                             .Where((c) => EF.Functions.ILike(c.Name.ToLower(), $"%{value.ToLower()}%"))
-                            .CountAsync();
-                    }
-                case CollectionDataFilter.byCategory:
-                    {
-                        return await _dbContext.Collections
-                            .Where((c) => c.Category.Name.ToLower() == value.ToLower())
                             .CountAsync();
                     }
                 case CollectionDataFilter.byId:
                     {
-                        return await _dbContext.Collections
+                        return await sortedQuery
                             .Where((c) => c.Id == value)
                             .CountAsync();
                     }
                 case CollectionDataFilter.byAuthorId:
                     {
-                        return await _dbContext.Collections
+                        return await sortedQuery
                             .Where((c) => c.User.Id == value)
                             .CountAsync();
                     }
                     break;
                 case CollectionDataFilter.byDefault:
                     {
-                        return await _dbContext.Collections
+                        return await sortedQuery
                             .Where((c) => true)
                             .CountAsync();
                     }
@@ -169,7 +193,7 @@ namespace CourseProject_backend.Repositories
                     }
                 case DataSort.byDate:
                     {
-                        return _dbContext.Collections.OrderBy((c) => c.CreatedTime);
+                        return _dbContext.Collections.OrderByDescending((c) => c.CreatedTime);
                     }
                 case DataSort.bySize:
                     {

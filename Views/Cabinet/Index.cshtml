@@ -6,107 +6,128 @@
     ViewData.Add("Lang", Model.LanguagePack.Key);
 }
 
-<section class="section-catalog-info">
-    <div class="constructor-panel">
-        <div class="container">
-            <div class="row m-3 mt-2 mb-2">
-                <div class="col">
-                    <h5>Ismi :</h5>
-                </div>
-                <div class="col">
-                    <h5><u>@Model.User.Name</u></h5>
-                </div>
+<form method="post" action="~/collection/delete">
+
+    <div class="container control-panel" id="control-panel">
+        <div class="row justify-content-center align-content-center header-col">
+            <div class="col d-flex justify-content-center">
+                <a id="add-button" href="~/collectionconstructor/index/@Model.LanguagePack.Key" class="btn-style-header-smaller btn-main-header-color">
+                    <img class="header-icon" src="https://drive.google.com/thumbnail?id=108xIQymI8059CugT5AlqOx3YgQ64jlyA">
+                </a>
             </div>
-            <div class="row m-3 mt-2 mb-2">
-                <div class="col">
-                    <h5>Email :</h5>
-                </div>
-                <div class="col">
-                    <h5><u>@Model.User.Email</u></h5>
-                </div>
-            </div>
-            <div class="row m-3 mt-2 mb-2">
-                <div class="col">
-                    <h5>Status :</h5>
-                </div>
-                <div class="col">
-                    <h5><u>@Model.User.Role.ToUpper()</u></h5>
-                </div>
-            </div>
-            <div class="row m-3 mt-2 mb-2">
-                <div class="col">
-                    <h5>Registration time :</h5>
-                </div>
-                <div class="col">
-                    <h5><u>@Model.User.RegistrationTime.ToShortDateString()</u></h5>
-                </div>
+
+            <div class="col d-flex justify-content-center">
+                <button id="delete-button" type="submit" class="btn-style-header-smaller btn-main-header-color">
+                    <img class="header-icon" src="https://drive.google.com/thumbnail?id=1-jMEYoBQO0Gw03LyLzgFwAZZxwMOoJFg">
+                </button>
             </div>
         </div>
     </div>
-</section>
 
-@{
-    if (Model.Collections.Count == 0)
-    {
-        <section class="selection-catalogs">
+    <section class="section-catalog-info">
+        <div class="constructor-panel">
             <div class="container">
-                <div class="row">
+                <div class="row m-3 mt-2 mb-2">
                     <div class="col">
-                        @Model.LanguagePack.Value["list_empty"];
+                        <h5>Ismi :</h5>
+                    </div>
+                    <div class="col">
+                        <h5><u>@Model.User.Name</u></h5>
+                    </div>
+                </div>
+                <div class="row m-3 mt-2 mb-2">
+                    <div class="col">
+                        <h5>Email :</h5>
+                    </div>
+                    <div class="col">
+                        <h5><u>@Model.User.Email</u></h5>
+                    </div>
+                </div>
+                <div class="row m-3 mt-2 mb-2">
+                    <div class="col">
+                        <h5>Status :</h5>
+                    </div>
+                    <div class="col">
+                        <h5><u>@Model.User.Role.ToUpper()</u></h5>
+                    </div>
+                </div>
+                <div class="row m-3 mt-2 mb-2">
+                    <div class="col">
+                        <h5>Registration time :</h5>
+                    </div>
+                    <div class="col">
+                        <h5><u>@Model.User.RegistrationTime.ToShortDateString()</u></h5>
                     </div>
                 </div>
             </div>
-        </section>
-    }
+        </div>
+    </section>
 
-    for (int i = 0; i < Model.Collections.Count; i++)
-    {
-        <a class="text-decoration-none text-reset"
-           href="@Url.Action("index","collection",
-                                    new{lang=Model.LanguagePack.Key,
-                                    id=Model.Collections[i].Id})">
+    @{
+        if (Model.Collections.Count == 0)
+        {
             <section class="selection-catalogs">
                 <div class="container">
                     <div class="row">
                         <div class="col">
-                            <!--<img class="content-image" src="../img/content.jpg">-->
-                        </div>
-                    </div>
-                    <div class="row data-header">
-                        <div class="col d-flex">
-                            <input class="form-check-input data-checkbox" type="checkbox" value="" id="" />
-                            <h3>@Model.Collections[i].Name</h3>
-                        </div>
-                        <div class="col d-flex justify-content-end">
-                            <h6>Id : @Model.Collections[i].Id</h6>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col d-flex justify-content-start">
-                            <h6>@Model.LanguagePack.Value["category_word"] : @Model.Collections[i].Category.Name</h6>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col d-flex justify-content-start">
-                            <h6>@Model.LanguagePack.Value["created_word"] : @Model.Collections[i].CreatedTime.Date</h6>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col text-center"></div>
-                            </div>
-                            <div class="row d-flex justify-content-start">
-                                <div class="col">
-                                </div>
-                            </div>
+                            @Model.LanguagePack.Value["list_empty"];
                         </div>
                     </div>
                 </div>
             </section>
-        </a>
+        }
+
+        for (int i = 0; i < Model.Collections.Count; i++)
+        {
+            <a class="text-decoration-none text-reset"
+               href="@Url.Action("index","collection",
+                                    new{lang=Model.LanguagePack.Key,
+                                    id=Model.Collections[i].Id})">
+                <section class="selection-catalogs">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <!--<img class="content-image" src="../img/content.jpg">-->
+                            </div>
+                        </div>
+                        <div class="row data-header">
+                            <div class="col d-flex">
+                                <input class="form-check-input data-checkbox" name="collectionId" type="checkbox" value="@Model.Collections[i].Id" id="select-field"/>
+                                <h3>@Model.Collections[i].Name</h3>
+                            </div>
+                            <div class="col d-flex justify-content-end">
+                                <h6>Id : @Model.Collections[i].Id</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-flex justify-content-start">
+                                <h6>@Model.LanguagePack.Value["category_word"] : @Model.Collections[i].Category.Name</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-flex justify-content-start">
+                                <h6>@Model.LanguagePack.Value["created_word"] : @Model.Collections[i].CreatedTime.Date.ToShortDateString()</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col text-center"></div>
+                                </div>
+                                <div class="row d-flex justify-content-start">
+                                    <div class="col">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </a>
+        }
     }
-}
+</form>
+
+
 
 <section class="pages-section">
     <div class="container">

@@ -1,4 +1,5 @@
 ﻿using CourseProject_backend.Enums.Packages;
+using CourseProject_backend.Extensions;
 using CourseProject_backend.Packages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -18,25 +19,13 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(int lang = 0)
+        public IActionResult Index(AppLanguage lang = AppLanguage.en)
         {
-            var langPackSingleton = LanguagePackSingleton.GetInstance();
+            this.DefineCategories();
 
-            try
-            {
-                var langPackCollection = langPackSingleton.GetLanguagePack((AppLanguage)lang);
+            KeyValuePair<string, IDictionary<string,string>> langDataPair = this.GetLanguagePackage(lang);
 
-                if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
-
-                var langDataPair = new KeyValuePair
-                                   <int, IDictionary<string, string>>(lang, langPackCollection);
-
-                return View(langDataPair);
-            }
-            catch (FileNotFoundException)
-            {
-                return NotFound();
-            }
+            return View(langDataPair);
         }
     }
 }

@@ -32,6 +32,9 @@ function btn_customBool1_yes() {
     let btn_yes = document.getElementById('btn1-yes');
     let btn_no = document.getElementById('btn1-no');
 
+    console.log(btn_yes.value);
+    console.log('btn-yes-1');
+
     if (customBool1.value === 'false') {
         customBool1.value = 'true'
 
@@ -67,6 +70,9 @@ function btn_customBool3_yes() {
 function btn_customBool1_no() {
     let btn_yes = document.getElementById('btn1-yes');
     let btn_no = document.getElementById('btn1-no');
+
+    console.log(btn_no.value);
+    console.log('btn-no-1');
 
     if (customBool1.value === 'true') {
         customBool1.value = 'false'

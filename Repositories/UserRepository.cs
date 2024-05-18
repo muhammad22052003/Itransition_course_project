@@ -31,9 +31,11 @@ namespace CourseProject_backend.Repositories
 
         public async Task<IEnumerable<User>> GetValue(Expression<Func<User,bool>> predicat)
         {
-            var user = (await _dbContext.Users
+            var user = await _dbContext.Users
                          .Where(predicat)
-                         .ToListAsync());
+                         .Include((u) => u.Collections)
+                         .ThenInclude(c => c.Items)
+                         .ToListAsync();
 
             return user;
         }
@@ -70,6 +72,8 @@ namespace CourseProject_backend.Repositories
                             .Where((c) => EF.Functions.ILike(c.Name.ToLower(), $"%{value.ToLower()}%"))
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
+                            .Include((u) => u.Collections)
+                            .ThenInclude(c => c.Items)
                             .ToListAsync();
                     }
                     break;
@@ -79,6 +83,8 @@ namespace CourseProject_backend.Repositories
                             .Where((c) => c.Role.ToLower() == value.ToLower())
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
+                            .Include((u) => u.Collections)
+                            .ThenInclude(c => c.Items)
                             .ToListAsync();
                     }
                     break;
@@ -88,6 +94,19 @@ namespace CourseProject_backend.Repositories
                             .Where((c) => c.Id == value)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
+                            .Include((u) => u.Collections)
+                            .ThenInclude(c => c.Items)
+                            .ToListAsync();
+                    }
+                    break;
+                case UsersDataFilter.byEmail:
+                    {
+                        users = await sortedQuery
+                            .Where((c) => c.Email == value)
+                            .Skip((page - 1) * pageSize)
+                            .Take(pageSize)
+                            .Include((u) => u.Collections)
+                            .ThenInclude(c => c.Items)
                             .ToListAsync();
                     }
                     break;
@@ -97,6 +116,8 @@ namespace CourseProject_backend.Repositories
                             .Where((c) => true)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
+                            .Include((u) => u.Collections)
+                            .ThenInclude(c => c.Items)
                             .ToListAsync();
                     }
                     break;

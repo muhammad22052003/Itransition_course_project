@@ -21,7 +21,6 @@ namespace CourseProject_backend.Builders
             user.RegistrationTime = DateTime.UtcNow;
             user.Comments = new List<Comment>();
             user.PositiveReactions = new List<PositiveReaction>();
-            user.NegativeReactions = new List<NegativeReaction>();
             user.Collections = new List<MyCollection>();
             user.IsBlocked = false;
 

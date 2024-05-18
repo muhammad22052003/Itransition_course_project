@@ -1,9 +1,11 @@
 ﻿using CourseProject_backend.CustomDbContext;
 using CourseProject_backend.Entities;
+using CourseProject_backend.Enums.Packages;
 using CourseProject_backend.Packages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CourseProject_backend.Extensions
 {
@@ -52,6 +54,18 @@ namespace CourseProject_backend.Extensions
         public static void SetItemSearch(this Controller controller)
         {
             controller.ViewData.Add("searchUrl", "search/item");
+        }
+
+        public static KeyValuePair<string, IDictionary<string, string>> GetLanguagePackage(this Controller controller, 
+                                                                                            AppLanguage lang)
+        {
+            var langPackSingleton = LanguagePackSingleton.GetInstance();
+            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
+
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = new KeyValuePair
+                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+
+            return langDataPair;
         }
     }
 }

@@ -3,7 +3,6 @@
     public enum CollectionDataFilter
     {
         byDefault,
-        byCategory,
         byName,
         byId,
         byAuthorId

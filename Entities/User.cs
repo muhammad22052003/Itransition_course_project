@@ -1,4 +1,5 @@
 ﻿using CourseProject_backend.Enums;
+using CourseProject_backend.Enums.Entities;
 using CourseProject_backend.Interfaces.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -31,6 +32,16 @@ namespace CourseProject_backend.Entities
         public List<MyCollection> Collections { get; set; }
         [Required]
         public bool IsBlocked {  get; set; }
+
+        public bool IsAdmin()
+        {
+            return Role.ToLower() == UserRoles.Admin.ToString().ToLower();
+        }
+
+        public bool IsUser()
+        {
+            return Role.ToLower() == UserRoles.User.ToString().ToLower();
+        }
 
         public object Clone()
         {

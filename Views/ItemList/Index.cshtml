@@ -1,5 +1,6 @@
 ﻿@using CourseProject_backend.Models.ViewModels
 @using CourseProject_backend.Enums.Entities
+@using CourseProject_backend.Enums
 @model ItemsViewModel
 @{
     Layout = "_MainLayout";
@@ -22,26 +23,6 @@
     }
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col text-center d-flex justify-content-center">
-            <h1 class="d-flex text-center">@Model.LanguagePack.Value["items_word"]</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col text-center d-flex justify-content-center">
-            <button class="btn-style-header-smaller btn-main-selectall-color">
-                @Model.LanguagePack.Value["select_all"]
-            </button>
-        </div>
-        <div class="col text-center d-flex justify-content-center">
-            <button class="btn-style-header-smaller btn-main-selectall-color">
-                @Model.LanguagePack.Value["cancel_all"]
-            </button>
-        </div>
-    </div>
-</div>
-
 @{
     if (Model.Items.Count == 0)
     {
@@ -54,6 +35,28 @@
                 </div>
             </div>
         </section>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col text-center d-flex justify-content-center">
+                    <h1 class="d-flex text-center">@Model.LanguagePack.Value["items_word"]</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center d-flex justify-content-center">
+                    <button type="button" onclick="selectAll()" class="btn-style-header-smaller btn-main-selectall-color">
+                        @Model.LanguagePack.Value["select_all"]
+                    </button>
+                </div>
+                <div class="col text-center d-flex justify-content-center">
+                    <button type="button" onclick="cancelAll()" class="btn-style-header-smaller btn-main-selectall-color">
+                        @Model.LanguagePack.Value["cancel_all"]
+                    </button>
+                </div>
+            </div>
+        </div>
     }
 
     for (int i = 0; i < Model.Items.Count; i++)
@@ -83,6 +86,14 @@
                     <div class="row">
                         <div class="col d-flex justify-content-start">
                             <h6>@Model.LanguagePack.Value["created_word"] : @Model.Items[i].CreatedTime.Date.ToShortDateString()</h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col d-flex justify-content-start">
+                            <h6>
+                                @Model.LanguagePack.Value["collection_wor"] :
+                                <a href="~/collection/index/@Model.LanguagePack.Key/@Model.Items[i].Collection.Id">@Model.Items[i].Collection.Name</a>
+                            </h6>
                         </div>
                     </div>
                     <div class="row">
@@ -161,7 +172,9 @@
                                                 var tags = Model.Items[i].Tags.ToList();
                                                 for (int j = 0; j < tags.Count; j++)
                                                 {
-                                                    <a href="">#@(tags[j].Name)</a>
+                                                    <a href="~/itemlist/index?lang=@Model.LanguagePack.Key&filter=@ItemsDataFilter.byTag&value=@tags[j].Name">
+                                                        #@(tags[j].Name)
+                                                    </a>
                                                 }
                                             }
                                         }

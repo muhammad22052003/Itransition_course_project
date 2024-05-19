@@ -6,6 +6,7 @@ using CourseProject_backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using CourseProject_backend.Extensions;
 using Microsoft.IdentityModel.Tokens;
+using CourseProject_backend.Entities;
 
 namespace CourseProject_backend.Controllers
 {
@@ -37,6 +38,13 @@ namespace CourseProject_backend.Controllers
 
             KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 
+            if (!Request.Cookies.TryGetValue("userData", out string? token))
+            {
+                return NotFound();
+            }
+
+            User? user = await _userService.GetUserFromToken(token);
+
             int pagesCount = 1;
             var users = (await _userService.GetUsersList
                               (filter, value, sort, page, _pageSize)).ToList();
@@ -49,6 +57,7 @@ namespace CourseProject_backend.Controllers
 
             UsersViewModel viewModel = new UsersViewModel()
             {
+                User = user,
                 LanguagePack = langDataPair,
                 Users = users,
                 PagesCount = pagesCount,
@@ -59,6 +68,66 @@ namespace CourseProject_backend.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Promote(string[] userId)
+        {
+            this.DefineCategories();
+            this.SetItemSearch();
+
+            if (!Request.Cookies.TryGetValue("userData", out string? token))
+            {
+                return NotFound();
+            }
+
+            User? user = await _userService.GetUserFromToken(token);
+
+            if (user == null || !user.IsAdmin()) { return BadRequest("You do not have access for this operation"); }
+
+            await _userService.PromoteUsers(userId);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Demote(string[] userId)
+        {
+            this.DefineCategories();
+            this.SetItemSearch();
+
+            if (!Request.Cookies.TryGetValue("userData", out string? token))
+            {
+                return NotFound();
+            }
+
+            User? user = await _userService.GetUserFromToken(token);
+
+            if (user == null || !user.IsAdmin()) { return BadRequest("You do not have access for this operation"); }
+
+            await _userService.DemoteUsers(userId);
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string[] userId)
+        {
+            this.DefineCategories();
+            this.SetItemSearch();
+
+            if (!Request.Cookies.TryGetValue("userData", out string? token))
+            {
+                return NotFound();
+            }
+
+            User? user = await _userService.GetUserFromToken(token);
+
+            if (user == null || !user.IsAdmin()) { return BadRequest("You do not have access for this operation"); }
+
+            await _userService.DeletUsers(userId);
+
+            return Ok();
         }
     }
 }

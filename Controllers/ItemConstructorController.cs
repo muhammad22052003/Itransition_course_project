@@ -66,7 +66,7 @@ namespace CourseProject_backend.Controllers
 
             if (collection == null) { return NotFound(); }
 
-            if (user.Role.ToLower() != UserRoles.Admin.ToString().ToLower() && 
+            if (!user.IsAdmin() && 
                 user.Collections.FirstOrDefault((x)=>x.Id == id) == null)
             {
                 return BadRequest("You do not have access for this operation");

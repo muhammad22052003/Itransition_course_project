@@ -28,22 +28,22 @@ namespace CourseProject_backend.Controllers
         private readonly CollectionService _collectionService;
         private readonly UserService _userService;
         private readonly ItemService _itemService;
-        //private readonly CommentRepository _commentRepository;
+        private readonly ReactionService _reactionService;
 
         public ApiController
         (
             IConfiguration configuration,
             CollectionService collectionService,
             UserService userService,
-            ItemService itemService
-            //CommentRepository commentRepository
+            ItemService itemService,
+            ReactionService reactionService
         )
         {
             _configuration = configuration;
             _userService = userService;
             _collectionService = collectionService;
             _itemService = itemService;
-            //_commentRepository = commentRepository;
+            _reactionService = reactionService;
         }
 
         [HttpPost]
@@ -64,8 +64,7 @@ namespace CourseProject_backend.Controllers
                 return BadRequest("User undefined from token");
             }
 
-            if(user.Role.ToLower() != UserRoles.Admin.ToString().ToLower() 
-            && user.Role.ToLower() != UserRoles.User.ToString().ToLower())
+            if(!user.IsUser() && !user.IsAdmin())
             {
                 return BadRequest("The user does not have access for this action");
             }
@@ -149,5 +148,43 @@ namespace CourseProject_backend.Controllers
 
             return Ok();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> AddLike(string? itemId = null)
+        {
+            if (itemId == null) { return BadRequest("Id not available or content is empty"); }
+
+            Item? item = await _itemService.GetById(itemId);
+
+            if (item == null) { return NotFound(); }
+
+            string? token = HttpContext.Request.Cookies["userData"];
+
+            if (token.IsNullOrEmpty())
+            {
+                return BadRequest("User token undfined");
+            }
+
+            User? user = await _userService.GetUserFromToken(token);
+
+            if (user == null)
+            {
+                return BadRequest("User undefined from token");
+            }
+
+            if (user.Role.ToLower() != UserRoles.Admin.ToString().ToLower()
+            && user.Role.ToLower() != UserRoles.User.ToString().ToLower())
+            {
+                return BadRequest("The user does not have access for this action");
+            }
+
+            PositiveReaction like = new PositiveReaction("like", user, item);
+
+            await _reactionService.AddReaction(like);
+
+            return Ok();
+        }
+
+        
     }
 }

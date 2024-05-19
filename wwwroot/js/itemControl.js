@@ -1,9 +1,35 @@
 ﻿const serverUrl = window.location.origin;
 let lastLoadTime = new Date();
+let new_commentElement = document.getElementById('new-comment');
+
+let likeButton = document.getElementById('like-button');
+let isLiked = document.getElementById('is-liked');
+
+async function addLike() {
+    console.log(isLiked.value);
+
+    if (isLiked.value === 'true') {
+        isLiked.value = 'false';
+        likeButton.style.backgroundColor = '#fff'
+        await deleteLike()
+    }
+    else {
+        isLiked.value = 'true';
+        likeButton.style.backgroundColor = '#d85e55'
+        await sendLike();
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    let new_commentElement = document.getElementById('new-comment');
+    console.log(isLiked.value);
+
+    if (isLiked.value === 'true') {
+        likeButton.style.backgroundColor = '#d85e55'
+    }
+    else {
+        likeButton.style.backgroundColor = '#fff'
+    }
 
     new Promise((async function (resolve) {
 
@@ -20,6 +46,53 @@ document.addEventListener('DOMContentLoaded', function () {
     }));
 });
 
+async function sendLike() {
+
+    const itemId = document.getElementById('item-id').value;
+
+    const url = serverUrl + '/api/addlike?itemId=' + itemId;
+
+    let bodyData = {
+        ItemId: itemId,
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            credentials: 'include',
+        });
+
+        if (response.ok) {
+            console.log('Like added');
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+async function deleteLike() {
+
+    const itemId = document.getElementById('item-id').value;
+
+    const url = serverUrl + '/api/deletelike?itemId=' + itemId;
+
+    let bodyData = {
+        ItemId: itemId,
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            credentials: 'include',
+        });
+
+        if (response.ok) {
+            console.log('Like added');
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
 
 async function sendComment() {
 
@@ -32,8 +105,6 @@ async function sendComment() {
         ItemId: itemId,
         CommentText: commentContent
     }
-
-    console.log(bodyData);
 
     try {
         const response = await fetch(url, {

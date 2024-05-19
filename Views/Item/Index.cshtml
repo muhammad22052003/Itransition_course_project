@@ -1,5 +1,6 @@
 ﻿@using CourseProject_backend.Models.ViewModels
 @using CourseProject_backend.Enums.Entities
+@using CourseProject_backend.Enums
 @model ItemViewModel
 @{
     Layout = "_MainLayout";
@@ -13,20 +14,42 @@
 
 
     @{
-        if (Model.User != null && (Model.User.Role.ToLower() == UserRoles.Admin.ToString().ToLower() ||
-            Model.User.Collections.FirstOrDefault((c) => c.Items.Contains(Model.Item)) != null))
+        if (Model.User != null)
         {
             <div class="container control-panel" id="control-panel">
                 <div class="row justify-content-center align-content-center header-col">
-                    <div class="col d-flex justify-content-center">
-                        <a href="~/itemconstructor/edit/@Model.LanguagePack.Key/@Model.Item.Id" id="edit-button" onclick="editItem()" class="btn-style-header-smaller btn-main-header-color">
-                            <img class="header-icon" src="https://drive.google.com/thumbnail?id=10UTj9Z9Ln1VBW0NeNQfO_6dBkwzZoweX">
-                        </a>
-                    </div>
+
+            @{
+                    if ((Model.User.Role.ToLower() == UserRoles.Admin.ToString().ToLower() ||
+                    Model.User.Collections.FirstOrDefault((c) => c.Items.Contains(Model.Item)) != null))
+                    {
+                            <div class="col d-flex justify-content-center">
+                                <a href="~/itemconstructor/edit/@Model.LanguagePack.Key/@Model.Item.Id" id="edit-button" onclick="editItem()" class="btn-style-header-smaller btn-main-header-color">
+                                    <img class="header-icon" src="https://drive.google.com/thumbnail?id=10UTj9Z9Ln1VBW0NeNQfO_6dBkwzZoweX">
+                                </a>
+                            </div>
+
+                            <div class="col d-flex justify-content-center">
+                                <button type="submit" name="itemId" value="@Model.Item.Id" id="delete-button" class="btn-style-header-smaller btn-main-header-color">
+                                    <img class="header-icon" src="https://drive.google.com/thumbnail?id=1-jMEYoBQO0Gw03LyLzgFwAZZxwMOoJFg">
+                                </button>
+                            </div>
+                    }
+            }
+                @{
+                    bool isLikedByUser = false;
+
+                    if (Model.Item.PositiveReact.FirstOrDefault(li => li.User.Id == Model.User.Id) != null)
+                    {
+                        isLikedByUser = true;
+                    }
+
+                    <input type="hidden" name="itemId" value="@isLikedByUser.ToString().ToLower()" id="is-liked" />
+                }
 
                     <div class="col d-flex justify-content-center">
-                        <button type="submit" name="itemId" value="@Model.Item.Id" id="delete-button" class="btn-style-header-smaller btn-main-header-color">
-                            <img class="header-icon" src="https://drive.google.com/thumbnail?id=1-jMEYoBQO0Gw03LyLzgFwAZZxwMOoJFg">
+                        <button type="button" id="like-button" onclick="addLike()" class="btn-style-header-smaller btn-like-header-color">
+                            <img class="header-icon" src="https://drive.google.com/thumbnail?id=10F40NHwk-8EbXnbVyN0CGouzWiDwUgzQ">
                         </button>
                     </div>
                 </div>
@@ -51,6 +74,30 @@
                     </div>
                     <div class="col">
                         <h5>@Model.Item.Name</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.LanguagePack.Value["likes_word"] : </h5>
+                    </div>
+                    <div class="col">
+                        <h5>@Model.Item.PositiveReact.Count</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.LanguagePack.Value["views_word"] : </h5>
+                    </div>
+                    <div class="col">
+                        <h5>@Model.Item.Views.Count</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.LanguagePack.Value["created_date"] : </h5>
+                    </div>
+                    <div class="col">
+                        <h5>@Model.Item.CreatedTime.Date.ToShortDateString()</h5>
                     </div>
                 </div>
             </div>
@@ -429,6 +476,35 @@
             </section>
         }
     }
+
+    <section>
+        <div class="constructor-panel">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.LanguagePack.Value["tags_word"]</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="data-area">
+                            @{
+                                var tags = Model.Item.Tags.ToList();
+
+                                for (int j = 0; j < tags.Count; j++)
+                                {
+                                    <a href="~/itemlist/index?lang=@Model.LanguagePack.Key&filter=@ItemsDataFilter.byTag&value=@tags[j].Name">
+                                        #@tags[j].Name
+                                    </a>
+                                }
+                            }
+                            <h6>@Model.Item.CustomDate3?.Date.ToShortDateString()</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <div class="container">
         <div class="row">

@@ -57,3 +57,19 @@ function changeLang() {
 
     console.log(window.location)
 }
+
+function selectAll() {
+    let chechboxes = document.querySelectorAll('#select-field');
+
+    for (var i = 0; i < chechboxes.length; i++) {
+        chechboxes[i].checked = true;
+    }
+}
+
+function cancelAll() {
+    let chechboxes = document.querySelectorAll('#select-field');
+
+    for (var i = 0; i < chechboxes.length; i++) {
+        chechboxes[i].checked = false;
+    }
+}

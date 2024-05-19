@@ -30,7 +30,7 @@ namespace CourseProject_backend.Controllers
 
             User? user = await _userService.GetUserFromToken(token);
 
-            if(user != null && user.Role.ToLower() == UserRoles.Admin.ToString().ToLower())
+            if(user != null && user.IsAdmin())
             {
                 int count = await _dBContext.Categories
                 .Where(c => c.Name.ToLower() == categoryName.ToLower())

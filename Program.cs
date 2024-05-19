@@ -32,32 +32,6 @@ internal class Program
                                         DBSystem.POSTGRES
                                         );
 
-        /*for (int i = 0; i < 2; i++)
-        {
-            CollectionBuilder collectionBuilder = new CollectionBuilder(configuration);
-            Category category = new Category($"Books{i+1}", "Books Category");
-            UserBuilder userBuilder = new UserBuilder(configuration);
-            userBuilder.SetParameters("Muhammad", "muh22@amail.com", "pass", UserRoles.User);
-            User user = userBuilder.Build() as User;
-
-            collectionBuilder.SetParameters($"MyCOL{i}", "dESC", user, category);
-
-            MyCollection myCollection = collectionBuilder.Build() as MyCollection;
-
-            ItemBuilder itemBuilder = new ItemBuilder(configuration);
-
-            itemBuilder.SetParameters($"Kitob{i}", myCollection);
-
-            Item item = itemBuilder.Build() as Item;
-
-            dbContext.Users.Add(user);
-            dbContext.Categories.Add(category);
-            dbContext.Items.Add(item);
-            dbContext.Collections.Add(myCollection);
-        }
-
-        await dbContext.SaveChangesAsync();*/
-
         await CategoriesPackage.Initialize(dbContext);
 
         IJwtTokenHelper jwtTokenHelper = new JwtTokenHelper();
@@ -69,6 +43,7 @@ internal class Program
         TagRepository tagRepository = new TagRepository(dbContext);
         CategoryRepository categoryRepository = new CategoryRepository(dbContext);
         CommentRepository commentRepository = new CommentRepository(dbContext);
+        ReactionRepository reactionRepository = new ReactionRepository(dbContext);
 
         UserService userService = new UserService(repository: userRepository,
                                                   tokenHelper: jwtTokenHelper,
@@ -85,27 +60,33 @@ internal class Program
                                                                     userService: userService,
                                                                     categoryRepository: categoryRepository);
 
-        builder.Services.AddSingleton<UserService>((service) =>
+        ReactionService reactionService = new ReactionService(reactionRepository);
+
+        builder.Services.AddScoped<UserService>((service) =>
         {
             return userService;
         });
-        builder.Services.AddSingleton<ItemService>((service) =>
+        builder.Services.AddScoped<ItemService>((service) =>
         {
             return itemService;
         });
-        builder.Services.AddSingleton<CollectionService>((service) =>
+        builder.Services.AddScoped<CollectionService>((service) =>
         {
             return collectionService;
         });
-        builder.Services.AddSingleton<CollectionDBContext>((service) =>
+        builder.Services.AddScoped<CollectionDBContext>((service) =>
         {
             return dbContext;
+        });
+        builder.Services.AddScoped<ReactionService>((service) =>
+        {
+            return reactionService;
         });
         builder.Services.AddSingleton<IConfiguration>((service) =>
         {
             return configuration;
         });
-        
+
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 

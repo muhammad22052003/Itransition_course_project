@@ -33,7 +33,7 @@ namespace CourseProject_backend.Helpers
 
             var expiresTime = jsonToken.ValidTo;
 
-            if(expiresTime < DateTime.UtcNow)
+            if(expiresTime < DateTime.Now)
             {
                 return null;
             }

@@ -1,6 +1,7 @@
 ﻿using CourseProject_backend.CustomDbContext;
 using CourseProject_backend.Entities;
 using CourseProject_backend.Enums;
+using CourseProject_backend.Enums.Entities;
 using CourseProject_backend.Enums.Packages;
 using CourseProject_backend.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -171,6 +172,59 @@ namespace CourseProject_backend.Repositories
 
         public async Task SaveUpdates()
         {
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DemoteUsers(string[] userId)
+        {
+            var users = await _dbContext.Users
+                .Where(x => userId.Contains(x.Id))
+                .ToListAsync();
+
+            foreach (var user in users)
+            {
+                if (!user.IsUser())
+                {
+                    user.Role = UserRoles.User.ToString();
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task PromoteUsers(string[] userId)
+        {
+            var users = await _dbContext.Users
+                .Where(x => userId.Contains(x.Id))
+                .ToListAsync();
+
+            foreach (var user in users)
+            {
+                if (!user.IsAdmin())
+                {
+                    user.Role = UserRoles.Admin.ToString();
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteUsers(string[] userId)
+        {
+            var users = await _dbContext.Users
+                .Where(x => userId.Contains(x.Id))
+                .Include(x => x.Collections)
+                .ThenInclude(x => x.Items)
+                .Include(x => x.PositiveReactions)
+                .Include(x => x.PositiveReactions)
+                .Include(x => x.Views)
+                .ToListAsync();
+
+            foreach (var user in users)
+            {
+                _dbContext.Users.Remove(user);
+            }
+
             await _dbContext.SaveChangesAsync();
         }
 

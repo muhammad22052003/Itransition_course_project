@@ -9,6 +9,7 @@
   "select_all": "Select All",
   "cancel_all": "Cancel All",
   "collection_word": "Collections",
+  "collection_wor": "Collection",
   "list_empty": "List Empty",
   "items_word": "Items",
   "category_word": "Category",
@@ -33,5 +34,9 @@
   "created_date": "Created date",
   "send_word": "Send",
   "new_comment": "New comment",
-  "comentaries_word": "Comentaries"
+  "comentaries_word": "Comentaries",
+  "likes_word": "Likes",
+  "views_word": "Views",
+  "cabinet_word": "Cabinet",
+  "collections_list_word": "Collections list"
 }

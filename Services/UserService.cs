@@ -199,5 +199,20 @@ namespace CourseProject_backend.Services
 
             return true;
         }
+
+        public async Task DemoteUsers(string[] userId)
+        {
+            await _repository.DemoteUsers(userId);
+        }
+
+        public async Task PromoteUsers(string[] userId)
+        {
+            await _repository.PromoteUsers(userId);
+        }
+
+        public async Task DeletUsers(string[] userId)
+        {
+            await _repository.DeleteUsers(userId);
+        }
     }
 }

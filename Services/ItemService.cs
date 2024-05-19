@@ -59,6 +59,8 @@ namespace CourseProject_backend.Services
 
             if(tagsStrings == null) { return false; }
 
+            tagsStrings = tagsStrings.Where(x => x.Replace(" ", "") != "").ToArray();
+
             List<Tag> tags = (await _tagRepository.GetAndCreate(tagsStrings, item)).ToList();
 
             item.Tags = tags;
@@ -105,6 +107,8 @@ namespace CourseProject_backend.Services
             string[]? tagsStrings = model?.Tags?.Split(' ');
 
             if (tagsStrings == null) { return false; }
+
+            tagsStrings = tagsStrings.Where(x => x.Replace(" ", "") != "").ToArray();
 
             List<Tag> tags = (await _tagRepository.GetAndCreate(tagsStrings, item)).ToList();
 

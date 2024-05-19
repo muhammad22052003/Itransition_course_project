@@ -10,7 +10,7 @@
 <form method="post" action="~/collection/delete">
 
     @{
-        if(Model.User != null && Model.User.Role == UserRoles.Admin.ToString())
+        if(Model.User != null && Model.User.IsAdmin())
         {
             <div class="container control-panel" id="control-panel">
                 <div class="row justify-content-center align-content-center header-col">
@@ -24,26 +24,6 @@
         }
     }
 
-    <div class="container">
-        <div class="row">
-            <div class="col text-center d-flex justify-content-center">
-                <h1 class="d-flex text-center">@Model.LanguagePack.Value["collection_word"]</h1>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col text-center d-flex justify-content-center">
-                <button class="btn-style-header-smaller btn-main-selectall-color">
-                    @Model.LanguagePack.Value["select_all"]
-                </button>
-            </div>
-            <div class="col text-center d-flex justify-content-center">
-                <button class="btn-style-header-smaller btn-main-selectall-color">
-                    @Model.LanguagePack.Value["cancel_all"]
-                </button>
-            </div>
-        </div>
-    </div>
-
     @{
         if (Model.Collections.Count == 0)
         {
@@ -56,6 +36,28 @@
                     </div>
                 </div>
             </section>
+        }
+        else
+        {
+            <div class="container">
+                <div class="row">
+                    <div class="col text-center d-flex justify-content-center">
+                        <h1 class="d-flex text-center">@Model.LanguagePack.Value["collections_list_word"]</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-center d-flex justify-content-center">
+                        <button type="button" onclick="selectAll()" class="btn-style-header-smaller btn-main-selectall-color">
+                            @Model.LanguagePack.Value["select_all"]
+                        </button>
+                    </div>
+                    <div class="col text-center d-flex justify-content-center">
+                        <button type="button" onclick="cancelAll()" class="btn-style-header-smaller btn-main-selectall-color">
+                            @Model.LanguagePack.Value["cancel_all"]
+                        </button>
+                    </div>
+                </div>
+            </div>
         }
 
         for (int i = 0; i < Model.Collections.Count; i++)

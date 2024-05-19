@@ -6,21 +6,50 @@
     ViewData.Add("Lang", Model.LanguagePack.Key);
 }
 
-<form method="post">
+<form method="post" id="users-action-form">
+
+    @{
+        if (Model.User != null && Model.User.IsAdmin())
+        {
+            <div class="container control-panel" id="control-panel">
+                <div class="row justify-content-center align-content-center header-col">
+                    <div class="col d-flex justify-content-center">
+                        <button type="button" onclick="promote()" class="btn-style-header-smaller btn-main-header-color">
+                            <img class="header-icon" src="https://drive.google.com/thumbnail?id=10sOE4pFFDOYk0Y_L2L2_xOkc2dk9bFHy">
+                        </button>
+                    </div>
+
+                    <div class="col d-flex justify-content-center">
+                        <button type="button" onclick="deleteUser()" class="btn-style-header-smaller btn-main-header-color">
+                            <img class="header-icon" src="https://drive.google.com/thumbnail?id=1-jMEYoBQO0Gw03LyLzgFwAZZxwMOoJFg">
+                        </button>
+                    </div>
+
+                    <div class="col d-flex justify-content-center">
+                        <button type="button" onclick="demote()" class="btn-style-header-smaller btn-main-header-color">
+                            <img class="header-icon" src="https://drive.google.com/thumbnail?id=10rcBBo417WizC_SbQzqiTDbQXGCQVObe">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    
+
     <div class="container">
         <div class="row">
             <div class="col text-center d-flex justify-content-center">
-                <h1 class="d-flex text-center">@Model.LanguagePack.Value["items_word"]</h1>
+                <h1 class="d-flex text-center">@Model.LanguagePack.Value["users_word"]</h1>
             </div>
         </div>
         <div class="row">
             <div class="col text-center d-flex justify-content-center">
-                <button class="btn-style-header-smaller btn-main-selectall-color">
+                <button type="button" onclick="selectAll()" class="btn-style-header-smaller btn-main-selectall-color">
                     @Model.LanguagePack.Value["select_all"]
                 </button>
             </div>
             <div class="col text-center d-flex justify-content-center">
-                <button class="btn-style-header-smaller btn-main-selectall-color">
+                <button type="button" onclick="cancelAll()" class="btn-style-header-smaller btn-main-selectall-color">
                     @Model.LanguagePack.Value["cancel_all"]
                 </button>
             </div>
@@ -67,7 +96,7 @@
                         </div>
                         <div class="row">
                             <div class="col d-flex justify-content-start">
-                                <h6>@Model.LanguagePack.Value["registrationDate_word"] : @Model.Users[i].RegistrationTime</h6>
+                                <h6>@Model.LanguagePack.Value["registrationDate_word"] : @Model.Users[i].RegistrationTime.Date.ToShortDateString()</h6>
                             </div>
                         </div>
                         <div class="row">
@@ -155,3 +184,4 @@
         </section>
     }
 </form>
+<script src="~/js/usersControle.js"></script>

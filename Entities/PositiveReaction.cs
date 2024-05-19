@@ -32,7 +32,6 @@ namespace CourseProject_backend.Entities
         public User User { get; set; }
         [Required]
         public Item Item { get; set; }
-
         public object Clone()
         {
             return this.MemberwiseClone();

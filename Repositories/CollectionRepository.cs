@@ -201,7 +201,7 @@ namespace CourseProject_backend.Repositories
                     }
                 case DataSort.bySize:
                     {
-                        return _dbContext.Collections.OrderBy((c) => c.Items.Count);
+                        return _dbContext.Collections.OrderByDescending((c) => c.Items.Count);
                     }
                 case DataSort.byDefault:
                     {

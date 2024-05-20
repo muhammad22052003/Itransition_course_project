@@ -14,7 +14,11 @@ namespace CourseProject_backend.Controllers
         private readonly CollectionDBContext _dBContext;
         private readonly UserService _userService;
 
-        public AdminApiController([FromServices] CollectionDBContext dBContext, [FromServices] UserService userService)
+        public AdminApiController
+        (
+            [FromServices] CollectionDBContext dBContext,
+            [FromServices] UserService userService
+        )
         {
             _dBContext = dBContext;
             _userService = userService;

@@ -8,32 +8,29 @@ using CourseProject_backend.Interfaces.Repositories;
 using CourseProject_backend.Interfaces.Services;
 using CourseProject_backend.Models.RequestModels;
 using CourseProject_backend.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CourseProject_backend.Services
 {
     public class CollectionService : IModelService
     {
-        private readonly CollectionRepository _repository;
-        private readonly CollectionDBContext _dbContext;
+        private CollectionRepository _collectionRepository;
+        private UserRepository _userRepository;
+        private CategoryRepository _categoryRepository;
         private readonly IConfiguration _configuration;
-        private readonly UserService _userService;
-        private readonly CategoryRepository _categoryRepository;
 
-        public CollectionService
-        (
-            CollectionRepository repository,
-            IConfiguration configuration,
-            CollectionDBContext dbContext,
-            UserService userService,
-            CategoryRepository categoryRepository
-        )
+        public CollectionService(IConfiguration configuration)
         {
-            _dbContext = dbContext;
-            _repository = repository;
+            
             _configuration = configuration;
-            _userService = userService;
-            _categoryRepository = categoryRepository;
+        }
+
+        public void Initialize(CollectionDBContext dBContext)
+        {
+            _collectionRepository = new CollectionRepository(dBContext);
+            _userRepository = new UserRepository(dBContext);
+            _categoryRepository = new CategoryRepository(dBContext);
         }
 
         public async Task<IEnumerable<MyCollection>> GetCollectionList(CollectionDataFilter filter,
@@ -43,7 +40,7 @@ namespace CourseProject_backend.Services
                                                                     int pageSize,
                                                                     string categoryName)
         {
-            var collections = await _repository.GetCollectionList
+            var collections = await _collectionRepository.GetCollectionList
                               (filter, value, sort, page, pageSize, categoryName);
 
             return collections;
@@ -54,7 +51,7 @@ namespace CourseProject_backend.Services
                                                                     DataSort sort,
                                                                     string categoryName)
         {
-            return await _repository.GetCollectionsSize(filter, value, sort, categoryName);
+            return await _collectionRepository.GetCollectionsSize(filter, value, sort, categoryName);
         }
 
         public async Task<bool> CreateCollection(CollectionCreateModel model, User authorUser)
@@ -118,7 +115,7 @@ namespace CourseProject_backend.Services
             collection.CustomDate3_name = model.CustomDate3_name;
             #endregion
 
-            await _repository.Add(collection);
+            await _collectionRepository.Add(collection);
             return true;
         }
 
@@ -126,23 +123,23 @@ namespace CourseProject_backend.Services
         {
             if (id == null) { return null; }
 
-            return (await _repository.GetValue((x)=>x.Id == id)).FirstOrDefault();
+            return (await _collectionRepository.GetValue((x)=>x.Id == id)).FirstOrDefault();
         }
 
         public async Task<MyCollection?> GetByItemId(string id = null)
         {
             if (id == null) { return null; }
 
-            return (await _repository.GetValue((x) => x.Items.FirstOrDefault((i)=>i.Id == id) != null)).FirstOrDefault();
+            return (await _collectionRepository.GetValue((x) => x.Items.FirstOrDefault((i)=>i.Id == id) != null)).FirstOrDefault();
         }
 
         public async Task DeleteRange(string[] collectionsId, string userId)
         {
-            await _repository.DeleteRangeById(collectionsId, userId);
+            await _collectionRepository.DeleteRangeById(collectionsId, userId);
         }
         public async Task SaveUpdates()
         {
-            await _repository.SaveUpdates();
+            await _collectionRepository.SaveUpdates();
         }
     }
 }

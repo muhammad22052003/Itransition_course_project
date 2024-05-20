@@ -3,7 +3,7 @@
 @model CollectionViewModel
 @{
     Layout = "_MainLayout";
-    ViewData["Title"] = "Item list";
+    ViewData["Title"] = Model.Collection.Name;
     ViewData.Add("Lang", Model.LanguagePack.Key);
 }
 

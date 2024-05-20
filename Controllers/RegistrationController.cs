@@ -1,10 +1,12 @@
-﻿using CourseProject_backend.Enums.Packages;
+﻿using CourseProject_backend.CustomDbContext;
+using CourseProject_backend.Enums.Packages;
 using CourseProject_backend.Extensions;
 using CourseProject_backend.Models.RequestModels;
 using CourseProject_backend.Packages;
 using CourseProject_backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CourseProject_backend.Controllers
@@ -24,11 +26,14 @@ namespace CourseProject_backend.Controllers
         public RegistrationController
         (
             [FromServices] IConfiguration configuration,
-            [FromServices] UserService userService
+            [FromServices] UserService userService,
+            [FromServices] CollectionDBContext dBContext
         )
         {
             _configuration = configuration;
             _userService = userService;
+
+            _userService.Initialize(dBContext);
         }
 
         [HttpGet]

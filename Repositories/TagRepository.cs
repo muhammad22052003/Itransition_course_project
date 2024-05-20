@@ -3,6 +3,7 @@ using CourseProject_backend.Entities;
 using CourseProject_backend.Enums;
 using CourseProject_backend.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CourseProject_backend.Repositories
 {
@@ -37,6 +38,13 @@ namespace CourseProject_backend.Repositories
             _dBContext.Add(tag);
 
             await _dBContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Tag>> GetValue(Expression<Func<Tag, bool>> predicate)
+        {
+            return await _dBContext.Tags
+                .Where(predicate)
+                .ToArrayAsync();
         }
 
         public async Task Delete(Tag tag)

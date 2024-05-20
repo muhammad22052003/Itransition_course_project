@@ -9,6 +9,7 @@ using CourseProject_backend.Interfaces.Repositories;
 using CourseProject_backend.Interfaces.Services;
 using CourseProject_backend.Models.RequestModels;
 using CourseProject_backend.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MySql.EntityFrameworkCore.Extensions;
@@ -17,34 +18,33 @@ namespace CourseProject_backend.Services
 {
     public class ItemService : IModelService
     {
-        private readonly ItemRepository _repository;
-        private readonly TagRepository _tagRepository;
+        private ItemRepository _itemRepository;
+        private TagRepository _tagRepository;
+        private CollectionRepository _collectionRepository;
+        private CommentRepository _commentRepository;
         private readonly IConfiguration _configuration;
-        private readonly CollectionDBContext _dbContext;
-        private readonly CommentRepository _commentRepository;
-        public ItemService
-        (
-            ItemRepository repository,
-            IConfiguration configuration,
-            CollectionDBContext dbContext,
-            TagRepository tagRepository,
-            CommentRepository commentRepository
-        )
+
+        public ItemService(IConfiguration configuration)
         {
-            _dbContext = dbContext;
-            _repository = repository;
+            
             _configuration = configuration;
-            _tagRepository = tagRepository;
-            _commentRepository = commentRepository;
+        }
+
+        public void Initialize(CollectionDBContext dBContext)
+        {
+            _itemRepository = new ItemRepository(dBContext);
+            _tagRepository = new TagRepository(dBContext);
+            _commentRepository = new CommentRepository(dBContext);
+            _collectionRepository = new CollectionRepository(dBContext);
         }
 
         public async Task<bool> CreateItem(ItemPostModel model)
         {
             ItemBuilder itemBuilder = new ItemBuilder(_configuration);
 
-            MyCollection? collection = (await _dbContext.Collections
-                .Where((x)=>x.Id == model.CollectionId)
-                .ToListAsync()).FirstOrDefault();
+            MyCollection? collection = (await _collectionRepository
+                .GetValue(x => x.Id == model.CollectionId))
+                .FirstOrDefault();
 
             if( collection == null ) { return false; }
 
@@ -87,20 +87,20 @@ namespace CourseProject_backend.Services
 
             //collection.Items.Add(item);
 
-            await _repository.Add(item);
+            await _itemRepository.Add(item);
 
             return true;
         }
 
         public async Task<bool> UpdateItem(ItemPostModel model)
         {
-            Item? item = (await _repository.GetValue((i) => i.Id.Equals(model.Id))).FirstOrDefault();
+            Item? item = (await _itemRepository.GetValue((i) => i.Id.Equals(model.Id))).FirstOrDefault();
 
             if (item == null) { return false; }
 
-            MyCollection? collection = (await _dbContext.Collections
-                .Where((x) => x.Id == model.CollectionId)
-                .ToListAsync()).FirstOrDefault();
+            MyCollection? collection = (await _collectionRepository
+                .GetValue(x => x.Id == model.CollectionId))
+                .FirstOrDefault();
 
             if (collection == null) { return false; }
 
@@ -146,7 +146,7 @@ namespace CourseProject_backend.Services
                                                int pageSize,
                                                string categoryName)
         {
-            List<Item> items = (await _repository
+            List<Item> items = (await _itemRepository
                 .GetItemsList(filter, value, sort, page, pageSize, categoryName))
                 .ToList();
 
@@ -158,7 +158,7 @@ namespace CourseProject_backend.Services
                                                DataSort sort,
                                                string categoryName)
         {
-            int count = await _repository
+            int count = await _itemRepository
                 .GetItemsCount(filter, value, sort, categoryName);
 
             return count;
@@ -171,17 +171,17 @@ namespace CourseProject_backend.Services
 
         public async Task<Item?> GetById(string id)
         {
-            return (await _repository.GetValue((x) => x.Id == id)).FirstOrDefault();
+            return (await _itemRepository.GetValue((x) => x.Id == id)).FirstOrDefault();
         }
 
         public async Task DeleteRange(string[] itemsId, string userId)
         {
-            await _repository.DeleteRangeById(itemsId, userId);
+            await _itemRepository.DeleteRangeById(itemsId, userId);
         }
 
         public async Task SaveUpdates()
         {
-            await _repository.SaveUpdates();
+            await _itemRepository.SaveUpdates();
         }
     }
 }

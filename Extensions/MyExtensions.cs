@@ -56,6 +56,11 @@ namespace CourseProject_backend.Extensions
             controller.ViewData.Add("searchUrl", "search/item");
         }
 
+        public static void SetUserSearch(this Controller controller)
+        {
+            controller.ViewData.Add("searchUrl", "search/User");
+        }
+
         public static KeyValuePair<string, IDictionary<string, string>> GetLanguagePackage(this Controller controller, 
                                                                                             AppLanguage lang)
         {

@@ -1,4 +1,5 @@
-﻿using CourseProject_backend.Enums;
+﻿using CourseProject_backend.CustomDbContext;
+using CourseProject_backend.Enums;
 using CourseProject_backend.Enums.Packages;
 using CourseProject_backend.Services;
 using Google.Protobuf.WellKnownTypes;
@@ -14,11 +15,15 @@ namespace CourseProject_backend.Controllers
         public SearchController
         (
             [FromServices] ItemService itemService,
-            [FromServices] CollectionService collectionService
+            [FromServices] CollectionService collectionService,
+            [FromServices] CollectionDBContext dBContext
         )
         {
             _itemService = itemService;
             _collectionService = collectionService;
+
+            _itemService.Initialize(dBContext);
+            _collectionService.Initialize(dBContext);
         }
 
         [HttpPost]
@@ -46,6 +51,19 @@ namespace CourseProject_backend.Controllers
                 sort = DataSort.byDefault,
                 page = 1,
                 categoryName = categoryName
+            });
+        }
+
+        [HttpPost]
+        public IActionResult User([FromForm] string searchText = "", [FromForm] AppLanguage lang = AppLanguage.en)
+        {
+            return RedirectToAction("index", "users", new
+            {
+                lang = lang.ToString(),
+                filter = UsersDataFilter.byName,
+                value = searchText,
+                sort = DataSort.byDefault,
+                page = 1,
             });
         }
     }

@@ -100,7 +100,7 @@ async function sendCollectionData(){
         return;
     }
 
-    let url = serverUrl +  '/api/CreateCollection'
+    let url = serverUrl +  '/collectionconstructor/CreateCollection'
 
     try {
         const response = await fetch(url, {

@@ -26,60 +26,59 @@ internal class Program
 
         IConfiguration configuration = builder.Configuration;
 
-        CollectionDBContext dbContext = new CollectionDBContext
+        CollectionDBContext context = new CollectionDBContext
                                         (
                                         builder.Configuration.GetValue<string>("DBConnections:npgsql"),
                                         DBSystem.POSTGRES
                                         );
 
-        await CategoriesPackage.Initialize(dbContext);
+        await CategoriesPackage.Initialize(context);
 
         IJwtTokenHelper jwtTokenHelper = new JwtTokenHelper();
         IPasswordHasher passwordHasher = new Sha3_256PasswordHasher();
 
-        CollectionRepository collectionRepository = new CollectionRepository(dbContext);
-        ItemRepository itemRepository = new ItemRepository(dbContext);
-        UserRepository userRepository = new UserRepository(dbContext);
-        TagRepository tagRepository = new TagRepository(dbContext);
-        CategoryRepository categoryRepository = new CategoryRepository(dbContext);
-        CommentRepository commentRepository = new CommentRepository(dbContext);
-        ReactionRepository reactionRepository = new ReactionRepository(dbContext);
+        builder.Services.AddSingleton<CollectionDBContext>((service) =>
+        {
+            CollectionDBContext dbContext = new CollectionDBContext
+                                        (
+                                        builder.Configuration.GetValue<string>("DBConnections:npgsql"),
+                                        DBSystem.POSTGRES
+                                        );
 
-        UserService userService = new UserService(repository: userRepository,
-                                                  tokenHelper: jwtTokenHelper,
-                                                  configuration: configuration,
-                                                  passwordHasher: passwordHasher);
-        ItemService itemService = new ItemService(repository: itemRepository,
-                                                  configuration: configuration,
-                                                  dbContext: dbContext,
-                                                  tagRepository: tagRepository,
-                                                  commentRepository: commentRepository);
-        CollectionService collectionService = new CollectionService(repository: collectionRepository,
-                                                                    configuration: configuration,
-                                                                    dbContext: dbContext,
-                                                                    userService: userService,
-                                                                    categoryRepository: categoryRepository);
-
-        ReactionService reactionService = new ReactionService(reactionRepository);
-
-        builder.Services.AddScoped<UserService>((service) =>
-        {
-            return userService;
-        });
-        builder.Services.AddScoped<ItemService>((service) =>
-        {
-            return itemService;
-        });
-        builder.Services.AddScoped<CollectionService>((service) =>
-        {
-            return collectionService;
-        });
-        builder.Services.AddScoped<CollectionDBContext>((service) =>
-        {
             return dbContext;
         });
-        builder.Services.AddScoped<ReactionService>((service) =>
+
+        builder.Services.AddSingleton<UserService>((service) =>
         {
+            var dbContext = service.GetService<CollectionDBContext>();
+
+            UserService? userService = new UserService(tokenHelper: jwtTokenHelper,
+                                                  configuration: configuration,
+                                                  passwordHasher: passwordHasher);
+
+
+            return userService;
+        });
+        builder.Services.AddSingleton<ItemService>((service) =>
+        {
+            var dbContext = service.GetService<CollectionDBContext>();
+
+            ItemService itemService = new ItemService(configuration);
+
+            return itemService;
+        });
+        builder.Services.AddSingleton<CollectionService>((service) =>
+        {
+            CollectionService collectionService = new CollectionService(configuration);
+
+            return collectionService;
+        });
+        builder.Services.AddSingleton<ReactionService>((service) =>
+        {
+            var dbContext = service.GetService<CollectionDBContext>();
+
+            ReactionService reactionService = new ReactionService(configuration);
+
             return reactionService;
         });
         builder.Services.AddSingleton<IConfiguration>((service) =>

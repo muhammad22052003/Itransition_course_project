@@ -1,25 +1,30 @@
-﻿using CourseProject_backend.Entities;
+﻿using CourseProject_backend.CustomDbContext;
+using CourseProject_backend.Entities;
+using CourseProject_backend.Interfaces.Services;
 using CourseProject_backend.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CourseProject_backend.Services
 {
-    public class ReactionService
+    public class ReactionService : IModelService
     {
-        private readonly ReactionRepository _reactionRepository;
+        private ReactionRepository _reactionRepository;
+        private readonly IConfiguration _configuration;
 
-        public ReactionService
-        (
-            [FromServices] ReactionRepository reactionRepository   
-        )
+        public ReactionService(IConfiguration configuration)
         {
-            _reactionRepository = reactionRepository;
+            _configuration = configuration;
+        }
+
+        public void Initialize(CollectionDBContext dBContext)
+        {
+            _reactionRepository = new ReactionRepository(dBContext);
         }
 
         public async Task<bool> AddReaction(PositiveReaction reaction)
         {
             PositiveReaction? reactionByDb = (await _reactionRepository
-                .GetValues(x => x.Id == reaction.Id)).FirstOrDefault();
+                .GetValue(x => x.Id == reaction.Id)).FirstOrDefault();
 
             if(reactionByDb != null ) { return false; }
 
@@ -33,7 +38,7 @@ namespace CourseProject_backend.Services
         public async Task<PositiveReaction?> GetByUserAndItem(User user, Item item)
         {
             PositiveReaction? reaction = (await _reactionRepository
-                .GetValues(x => x.User.Id == user.Id && x.Item.Id == item.Id)).FirstOrDefault();
+                .GetValue(x => x.User.Id == user.Id && x.Item.Id == item.Id)).FirstOrDefault();
 
             if (reaction == null) { return null; }
 
@@ -43,7 +48,7 @@ namespace CourseProject_backend.Services
         public async Task<bool> DeleteByUserAndItem(User user, Item item)
         {
             PositiveReaction? reaction = (await _reactionRepository
-                .GetValues(x => x.User.Id == user.Id && x.Item.Id == item.Id)).FirstOrDefault();
+                .GetValue(x => x.User.Id == user.Id && x.Item.Id == item.Id)).FirstOrDefault();
 
             if (reaction == null) { return false; }
 
@@ -52,6 +57,11 @@ namespace CourseProject_backend.Services
             await _reactionRepository.SaveUpdates();
 
             return true;
+        }
+
+        public Task SaveUpdates()
+        {
+            throw new NotImplementedException();
         }
     }
 }

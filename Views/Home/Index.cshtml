@@ -1,7 +1,220 @@
-﻿@model KeyValuePair<string,IDictionary<string, string>>
+﻿@using CourseProject_backend.Models.ViewModels
+@using CourseProject_backend.Enums
+@using CourseProject_backend.Enums.Entities
+@model HomeViewModel
 @{
     Layout = "_MainLayout";
     ViewData["Title"] = "Home";
-    ViewData.Add("Lang", Model.Key);
+    ViewData.Add("Lang", Model.LanguagePack.Key);
 }
-<script src="~/js/HomeController.js"></script>
+
+@{
+    if (Model.Collections.Count == 0)
+    {
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col text-center d-flex justify-content-center">
+                    <h1 class="d-flex text-center">@Model.LanguagePack.Value["top_big_collections"]</h1>
+                </div>
+            </div>
+        </div>
+    }
+
+    for (int i = 0; i < Model.Collections.Count; i++)
+    {
+        <a class="text-decoration-none text-reset"
+           href="@Url.Action("index","collection",
+                                    new{lang=Model.LanguagePack.Key,
+                                    id=Model.Collections[i].Id})">
+            <section class="selection-catalogs">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <!--<img class="content-image" src="../img/content.jpg">-->
+                        </div>
+                    </div>
+                    <div class="row data-header">
+                        <div class="col d-flex">
+                            <input name="collectionId" value="@Model.Collections[i].Id" class="form-check-input data-checkbox" type="checkbox" id="select-field" />
+                            <h3>@Model.Collections[i].Name</h3>
+                        </div>
+                        <div class="col d-flex justify-content-end">
+                            <h6>Id : @Model.Collections[i].Id</h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col d-flex justify-content-start">
+                            <h6>@Model.LanguagePack.Value["category_word"] : @Model.Collections[i].Category.Name</h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col d-flex justify-content-start">
+                            <h6>@Model.LanguagePack.Value["created_word"] : @Model.Collections[i].CreatedTime.Date.ToShortDateString()</h6>
+                        </div>
+                        <div class="row">
+                            <div class="col d-flex justify-content-start">
+                                <h6>@Model.LanguagePack.Value["items_count"] : @Model.Collections[i].Items.Count</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col text-center"></div>
+                                </div>
+                                <div class="row d-flex justify-content-start">
+                                    <div class="col">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </section>
+        </a>
+    }
+
+    if (Model.Items.Count == 0)
+    {
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col text-center d-flex justify-content-center">
+                    <h1 class="d-flex text-center">@Model.LanguagePack.Value["new_items"]</h1>
+                </div>
+            </div>
+        </div>
+    }
+
+    for (int i = 0; i < Model.Items.Count; i++)
+    {
+        <a href="~/item/index/@Model.LanguagePack.Key/@Model.Items[i].Id" class="text-decoration-none text-reset">
+            <section class="selection-items">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            @{
+                                if (Model.Items[i].ImageUrl != null && @Model.Items[i].ImageUrl != "")
+                                {
+                                    <img class="content-image" src="@Model.Items[i].ImageUrl">
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="row data-header">
+                        <div class="col d-flex">
+                            <input class="form-check-input data-checkbox" type="checkbox" name="itemId" value="@Model.Items[i].Id" id="select-field" />
+                            <h3>@Model.Items[i].Name</h3>
+                        </div>
+                        <div class="col d-flex justify-content-end">
+                            <h6>Id : @Model.Items[i].Id</h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col d-flex justify-content-start">
+                            <h6>@Model.LanguagePack.Value["created_word"] : @Model.Items[i].CreatedTime.Date.ToShortDateString()</h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col d-flex justify-content-start">
+                            <h6>
+                                @Model.LanguagePack.Value["collection_wor"] :
+                                <a href="~/collection/index/@Model.LanguagePack.Key/@Model.Items[i].Collection.Id">@Model.Items[i].Collection.Name</a>
+                            </h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col text-center m-3"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col d-flex justify-content-center">
+                                    <button value="@Model.Items[i].Id" class="btn-style-header-smaller btn-like-comment-color">
+                                        <img class="like-comment-icon" src="https://drive.google.com/thumbnail?id=10F40NHwk-8EbXnbVyN0CGouzWiDwUgzQ">
+                                    </button>
+                                    <div class="like-comment-boundary">
+                                    </div>
+                                </div>
+                                <div class="col d-flex justify-content-center">
+                                    <button value="@Model.Items[i].Id" class="btn-style-header-smaller btn-like-comment-color">
+                                        <img class="like-comment-icon" src="https://drive.google.com/thumbnail?id=1-CgCP4EKdshIjXr-fdIVjMlaS9ikDzZD">
+                                    </button>
+                                </div>
+                                <div class="col d-flex justify-content-center">
+                                    <button value="@Model.Items[i].Id" class="btn-style-header-smaller btn-like-comment-color">
+                                        <img class="like-comment-icon" src="https://drive.google.com/thumbnail?id=10QNmmu9hUELSGUbhZKURx30xuPR-BFWV">
+                                    </button>
+                                </div>
+
+                            </div>
+                            @{
+                                int posCount = 0;
+
+                                if (Model.Items[i].PositiveReact != null)
+                                {
+                                    posCount = Model.Items[i].PositiveReact.Count;
+                                }
+                            }
+                            <div class="row text-center">
+                                <div class="col">
+                                    <div class="like-comment-boundary">
+                                        <h6>@posCount</h6>
+                                    </div>
+                                </div>
+                                @{
+                                    int comCount = 0;
+
+                                    if (Model.Items[i].Comments != null)
+                                    {
+                                        comCount = Model.Items[i].Comments.Count;
+                                    }
+                                }
+                                <div class="col">
+                                    <div class="like-comment-boundary">
+                                        <h6>@comCount</h6>
+                                    </div>
+                                </div>
+                                @{
+                                    int viewCount = 0;
+
+                                    if (Model.Items[i].Views != null)
+                                    {
+                                        viewCount = Model.Items[i].Views.Count;
+                                    }
+                                }
+                                <div class="col d-flex justify-content-center align-items-center">
+                                    <div class="like-comment-boundary">
+                                        <h6>@viewCount</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row d-flex justify-content-start">
+                                <div class="col">
+                                    <div class="like-comment-boundary">
+                                        <img src="https://drive.google.com/thumbnail?id=1-o7YBwSAXf397zfjwPsq4pMetGykHIjl" class="like-comment-icon">
+                                        @{
+                                            if (Model.Items[i].Tags != null)
+                                            {
+                                                var tags = Model.Items[i].Tags.ToList();
+                                                for (int j = 0; j < tags.Count; j++)
+                                                {
+                                                    <a href="~/itemlist/index?lang=@Model.LanguagePack.Key&filter=@ItemsDataFilter.byTag&value=@tags[j].Name">
+                                                        #@(tags[j].Name)
+                                                    </a>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </a>
+    }
+}

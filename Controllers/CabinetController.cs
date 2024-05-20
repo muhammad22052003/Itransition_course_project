@@ -23,12 +23,16 @@ namespace CourseProject_backend.Controllers
         (
             [FromServices] IConfiguration configuration,
             [FromServices] UserService userService,
-            [FromServices] CollectionService collectionService
+            [FromServices] CollectionService collectionService,
+            [FromServices] CollectionDBContext dBContext
         )
         {
             _configuration = configuration;
             _userService = userService;
             _collectionService = collectionService;
+
+            _userService.Initialize(dBContext);
+            _collectionService.Initialize(dBContext);
         }
 
         [HttpGet]
@@ -54,10 +58,13 @@ namespace CourseProject_backend.Controllers
 
             int pagesCount = 1;
 
-            List<MyCollection> collections = user.Collections
-                .Skip((page - 1) * _pageSize)
-                .OrderByDescending((x) => x.CreatedTime)
-                .Take(_pageSize).ToList();
+            List<MyCollection> collections = (await _collectionService
+                .GetCollectionList(filter: CollectionDataFilter.byAuthorId,
+                                   value: user.Id,
+                                   DataSort.byDefault,
+                                   page: page,
+                                   pageSize: _pageSize,
+                                   categoryName: categoryName)).ToList();
 
             if (!collections.IsNullOrEmpty())
             {

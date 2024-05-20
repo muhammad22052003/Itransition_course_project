@@ -50,7 +50,7 @@ async function sendLike() {
 
     const itemId = document.getElementById('item-id').value;
 
-    const url = serverUrl + '/api/addlike?itemId=' + itemId;
+    const url = serverUrl + '/item/addlike?itemId=' + itemId;
 
     let bodyData = {
         ItemId: itemId,
@@ -74,7 +74,7 @@ async function deleteLike() {
 
     const itemId = document.getElementById('item-id').value;
 
-    const url = serverUrl + '/api/deletelike?itemId=' + itemId;
+    const url = serverUrl + '/item/deletelike?itemId=' + itemId;
 
     let bodyData = {
         ItemId: itemId,
@@ -99,7 +99,7 @@ async function sendComment() {
     const commentContent = document.getElementById('comment-area').value;
     const itemId = document.getElementById('item-id').value;
 
-    const url = serverUrl + '/api/addcomment';
+    const url = serverUrl + '/item/addcomment';
 
     let bodyData = {
         ItemId: itemId,
@@ -149,7 +149,7 @@ async function defineComentariesBlock() {
 async function getNewComentaries() {
     const itemId = document.getElementById('item-id').value;
 
-    const url = serverUrl + '/api/getitemcomments';
+    const url = serverUrl + '/item/getitemcomments';
 
     try {
 

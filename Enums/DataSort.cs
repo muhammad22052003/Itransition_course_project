@@ -5,6 +5,8 @@
         byDate,
         bySize,
         byName,
-        byDefault
+        byDefault,
+        byView,
+        byLike
     }
 }

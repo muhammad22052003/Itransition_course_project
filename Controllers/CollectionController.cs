@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using CourseProject_backend.Entities;
 using CourseProject_backend.Enums.Entities;
+using CourseProject_backend.CustomDbContext;
 
 namespace CourseProject_backend.Controllers
 {
@@ -25,13 +26,18 @@ namespace CourseProject_backend.Controllers
             [FromServices] IConfiguration configuration,
             [FromServices] ItemService itemService,
             [FromServices] CollectionService collectionService,
-            [FromServices] UserService userService
+            [FromServices] UserService userService,
+            [FromServices] CollectionDBContext dBContext
         )
         {
             _configuration = configuration;
             _itemService = itemService;
             _collectionService = collectionService;
             _userService = userService;
+
+            _itemService.Initialize(dBContext);
+            _collectionService.Initialize(dBContext);
+            _userService.Initialize(dBContext);
         }
 
         [HttpGet]

@@ -17,7 +17,6 @@ namespace CourseProject_backend.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
-        private readonly CollectionDBContext _dbContext;
         private readonly ItemService _itemService;
         private readonly CollectionService _collectionService;
 
@@ -33,9 +32,12 @@ namespace CourseProject_backend.Controllers
         {
             _configuration = configuration;
             _userService = userService;
-            _dbContext = dBContext;
             _itemService = itemService;
             _collectionService = collectionService;
+
+            _userService.Initialize(dBContext);
+            _itemService.Initialize(dBContext);
+            _collectionService.Initialize(dBContext);
         }
 
         [HttpGet]

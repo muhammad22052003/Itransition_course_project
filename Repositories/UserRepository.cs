@@ -59,7 +59,7 @@ namespace CourseProject_backend.Repositories
 
             if (sortedQuery == null)
             {
-                sortedQuery = _dbContext.Users.Where((c) => true);
+                sortedQuery = _dbContext.Users;
             }
 
             switch (filter)

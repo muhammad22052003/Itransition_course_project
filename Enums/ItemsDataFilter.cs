@@ -6,6 +6,6 @@
         byTag,
         byCollectionId,
         bySearch,
-        byId
+        byId,
     }
 }

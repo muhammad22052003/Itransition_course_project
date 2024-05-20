@@ -38,5 +38,10 @@
   "likes_word": "Likes",
   "views_word": "Views",
   "cabinet_word": "Cabinet",
-  "collections_list_word": "Collections list"
+  "collections_list_word": "Collections list",
+  "skip_word": "Skip",
+  "skip_regisration": "Continue without registration",
+  "items_count": "Items count",
+  "top_big_collections": "Top Big Colletions",
+  "new_items": "New Items"
 }

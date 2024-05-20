@@ -91,6 +91,10 @@
                             <div class="col d-flex justify-content-start">
                                 <h6>@Model.LanguagePack.Value["created_word"] : @Model.Collections[i].CreatedTime.Date.ToShortDateString()</h6>
                             </div>
+                            <div class="row">
+                                <div class="col d-flex justify-content-start">
+                                    <h6>@Model.LanguagePack.Value["items_count"] : @Model.Collections[i].Items.Count</h6>
+                                </div>
                         </div>
                         <div class="row">
                             <div class="container">

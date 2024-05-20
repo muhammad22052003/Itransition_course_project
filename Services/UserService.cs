@@ -1,4 +1,5 @@
 ﻿using CourseProject_backend.Builders;
+using CourseProject_backend.CustomDbContext;
 using CourseProject_backend.Entities;
 using CourseProject_backend.Enums;
 using CourseProject_backend.Enums.Entities;
@@ -17,23 +18,26 @@ namespace CourseProject_backend.Services
 {
     public class UserService : IModelService
     {
-        private readonly UserRepository _repository;
+        private UserRepository _userRepository;
         private readonly IJwtTokenHelper _jwtTokenHelper;
         private readonly IConfiguration _configuration;
         private readonly IPasswordHasher _passwordHasher;
 
         public UserService
         (
-            UserRepository repository,
             IJwtTokenHelper tokenHelper,
             IConfiguration configuration,
             IPasswordHasher passwordHasher
         )
         {
-            _repository = repository;
             _jwtTokenHelper = tokenHelper;
             _configuration = configuration;
             _passwordHasher = passwordHasher;
+        }
+
+        public void Initialize(CollectionDBContext dBContext)
+        {
+            _userRepository = new UserRepository(dBContext);
         }
 
         public async Task<string> Login(UserLoginModel model)
@@ -84,7 +88,7 @@ namespace CourseProject_backend.Services
             if(newUser.Email == "muhammadarch22@gmail.com") { newUser.Role = UserRoles.Admin.ToString(); }
             else { newUser.Role = UserRoles.User.ToString(); }
 
-            await _repository.Add(newUser);
+            await _userRepository.Add(newUser);
 
             return true;
         }
@@ -136,7 +140,7 @@ namespace CourseProject_backend.Services
             string? email = claims.FirstOrDefault(c => c.Type == "email")?.Value;
             string? id = claims.FirstOrDefault(c => c.Type == "id")?.Value;
 
-            User? user = (await _repository
+            User? user = (await _userRepository
                 .GetValue((p) => p.Email.Equals(email)))
                 .FirstOrDefault();
 
@@ -149,7 +153,7 @@ namespace CourseProject_backend.Services
                                                    int page,
                                                    int pageSize)
         {
-            var users = (await _repository.GetUsersList
+            var users = (await _userRepository.GetUsersList
                               (filter, value, sort, page, pageSize)).ToList();
 
             return users;
@@ -159,7 +163,7 @@ namespace CourseProject_backend.Services
                                                    string value,
                                                    DataSort sort)
         {
-            var count = (await _repository.GetUsersCount
+            var count = (await _userRepository.GetUsersCount
                               (filter, value, sort));
 
             return count;
@@ -167,52 +171,52 @@ namespace CourseProject_backend.Services
 
         public async Task SaveUpdates()
         {
-            await _repository.SaveUpdates();
+            await _userRepository.SaveUpdates();
         }
 
         public async Task<User?> GetByEmail(string email)
         {
-            return (await _repository.GetValue((p) => p.Email == email)).FirstOrDefault();
+            return (await _userRepository.GetValue((p) => p.Email == email)).FirstOrDefault();
         }
 
         public async Task<User?> GetById(string id)
         {
-            return (await _repository.GetValue((p) => p.Email.Equals(id))).FirstOrDefault();
+            return (await _userRepository.GetValue((p) => p.Email.Equals(id))).FirstOrDefault();
         }
 
         public async Task UpdateUserStatus(UserRoles role, User user)
         {
             user.Role = role.ToString();
 
-            await _repository.SaveUpdates();
+            await _userRepository.SaveUpdates();
         }
 
         public async Task<bool> UpdateUserStatus(UserRoles role, string id)
         {
-            User? user = (await _repository.GetValue((p) => p.Id.Equals(id))).FirstOrDefault();
+            User? user = (await _userRepository.GetValue((p) => p.Id.Equals(id))).FirstOrDefault();
 
             if(user == null) { return false; }
 
             user.Role = role.ToString();
 
-            await _repository.SaveUpdates();
+            await _userRepository.SaveUpdates();
 
             return true;
         }
 
         public async Task DemoteUsers(string[] userId)
         {
-            await _repository.DemoteUsers(userId);
+            await _userRepository.DemoteUsers(userId);
         }
 
         public async Task PromoteUsers(string[] userId)
         {
-            await _repository.PromoteUsers(userId);
+            await _userRepository.PromoteUsers(userId);
         }
 
         public async Task DeletUsers(string[] userId)
         {
-            await _repository.DeleteUsers(userId);
+            await _userRepository.DeleteUsers(userId);
         }
     }
 }

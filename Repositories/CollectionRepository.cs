@@ -96,6 +96,7 @@ namespace CourseProject_backend.Repositories
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include(c => c.Items)
+                            .Include(c => c.Category)
                             .ToListAsync();
                     }
                     break;
@@ -106,6 +107,7 @@ namespace CourseProject_backend.Repositories
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include(c => c.Items)
+                            .Include(c => c.Category)
                             .ToListAsync();
                     }
                     break;
@@ -116,6 +118,7 @@ namespace CourseProject_backend.Repositories
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include(c => c.Items)
+                            .Include(c => c.Category)
                             .ToListAsync();
                     }
                     break;
@@ -126,6 +129,7 @@ namespace CourseProject_backend.Repositories
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include(c => c.Items)
+                            .Include(c => c.Category)
                             .ToListAsync();
                     }
                     break;

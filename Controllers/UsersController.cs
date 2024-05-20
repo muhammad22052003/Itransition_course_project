@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using CourseProject_backend.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using CourseProject_backend.Entities;
+using CourseProject_backend.CustomDbContext;
 
 namespace CourseProject_backend.Controllers
 {
@@ -19,11 +20,14 @@ namespace CourseProject_backend.Controllers
         public UsersController
         (
             [FromServices] IConfiguration configuration,
-            [FromServices] UserService userService
+            [FromServices] UserService userService,
+            [FromServices] CollectionDBContext dBContext
         )
         {
             _configuration = configuration;
             _userService = userService;
+
+            _userService.Initialize(dBContext);
         }
 
         [HttpGet]
@@ -34,7 +38,7 @@ namespace CourseProject_backend.Controllers
                                                int page = 1)
         {
             this.DefineCategories();
-            this.SetItemSearch();
+            this.SetUserSearch();
 
             KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 

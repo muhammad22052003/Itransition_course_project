@@ -255,6 +255,14 @@ namespace CourseProject_backend.Repositories
                     {
                         return _dbContext.Items.OrderByDescending((c) => c.CreatedTime);
                     }
+                case DataSort.byLike:
+                    {
+                        return _dbContext.Items.OrderByDescending((c) => c.PositiveReact.Count);
+                    }
+                case DataSort.byView:
+                    {
+                        return _dbContext.Items.OrderByDescending((c) => c.Views.Count);
+                    }
                 case DataSort.bySize:
                     {
                         return null;

@@ -3,6 +3,7 @@ using CourseProject_backend.Entities;
 using CourseProject_backend.Enums;
 using CourseProject_backend.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CourseProject_backend.Repositories
 {
@@ -20,6 +21,13 @@ namespace CourseProject_backend.Repositories
             _dBContext.Add(comment);
 
             await _dBContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Comment>> GetValue(Expression<Func<Comment, bool>> predicat)
+        {
+            return await _dBContext.Commentaries
+                .Where(predicat)
+                .ToArrayAsync();
         }
 
         public async Task<List<Comment>> GetComentsList(Item item, ComentariesDataFilter filter, DateTime? fromTime = null)

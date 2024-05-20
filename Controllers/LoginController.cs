@@ -5,6 +5,7 @@ using CourseProject_backend.Services;
 using Microsoft.IdentityModel.Tokens;
 using CourseProject_backend.Models.RequestModels;
 using CourseProject_backend.Extensions;
+using CourseProject_backend.CustomDbContext;
 
 namespace CourseProject_backend.Controllers
 {
@@ -16,11 +17,14 @@ namespace CourseProject_backend.Controllers
         public LoginController
         (
             [FromServices] IConfiguration configuration,
-            [FromServices] UserService userService
+            [FromServices] UserService userService,
+            [FromServices] CollectionDBContext dBContext
         )
         {
             _configuration = configuration;
             _userService = userService;
+
+            _userService.Initialize(dBContext);
         }
 
         [HttpGet]
@@ -80,6 +84,15 @@ namespace CourseProject_backend.Controllers
 
                 return View(registrationModel);
             }
+        }
+
+        public IActionResult Logout()
+        {
+            if (Request.Cookies.TryGetValue("userData", out string? token))
+            {
+                Response.Cookies.Delete("userData");
+            }
+            return RedirectToAction("index", "start");
         }
     }
 }

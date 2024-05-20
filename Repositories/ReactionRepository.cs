@@ -25,9 +25,11 @@ namespace CourseProject_backend.Repositories
             _dbContext.Add(item);
         }
 
-        public async Task<IEnumerable<PositiveReaction>> GetValues(Expression<Func<PositiveReaction, bool>> predicate)
+        public async Task<IEnumerable<PositiveReaction>> GetValue(Expression<Func<PositiveReaction, bool>> predicate)
         {
-            return await _dbContext.PositiveReactions.Where(predicate).ToArrayAsync();
+            return await _dbContext.PositiveReactions
+                .Where(predicate)
+                .ToArrayAsync();
         }
 
         public async Task Delete(PositiveReaction item)

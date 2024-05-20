@@ -23,12 +23,16 @@ namespace CourseProject_backend.Controllers
         (
             [FromServices] IConfiguration configuration,
             [FromServices] CollectionService collectionService,
-            [FromServices] UserService userService
+            [FromServices] UserService userService,
+            [FromServices] CollectionDBContext dBContext
         )
         {
             _configuration = configuration;
             _collectionService = collectionService;
             _userService = userService;
+
+            _collectionService.Initialize(dBContext);
+            _userService.Initialize(dBContext);
         }
 
         [HttpGet]

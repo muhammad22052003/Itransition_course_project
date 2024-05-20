@@ -11,6 +11,8 @@ namespace CourseProject_backend.Interfaces.Repositories
     {
         public Task Add(TModel item);
 
+        public Task<IEnumerable<TModel>> GetValue(Expression<Func<TModel, bool>> predicat);
+
         public Task Delete(TModel item);
 
         public Task SaveUpdates();

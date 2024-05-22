@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using CourseProject_backend.Entities;
 using CourseProject_backend.Enums.Entities;
 using CourseProject_backend.CustomDbContext;
+using System.IO;
 
 namespace CourseProject_backend.Controllers
 {
@@ -51,6 +52,7 @@ namespace CourseProject_backend.Controllers
 
             this.DefineCategories();
             this.SetItemSearch();
+            this.DefineCollectionSorts();
 
             User? user = null;
 
@@ -121,6 +123,18 @@ namespace CourseProject_backend.Controllers
             }
 
             return NotFound();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportToCsv(string id)
+        {
+            MyCollection? collection = await _collectionService.GetById(id);
+
+            if (collection == null) { return NotFound(); }
+
+            byte[] bytes = _collectionService.GetCollectionCsv(collection);
+
+            return File(bytes, System.Net.Mime.MediaTypeNames.Application.Octet, "collection_table.csv");
         }
     }
 }

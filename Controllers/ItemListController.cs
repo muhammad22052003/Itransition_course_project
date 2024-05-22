@@ -36,14 +36,15 @@ namespace CourseProject_backend.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index([FromRoute] AppLanguage lang = AppLanguage.en,
-                                               ItemsDataFilter filter = ItemsDataFilter.byTag,
-                                               string value = "all",
+                                               ItemsDataFilter filter = ItemsDataFilter.byDefault,
+                                               string value = "",
                                                DataSort sort = DataSort.byDefault,
                                                int page = 1,
                                                string categoryName = "")
         {
             this.DefineCategories();
             this.SetItemSearch();
+            this.DefineItemsSorts();
 
             KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 

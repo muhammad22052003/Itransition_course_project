@@ -2,10 +2,10 @@
 {
     public enum DataSort
     {
+        byDefault,
         byDate,
         bySize,
         byName,
-        byDefault,
         byView,
         byLike
     }

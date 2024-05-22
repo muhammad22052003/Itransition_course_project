@@ -94,6 +94,11 @@ namespace CourseProject_backend.Repositories
                             .Where((item) => true)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
+                            .Include(i => i.Tags)
+                            .Include(i => i.PositiveReact)
+                            .Include(i => i.Comments)
+                            .Include(i => i.Views)
+                            .Include(i => i.Collection)
                             .ToListAsync();
                     }
                     break;
@@ -107,6 +112,7 @@ namespace CourseProject_backend.Repositories
                             .Include(i => i.PositiveReact)
                             .Include(i => i.Comments)
                             .Include(i => i.Views)
+                            .Include(i => i.Collection)
                             .ToListAsync();
                     }
                     break;
@@ -120,6 +126,7 @@ namespace CourseProject_backend.Repositories
                             .Include(i => i.PositiveReact)
                             .Include(i => i.Comments)
                             .Include(i => i.Views)
+                            .Include(i => i.Collection)
                             .ToListAsync();
                     }
                     break;
@@ -133,6 +140,7 @@ namespace CourseProject_backend.Repositories
                             .Include(i => i.PositiveReact)
                             .Include(i => i.Comments)
                             .Include(i => i.Views)
+                            .Include(i => i.Collection)
                             .ToListAsync();
                     }
                     break;
@@ -143,6 +151,7 @@ namespace CourseProject_backend.Repositories
                             .Include(i => i.PositiveReact)
                             .Include(i => i.Comments)
                             .Include(i => i.Views)
+                            .Include(i => i.Collection)
                             .ToListAsync();
                     }
                     break;

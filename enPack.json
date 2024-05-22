@@ -43,5 +43,17 @@
   "skip_regisration": "Continue without registration",
   "items_count": "Items count",
   "top_big_collections": "Top Big Colletions",
-  "new_items": "New Items"
+  "new_items": "New Items",
+  "author_word": "Author",
+  "you_must_authorized": "To see your profile you must be registered. Through the \"Login\" button you can log in",
+  "my_profile": "My Profile",
+  "name_word": "Name",
+  "registreted_word": "Registreted",
+  "collections_count_word": "Collections count",
+  "Edit_settings_word": "Edit Settings",
+  "settings_word": "Settings",
+  "current_pass": "Current Password",
+  "new_pass": "New Password",
+  "confirm_new_pas": "Confirm New Password",
+  "export_to_csv": "Export to .csv"
 }

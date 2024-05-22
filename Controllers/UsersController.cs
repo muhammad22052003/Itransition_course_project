@@ -31,14 +31,15 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromRoute] AppLanguage lang,
-                                               UsersDataFilter filter,
-                                               string value,
-                                               DataSort sort,
+        public async Task<IActionResult> Index(AppLanguage lang = AppLanguage.en,
+                                               UsersDataFilter filter = UsersDataFilter.byDefault,
+                                               string value = "",
+                                               DataSort sort = DataSort.byDefault,
                                                int page = 1)
         {
             this.DefineCategories();
             this.SetUserSearch();
+            this.DefineUsersSorts();
 
             KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 

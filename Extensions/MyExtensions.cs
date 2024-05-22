@@ -1,5 +1,6 @@
 ﻿using CourseProject_backend.CustomDbContext;
 using CourseProject_backend.Entities;
+using CourseProject_backend.Enums;
 using CourseProject_backend.Enums.Packages;
 using CourseProject_backend.Packages;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,45 @@ namespace CourseProject_backend.Extensions
             var Categories = CategoriesPackage.GetCategoriesNames();
 
             controller.ViewData.Add("categories", Categories.ToList());
+        }
+
+        public static void DefineCollectionSorts(this Controller controller)
+        {
+            List<string> sorts = new List<string>()
+            {
+                DataSort.byDefault.ToString(),
+                DataSort.byName.ToString(),
+                DataSort.bySize.ToString(),
+                DataSort.byDate.ToString(),
+            };
+
+            controller.ViewData.Add("sorts", sorts);
+        }
+
+        public static void DefineUsersSorts(this Controller controller)
+        {
+            List<string> sorts = new List<string>()
+            {
+                DataSort.byDefault.ToString(),
+                DataSort.byName.ToString(),
+                DataSort.byDate.ToString(),
+            };
+
+            controller.ViewData.Add("sorts", sorts);
+        }
+
+        public static void DefineItemsSorts(this Controller controller)
+        {
+            List<string> sorts = new List<string>()
+            {
+                DataSort.byDefault.ToString(),
+                DataSort.byName.ToString(),
+                DataSort.byLike.ToString(),
+                DataSort.byView.ToString(),
+                DataSort.byDate.ToString(),
+            };
+
+            controller.ViewData.Add("sorts", sorts);
         }
 
         public static void SetCollectionSearch(this Controller controller)

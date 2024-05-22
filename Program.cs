@@ -37,6 +37,9 @@ internal class Program
         IJwtTokenHelper jwtTokenHelper = new JwtTokenHelper();
         IPasswordHasher passwordHasher = new Sha3_256PasswordHasher();
 
+        CollectionAdapter collectionAdapter = new CollectionAdapter();
+        CSVHepler csvHelper = new CSVHepler();
+
         builder.Services.AddSingleton<CollectionDBContext>((service) =>
         {
             CollectionDBContext dbContext = new CollectionDBContext
@@ -69,7 +72,9 @@ internal class Program
         });
         builder.Services.AddSingleton<CollectionService>((service) =>
         {
-            CollectionService collectionService = new CollectionService(configuration);
+            CollectionService collectionService = new CollectionService(configuration,
+                csvHelper,
+                collectionAdapter);
 
             return collectionService;
         });

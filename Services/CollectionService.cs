@@ -3,6 +3,7 @@ using CourseProject_backend.CustomDbContext;
 using CourseProject_backend.Entities;
 using CourseProject_backend.Enums;
 using CourseProject_backend.Enums.Packages;
+using CourseProject_backend.Helpers;
 using CourseProject_backend.Interfaces.Helpers;
 using CourseProject_backend.Interfaces.Repositories;
 using CourseProject_backend.Interfaces.Services;
@@ -19,11 +20,20 @@ namespace CourseProject_backend.Services
         private UserRepository _userRepository;
         private CategoryRepository _categoryRepository;
         private readonly IConfiguration _configuration;
+        private readonly CSVHepler _csvHepler;
+        private readonly CollectionAdapter _collectionAdapter;
 
-        public CollectionService(IConfiguration configuration)
+        public CollectionService
+        (
+            IConfiguration configuration,
+            CSVHepler csvHepler,
+            CollectionAdapter collectionAdapter
+        )
         {
             
             _configuration = configuration;
+            _csvHepler = csvHepler;
+            _collectionAdapter = collectionAdapter;
         }
 
         public void Initialize(CollectionDBContext dBContext)
@@ -119,6 +129,14 @@ namespace CourseProject_backend.Services
             return true;
         }
 
+        public byte[] GetCollectionCsv(MyCollection collection)
+        {
+            var dataTable = _collectionAdapter.AdapteToListTable(collection);
+
+            byte[] bytes = _csvHepler.GetStream(dataTable);
+
+            return bytes;
+        }
         public async Task<MyCollection?> GetById(string id = null)
         {
             if (id == null) { return null; }

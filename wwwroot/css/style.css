@@ -199,8 +199,12 @@ textarea {
         background-color: #d85e55;
     }
 
+.btn-like-header-color {
+    background-color: #ffffff;
+}
+
 .btn-constructor-yesNo-color {
-    background-color: #ffffff00;
+    background-color: rgb(0,0,0,0);
 }
 
     .btn-constructor-yesNo-color:hover {
@@ -221,6 +225,8 @@ textarea {
 }
 
 .btn-redirect-login {
+    text-decoration: none;
+    padding: 7px;
     background-color: #c7c7c7;
     color: #000000;
 }
@@ -384,4 +390,45 @@ textarea {
 
 .true-false-icon {
     height: 35px;
+}
+
+.search-panel {
+    background-color: #b1b1b1;
+    width: 100%;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.data-block {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 20px;
+}
+
+.btn-edit-color {
+    background-color: #aaaaaa;
+    color: #ffffff;
+}
+
+.btn-edit-submit-color:hover {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #fff;
+}
+
+.btn-edit-submit-color {
+    background-color: var(--color3);
+    color: #ffffff;
+}
+
+.btn-edit-color:hover {
+    background-color: #adadad;
+    color: #ffffff;
+    border-color: #fff;
+}
+
+.menu-row {
+    margin-top: 20px;
+    background-color: #b1b1b1;
+    border-radius: 300px;
 }

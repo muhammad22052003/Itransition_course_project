@@ -45,6 +45,7 @@ namespace CourseProject_backend.Controllers
         {
             this.DefineCategories();
             this.SetCollectionSearch();
+            this.DefineCollectionSorts();
 
             KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 

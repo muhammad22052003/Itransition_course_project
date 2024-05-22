@@ -49,6 +49,7 @@ namespace CourseProject_backend.Controllers
         {
             this.DefineCategories();
             this.SetItemSearch();
+            this.DefineItemsSorts();
 
             if (id == null) { return NotFound(); }
 

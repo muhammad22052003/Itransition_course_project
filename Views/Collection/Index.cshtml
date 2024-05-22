@@ -7,6 +7,8 @@
     ViewData.Add("Lang", Model.LanguagePack.Key);
 }
 
+<input type="hidden" id="collectonId" value="@Model.Collection.Id" />
+
 <form method="post" action="~/item/delete">
 
     @{
@@ -96,6 +98,11 @@
                     <div class="col text-center d-flex justify-content-center">
                         <button type="button" onclick="selectAll()" class="btn-style-header-smaller btn-main-selectall-color">
                             @Model.LanguagePack.Value["select_all"]
+                        </button>
+                    </div>
+                    <div class="col text-center d-flex justify-content-center">
+                        <button type="button" onclick="exportToCsv()" class="btn-style-header-smaller btn-main-selectall-color">
+                            @Model.LanguagePack.Value["export_to_csv"]
                         </button>
                     </div>
                     <div class="col text-center d-flex justify-content-center">
@@ -291,4 +298,4 @@
         </section>
     }
 </form>
-
+<script src="~/js/CollectionController.js"></script>

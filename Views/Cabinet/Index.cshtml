@@ -129,6 +129,14 @@
                         </div>
                         <div class="row">
                             <div class="col d-flex justify-content-start">
+                                <h6>@Model.LanguagePack.Value["author_word"] : @Model.Collections[i].User.Email</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-flex justify-content-start">
+                                <h6>@Model.LanguagePack.Value["category_word"] : @Model.Collections[i].Category.Name</h6>
+                            </div>
+                            <div class="col d-flex justify-content-start">
                                 <h6>@Model.LanguagePack.Value["created_word"] : @Model.Collections[i].CreatedTime.Date.ToShortDateString()</h6>
                             </div>
                         </div>

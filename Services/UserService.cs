@@ -147,6 +147,28 @@ namespace CourseProject_backend.Services
             return user;
         }
 
+        public async Task<bool> EditUserData(EditProfileModel model, string token)
+        {
+            if(model.NewPassword != model.ConfirmPassword) { return false; }
+
+            User? user = await GetUserFromToken(token);
+
+            if(user == null || user.Id != model.UserId) { return false; }
+
+            string verifyPassordHash = _passwordHasher.Generate(model.CurrentPassword);
+
+            if(verifyPassordHash != user.Password) { return false; }
+
+            string newPasswordHash = _passwordHasher.Generate(model.NewPassword);
+
+            user.Name = model.Name;
+            user.Password = newPasswordHash;
+
+            await SaveUpdates();
+
+            return true;
+        }
+
         public async Task<List<User>> GetUsersList(UsersDataFilter filter,
                                                    string value,
                                                    DataSort sort,

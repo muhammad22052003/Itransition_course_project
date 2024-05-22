@@ -7,6 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CourseProject_backend.Controllers
 {
+    public class SearchModel
+    {
+        [FromForm]
+        public string SearchText { get; set; } = "";
+        [FromForm]
+        public string CategoryName { get; set; } = "";
+        [FromForm]
+        public AppLanguage Lang { get; set; } = AppLanguage.en;
+        [FromForm]
+        public DataSort Sort { get; set; } = DataSort.byDefault;
+    }
+
     public class SearchController : Controller
     {
         private readonly ItemService _itemService;
@@ -27,42 +39,42 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Item([FromForm]string searchText = "", string categoryName = "", [FromForm]AppLanguage lang = AppLanguage.en)
+        public IActionResult Item(SearchModel model)
         {
             return RedirectToAction("index", "itemlist", new
             {
-                lang = lang.ToString(),
+                lang = model.Lang.ToString(),
                 filter = ItemsDataFilter.bySearch,
-                value = searchText,
-                sort = DataSort.byDefault,
+                value = model.SearchText,
+                sort = model.Sort,
                 page = 1,
-                categoryName = categoryName
+                categoryName = model.CategoryName
             });
         }
 
         [HttpPost]
-        public IActionResult Collection([FromForm] string searchText = "", string categoryName = "", [FromForm] AppLanguage lang = AppLanguage.en)
+        public IActionResult Collection(SearchModel model)
         {
             return RedirectToAction("index", "collectionList", new
             {
-                lang = lang.ToString(),
+                lang = model.Lang.ToString(),
                 filter = CollectionDataFilter.byName,
-                value = searchText,
-                sort = DataSort.byDefault,
+                value = model.SearchText,
+                sort = model.Sort,
                 page = 1,
-                categoryName = categoryName
+                categoryName = model.CategoryName
             });
         }
 
         [HttpPost]
-        public IActionResult User([FromForm] string searchText = "", [FromForm] AppLanguage lang = AppLanguage.en)
+        public IActionResult User(SearchModel model)
         {
             return RedirectToAction("index", "users", new
             {
-                lang = lang.ToString(),
+                lang = model.Lang.ToString(),
                 filter = UsersDataFilter.byName,
-                value = searchText,
-                sort = DataSort.byDefault,
+                value = model.SearchText,
+                sort = model.Sort,
                 page = 1,
             });
         }

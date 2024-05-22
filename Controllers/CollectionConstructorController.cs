@@ -39,6 +39,7 @@ namespace CourseProject_backend.Controllers
         {
             this.DefineCategories();
             this.SetCollectionSearch();
+            this.DefineCollectionSorts();
 
             if (!Request.Cookies.TryGetValue("userData", out string? token))
             {

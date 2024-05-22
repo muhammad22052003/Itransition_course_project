@@ -46,6 +46,14 @@ namespace CourseProject_backend.Controllers
         {
             this.DefineCategories();
             this.SetItemSearch();
+            this.DefineItemsSorts();
+
+            if (Request.Cookies.TryGetValue("userData", out string? token))
+            {
+                User? user = await _userService.GetUserFromToken(token);
+
+                if (user != null && user.IsAdmin()) { ViewData.Add("usersMenu", "show"); }
+            }
 
             KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 

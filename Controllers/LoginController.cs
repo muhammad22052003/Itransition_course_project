@@ -66,11 +66,6 @@ namespace CourseProject_backend.Controllers
 
             if (!token.IsNullOrEmpty())
             {
-                UserLoginModel loginModel = new UserLoginModel()
-                {
-                    Email = model.Email,
-                    Password = model.Password
-                };
                 Response.Cookies.Append("userData", token);
                 return RedirectToAction("Index", "home", new { lang = lang });
             }

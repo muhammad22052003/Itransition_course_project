@@ -26,11 +26,14 @@ internal class Program
 
         IConfiguration configuration = builder.Configuration;
 
-        CollectionDBContext context = new CollectionDBContext
-                                        (
-                                        builder.Configuration.GetValue<string>("DBConnections:npgsql"),
-                                        DBSystem.POSTGRES
-                                        );
+        AppSecrets appSecrets = new AppSecrets();
+
+        if(!await appSecrets.InitData(configuration.GetValue<string>("secretsDataLink")))
+        {
+            throw new Exception("Secrets undefined");
+        }
+
+        CollectionDBContext context = new CollectionDBContext(appSecrets.NpgSql_connection, DBSystem.POSTGRES);
 
         await CategoriesPackage.Initialize(context);
 
@@ -40,13 +43,14 @@ internal class Program
         CollectionAdapter collectionAdapter = new CollectionAdapter();
         CSVHepler csvHelper = new CSVHepler();
 
+        builder.Services.AddSingleton<AppSecrets>((service) =>
+        {
+            return appSecrets;
+        });
+
         builder.Services.AddSingleton<CollectionDBContext>((service) =>
         {
-            CollectionDBContext dbContext = new CollectionDBContext
-                                        (
-                                        builder.Configuration.GetValue<string>("DBConnections:npgsql"),
-                                        DBSystem.POSTGRES
-                                        );
+            CollectionDBContext dbContext = new CollectionDBContext(appSecrets.NpgSql_connection, DBSystem.POSTGRES);
 
             return dbContext;
         });
@@ -57,7 +61,8 @@ internal class Program
 
             UserService? userService = new UserService(tokenHelper: jwtTokenHelper,
                                                   configuration: configuration,
-                                                  passwordHasher: passwordHasher);
+                                                  passwordHasher: passwordHasher,
+                                                  appSecrets: appSecrets);
 
 
             return userService;

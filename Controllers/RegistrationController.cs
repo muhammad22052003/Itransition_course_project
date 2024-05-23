@@ -16,6 +16,8 @@ namespace CourseProject_backend.Controllers
         public KeyValuePair<string, IDictionary<string, string>> LanguagePack { get; set;}
 
         public IDictionary<string, string> Errors { get; set; }
+
+        public string GoogleAuthUri {  get; set; }
     }
 
     public class RegistrationController : Controller

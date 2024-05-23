@@ -6,6 +6,12 @@ using Microsoft.IdentityModel.Tokens;
 using CourseProject_backend.Models.RequestModels;
 using CourseProject_backend.Extensions;
 using CourseProject_backend.CustomDbContext;
+using CourseProject_backend.Helpers;
+using Google.Apis.Oauth2.v2.Data;
+using Newtonsoft.Json.Linq;
+using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Requests;
+using Google.Apis.Auth.OAuth2;
 
 namespace CourseProject_backend.Controllers
 {
@@ -13,16 +19,19 @@ namespace CourseProject_backend.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
+        private readonly AppSecrets _appSecrets;
 
         public LoginController
         (
             [FromServices] IConfiguration configuration,
             [FromServices] UserService userService,
-            [FromServices] CollectionDBContext dBContext
+            [FromServices] CollectionDBContext dBContext,
+            [FromServices] AppSecrets appSecrets
         )
         {
             _configuration = configuration;
             _userService = userService;
+            _appSecrets = appSecrets;
 
             _userService.Initialize(dBContext);
         }
@@ -32,10 +41,15 @@ namespace CourseProject_backend.Controllers
         {
             KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 
+            string redirectUri = Request.Scheme + "://" + Request.Host + "/login/GoogleAuth";
+
+            string googleAuthUri = _userService.GetGoogleAuthUri(redirectUri);
+
             RegistrationModel registrationModel = new RegistrationModel()
             {
-                Errors = new Dictionary<string, string>(),
-                LanguagePack = langDataPair
+                Errors = new Dictionary<string,string>(),
+                LanguagePack = langDataPair,
+                GoogleAuthUri = googleAuthUri
             };
 
             return View(registrationModel);
@@ -52,10 +66,16 @@ namespace CourseProject_backend.Controllers
                                <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
 
             var errorsDictionary = ModelState.GetErrors();
+
+            string redirectUri = Request.Scheme + "://" + Request.Host + "/login/GoogleAuth";
+
+            string googleAuthUri = _userService.GetGoogleAuthUri(redirectUri);
+
             RegistrationModel registrationModel = new RegistrationModel()
             {
                 Errors = errorsDictionary,
-                LanguagePack = langDataPair
+                LanguagePack = langDataPair,
+                GoogleAuthUri = googleAuthUri
             };
             if (!ModelState.IsValid)
             {
@@ -81,12 +101,31 @@ namespace CourseProject_backend.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GoogleAuth(string code)
+        {
+            string redirectUri = Request.Scheme + "://" + Request.Host + "/login/GoogleAuth";
+
+            string? token = await _userService.GoogleLogin(code, redirectUri);
+
+            if (token.IsNullOrEmpty())
+            {
+                return BadRequest();
+            }
+            else
+            {
+                Response.Cookies.Append("userData", token);
+                return RedirectToAction("Index", "home");
+            }
+        }
+
         public IActionResult Logout()
         {
             if (Request.Cookies.TryGetValue("userData", out string? token))
             {
                 Response.Cookies.Delete("userData");
             }
+
             return RedirectToAction("index", "start");
         }
     }

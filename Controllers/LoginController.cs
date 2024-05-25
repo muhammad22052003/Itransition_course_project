@@ -67,7 +67,7 @@ namespace CourseProject_backend.Controllers
 
             var errorsDictionary = ModelState.GetErrors();
 
-            string redirectUri = Request.Scheme + "://" + Request.Host + "/login/GoogleAuth";
+            string redirectUri = "https" + "://" + Request.Host + "/login/GoogleAuth";
 
             string googleAuthUri = _userService.GetGoogleAuthUri(redirectUri);
 
@@ -104,7 +104,7 @@ namespace CourseProject_backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GoogleAuth(string code)
         {
-            string redirectUri = Request.Scheme + "://" + Request.Host + "/login/GoogleAuth";
+            string redirectUri = "https" + "://" + Request.Host + "/login/GoogleAuth";
 
             string? token = await _userService.GoogleLogin(code, redirectUri);
 

@@ -22,6 +22,8 @@ namespace CourseProject_backend.Controllers
         {
             _dBContext = dBContext;
             _userService = userService;
+
+            _userService.Initialize(dBContext);
         }
 
         [HttpGet]

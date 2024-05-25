@@ -51,7 +51,7 @@ namespace CourseProject_backend.Extensions
         {
             List<string> sorts = new List<string>()
             {
-                DataSort.byDefault.ToString(),
+                //DataSort.byDefault.ToString(),
                 DataSort.byName.ToString(),
                 DataSort.bySize.ToString(),
                 DataSort.byDate.ToString(),
@@ -64,7 +64,7 @@ namespace CourseProject_backend.Extensions
         {
             List<string> sorts = new List<string>()
             {
-                DataSort.byDefault.ToString(),
+                //DataSort.byDefault.ToString(),
                 DataSort.byName.ToString(),
                 DataSort.byDate.ToString(),
             };
@@ -76,7 +76,7 @@ namespace CourseProject_backend.Extensions
         {
             List<string> sorts = new List<string>()
             {
-                DataSort.byDefault.ToString(),
+                //DataSort.byDefault.ToString(),
                 DataSort.byName.ToString(),
                 DataSort.byLike.ToString(),
                 DataSort.byView.ToString(),

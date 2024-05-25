@@ -1,12 +1,81 @@
 ﻿let serverUrl = window.location.origin;
 
-document.addEventListener('DOMContentLoaded', async function () {
-    console.log("Controller");
+let searchForm = document.getElementById('search-panel-form');
 
+let categoriesSelect = document.getElementById('select-categories');
+let sortSelect = document.getElementById('select-sortBy');
+let regionsSelect = document.getElementById('select-regions');
+
+let isDarkModeInput = document.getElementById('isDarkMode');
+
+function darkModeOnOff() {
+
+    if (isDarkModeInput.value == '0') {
+        isDarkModeInput.value = '1';
+        setDarkMode();
+    }
+    else if (isDarkModeInput.value == '1') {
+        isDarkModeInput.value = '0';
+        setLightMode();
+    }
+}
+
+function setDarkMode() {
+    console.log('darkMode');
+    let darkStyleFile = document.getElementById('darkStyleFile');
+    let lightStyleFile = document.getElementById('lightStyleFile');
+
+    lightStyleFile.rel = '';
+    darkStyleFile.rel = 'stylesheet';
+
+    document.cookie = 'themeMode' + '=' + 'dark' + '; path=/';
+}
+
+function setLightMode() {
+    console.log('lightMode');
+    let darkStyleFile = document.getElementById('darkStyleFile');
+    let lightStyleFile = document.getElementById('lightStyleFile');
+
+    lightStyleFile.rel = 'stylesheet';
+    darkStyleFile.rel = '';
+
+    document.cookie = 'themeMode' + '=' + 'light' + '; path=/';
+}
+
+document.addEventListener('DOMContentLoaded', async function () {
+
+    var cookies = document.cookie.split("; ");
+    let themeDefined = false;
+
+    for (var i = 0; i < cookies.length; i++) {
+        var parts = cookies[i].split("=");
+        if (parts[0] === 'themeMode') {
+            if (parts[1] === 'light') {
+                setLightMode();
+                themeDefined = true;
+            }
+        }
+    }
+
+    if (!themeDefined) {
+        setDarkMode();
+    }
 
     await defineAllCategories();
     await defineAllLanguages();
 })
+
+categoriesSelect.addEventListener('change', function () {
+    searchForm.submit();
+});
+
+sortSelect.addEventListener('change', function () {
+    searchForm.submit();
+});
+
+regionsSelect.addEventListener('change', function () {
+    searchForm.submit();
+});
 
 async function defineAllCategories() {
     const response = await fetch(serverUrl + '/apicategory' + '/getall', {
@@ -124,13 +193,8 @@ async function sendUserEditForm() {
 
     errorMessage.hidden = true;
 
-    if (newPassword.value == curPassword.value) {
-        alert('The new and old password are the same');
-        return;
-    }
-
     if (newPassword.value != confPassword.value) {
-        alert('Password mismatch');
+        alert('Current Password mismatch');
         return;
     }
 

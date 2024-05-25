@@ -99,6 +99,7 @@ namespace CourseProject_backend.Repositories
                             .Include(i => i.Comments)
                             .Include(i => i.Views)
                             .Include(i => i.Collection)
+                            .ThenInclude(c => c.User)
                             .ToListAsync();
                     }
                     break;
@@ -113,6 +114,7 @@ namespace CourseProject_backend.Repositories
                             .Include(i => i.Comments)
                             .Include(i => i.Views)
                             .Include(i => i.Collection)
+                            .ThenInclude(c => c.User)
                             .ToListAsync();
                     }
                     break;
@@ -127,6 +129,7 @@ namespace CourseProject_backend.Repositories
                             .Include(i => i.Comments)
                             .Include(i => i.Views)
                             .Include(i => i.Collection)
+                            .ThenInclude(c => c.User)
                             .ToListAsync();
                     }
                     break;
@@ -141,6 +144,7 @@ namespace CourseProject_backend.Repositories
                             .Include(i => i.Comments)
                             .Include(i => i.Views)
                             .Include(i => i.Collection)
+                            .ThenInclude(c => c.User)
                             .ToListAsync();
                     }
                     break;
@@ -152,6 +156,7 @@ namespace CourseProject_backend.Repositories
                             .Include(i => i.Comments)
                             .Include(i => i.Views)
                             .Include(i => i.Collection)
+                            .ThenInclude(c => c.User)
                             .ToListAsync();
                     }
                     break;
@@ -167,10 +172,21 @@ namespace CourseProject_backend.Repositories
                                                                   int pageSize,
                                                                   int page)
         {
-            //  EF.Functions.ILike delegate no supported by linq query
-            //LikeDelegate likeFunction = _dbContext.GetLikeDelegate();
+            if(searchText == null || searchText.Replace(" ", "").IsNullOrEmpty())
+            {
+                return sortedQuery
+               .Skip((page - 1) * pageSize)
+               .Take(pageSize);
+            }
 
             return sortedQuery
+                .Where((x) => x.SearchVector.Matches(searchText) ||
+                       x.Comments.FirstOrDefault(c => c.SearchVector.Matches(searchText)) != null ||
+                       x.Tags.FirstOrDefault(t => t.Name.ToLower() == searchText.ToLower()) != null)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
+
+            /*return sortedQuery
                 .Where((x) => EF.Functions.ILike(x.Name.ToLower(), $"%{searchText.ToLower()}%")
                            || EF.Functions.ILike(x.CustomText1.ToLower(), $"%{searchText.ToLower()}%")
                            || EF.Functions.ILike(x.CustomText2.ToLower(), $"%{searchText.ToLower()}%")
@@ -181,7 +197,7 @@ namespace CourseProject_backend.Repositories
                            || x.Comments.FirstOrDefault((c) => EF.Functions.ILike(c.Text.ToLower(), $"%{searchText.ToLower()}%")) != null
                            || x.Tags.FirstOrDefault((c) => EF.Functions.ILike(c.Name.ToLower(), $"%{searchText.ToLower()}%")) != null)
                 .Skip((page - 1) * pageSize)
-                .Take(pageSize);
+                .Take(pageSize);*/
         }
 
         public async Task<int> GetItemsCount(ItemsDataFilter filter,

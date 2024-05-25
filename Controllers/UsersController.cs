@@ -43,12 +43,12 @@ namespace CourseProject_backend.Controllers
 
             KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 
-            if (!Request.Cookies.TryGetValue("userData", out string? token))
-            {
-                return NotFound();
-            }
+            User? user = null;
 
-            User? user = await _userService.GetUserFromToken(token);
+            if (Request.Cookies.TryGetValue("userData", out string? token))
+            {
+                user = await _userService.GetUserFromToken(token);
+            }
 
             int pagesCount = 1;
             var users = (await _userService.GetUsersList

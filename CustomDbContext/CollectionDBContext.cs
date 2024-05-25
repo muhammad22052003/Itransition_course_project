@@ -41,7 +41,22 @@ namespace CourseProject_backend.CustomDbContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Item>()
+                .HasGeneratedTsVectorColumn(
+                    p => p.SearchVector,
+                    "english",  // Text search config
+                    p => new { p.Name, p.CustomString1, p.CustomString2, p.CustomString3,
+                               p.CustomText1, p.CustomText2, p.CustomText3})  // Included properties
+                .HasIndex(p => p.SearchVector)
+                .HasMethod("GIN"); // Index method on the search vector (GIN or GIST)
 
+            modelBuilder.Entity<Comment>()
+                .HasGeneratedTsVectorColumn(
+                    p => p.SearchVector,
+                    "english",
+                    p => new { p.Text })
+                .HasIndex(p => p.SearchVector)
+                .HasMethod("GIN");
         }
 
         public LikeDelegate GetLikeDelegate()

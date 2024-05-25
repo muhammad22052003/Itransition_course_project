@@ -58,6 +58,7 @@ namespace CourseProject_backend.Repositories
                          .Where(predicat)
                          .Include(c => c.Items)
                          .Include(c => c.User)
+                         .Include(c => c.Category)
                          .ToListAsync();
 
             return collections;
@@ -91,8 +92,13 @@ namespace CourseProject_backend.Repositories
                         //  EF.Functions.ILike delegate no supported by linq query
                         //LikeDelegate likeFunction = _dbContext.GetLikeDelegate();
 
+                        if (!value.IsNullOrEmpty())
+                        {
+                            sortedQuery = sortedQuery
+                                          .Where((c) => c.Name.ToLower() == value.ToLower());
+                        }
+
                         collections = await sortedQuery
-                            .Where((c) => EF.Functions.ILike(c.Name.ToLower(), $"%{value.ToLower()}%"))
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include(c => c.Items)

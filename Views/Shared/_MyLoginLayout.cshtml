@@ -1,0 +1,31 @@
+﻿
+@using CourseProject_backend.Enums.Packages
+
+<!DOCTYPE html>
+
+<html lang="@(ViewData["lang"] ?? "en")">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bytech - @(ViewData["Title"])</title>
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/baseStyle.css" rel="stylesheet">
+
+    <link id="lightStyleFile" href="~/css/registration_login.css" rel="">
+    <link id="darkStyleFile" href="~/css/registration_login_dark.css" rel="">
+    
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <input type="hidden" id="isDarkMode" value="1ы" />
+    @RenderBody()
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/controller.js"></script>
+    <!--<script src="~/js/controller.js"></script>-->
+</body>
+
+</html>

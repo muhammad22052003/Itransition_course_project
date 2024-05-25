@@ -1,76 +1,68 @@
 ﻿@using CourseProject_backend.Controllers
 @model RegistrationModel
 @{
-    Layout = "_Layout";
+    Layout = "_MyLoginLayout";
     ViewData["Title"] = "Login";
     ViewData.Add("Lang", Model.LanguagePack.Key);
 
 }
+<!-------------------------------------------------------------->
+<main class="max-display-height">
+    <form action="~/login/index/@Model.LanguagePack.Key" method="post">
+    <div class="container justify-content-centerd">
+        <div class="row d-flex justify-content-center align-items-center max-display-height">
+            <div class="col-12 registration-form d-flex justify-content-center align-items-center">
+                <div class="container">
+                    <div class="row d-flex justify-content-center registration-header mb-4">
+                        <img src="~/img/logo_light.png" style="width: 180px;">
+                    </div>
+                    <div class="row d-flex justify-content-center registration-body mb-4">
+                        <label class="input-label">Email</label>
 
-<form action="~/login/index/@Model.LanguagePack.Key" method="post">
-<div class="container registration-grid">
-    <div class="row">
-        <div class="col-12 registration-panel">
-            <div class="container text-white">
-                <div class="row">
-                    <div class="col-12">
-                        <h1>@Model.LanguagePack.Value["login_word"]</h1>
-                    </div>
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <label for="email_field" class="form-label">Email</label>
-                            <input type="email"
-                                   class="form-control"
-                                   name="Email"
-                                   id="email_field"
-                                   placeholder="" />
-                                @{
-                                    if (Model.Errors.ContainsKey("Email"))
-                                    {
-                                        <label for="" class="form-label text-danger">* @Model.Errors["Email"]</label>
-                                    }
+                            @{
+                                if (Model.Errors.ContainsKey("Email"))
+                                {
+                                    <label class="text-danger danger-label">* @Model.Errors["Email"]</label>
                                 }
-                        </div>
-                        <label for="password_field" id="email_errorMessage" class="form-label text-danger"></label>
+                            }
+                        
+                        <input name="Email" type="email" class="form-control input-field">
+                    </div>
+                    <div class="row d-flex justify-content-center registration-body mb-4">
+                        <label class="input-label">Password</label>
 
-                        <div class="mb-3">
-                            <label for="password_field" class="form-label">Password</label>
-                            <input type="password"
-                                   class="form-control"
-                                   name="Password"
-                                   id="password_field"
-                                   placeholder="" />
-                                @{
-                                    if (Model.Errors.ContainsKey("Password"))
-                                    {
-                                        <label for="" class="form-label text-danger">* @Model.Errors["Password"]</label>
-                                    }
+                            @{
+                                if (Model.Errors.ContainsKey("Password"))
+                                {
+                                    <label class="text-danger danger-label">* @Model.Errors["Password"]</label>
                                 }
-                        </div>
+                            }
+
+                         <input name="Password" type="password" class="form-control input-field">
                     </div>
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <button type="submit" class="button btn-style-large btn-submit-color">@Model.LanguagePack.Value["submit_word"]</button>
+                        <div class="row d-flex justify-content-center registration-body">
+                            <button type="submit" class="sumbit-button">
+                                <h5 class="btn-login-submit align-items-center d-flex justify-content-center">@Model.LanguagePack.Value["login_word"]</h5>
+                            </button>
                         </div>
+                    <div class="row d-flex justify-content-center registration-body mb-2">
+                        @Model.LanguagePack.Value["or_with_word"]
                     </div>
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <a href="@(Url.Action("index","registration", new {lang = Model.LanguagePack.Key}))">
-                                    <div class="button btn-style-medium btn-redirect-login text-center">@Model.LanguagePack.Value["registration_word"]</div>
-                            </a>
-                        </div>
-                    </div>
-                        <div class="col-12">
-                            <div class="mb-3">
+                    <a>
+                        <div class="row d-flex justify-content-center registration-body mb-2">
                                 <a href="@Model.GoogleAuthUri">
-                                    <div class="button btn-style-medium btn-redirect-login text-center">Google</div>
+                                    <h5 class="btn-login-secondLevel align-items-center d-flex justify-content-center">Google</h5>
                                 </a>
-                            </div>
                         </div>
+                    </a>
+                        <div class="align-items-center d-flex justify-content-center">
+                            <a href="@(Url.Action("index","registration", new {lang = Model.LanguagePack.Key}))">
+                                @Model.LanguagePack.Value["account_exist"]
+                            </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</form>
-<script src="~/js/authorization.js"></script>            
+    </form>
+</main>

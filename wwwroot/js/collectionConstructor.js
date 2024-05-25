@@ -21,7 +21,6 @@ let intColumnCount = 3;
 let dateColumnCount = 3;
 
 let collectionData = { Name: "", CategoryName: categoryName.value, Description: ""};
-const serverUrl = window.location.origin;
 
 async function addConstructor(){
     createNewAddConstructor();

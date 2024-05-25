@@ -1,0 +1,423 @@
+﻿@using CourseProject_backend.Models.ViewModels
+@model ItemEditViewModel
+@{
+    Layout = "_MainLayout";
+    ViewData["Title"] = "Edit Item";
+    ViewData.Add("Lang", Model.LanguagePack.Key);
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col text-center d-flex justify-content-center">
+            <h1 class="d-flex text-center">@Model.LanguagePack.Value["item_constructor"] - @Model.Item.Name</h1>
+        </div>
+    </div>
+</div>
+
+<form action="~/itemconstructor/edit/@Model.LanguagePack.Key" id="form-data" method="post">
+    <input type="hidden" name="CollectionId" value="@Model.Item.Collection.Id" />
+    <input type="hidden" name="Id" value="@Model.Item.Id" />
+    <section>
+        <div class="constructor-panel">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.LanguagePack.Value["item_name"]</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <input value="@Model.Item.Name" type="text" name="Name" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @{
+        if (Model.Item.Collection.CustomString1_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomString1_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <input value="@Model.Item.CustomString1" name="CustomString1" type="text" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomString2_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomString2_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <input value="@Model.Item.CustomString2" type="text" name="CustomString2" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomString3_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomString3_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <input value="@Model.Item.CustomString3" type="text" name="CustomString3" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomText1_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomText1_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <textarea value="@Model.Item.CustomText1" name="CustomText1" class="constructor-text-area form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomText2_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomText2_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <textarea value="@Model.Item.CustomText2" name="CustomText2" class="constructor-text-area form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomText3_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomText3_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <textarea value="@Model.Item.CustomText3" name="CustomText3" class="constructor-text-area form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomInt1_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomInt1_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <input value="@Model.Item.CustomInt1?.ToString()" type="number" name="CustomInt1" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomInt2_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomInt2_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <input value="@Model.Item.CustomInt2?.ToString()" type="number" name="CustomInt2" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomInt3_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomInt3_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <input value="@Model.Item.CustomInt3?.ToString()" type="number" name="CustomInt3" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomBool1_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomBool1_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <button id="btn1-yes" type="button" onclick="btn_customBool1_yes()" class="btn-style-header-smaller btn-constructor-yesNo-color">
+                                    <img class="true-false-icon" src="https://drive.google.com/thumbnail?id=1-Ta_PZSXoBbyp5DCWAWUicee7dtDbMlf">
+                                </button>
+                            </div>
+                            <div class="col d-flex justify-content-center">
+                                <button id="btn1-no" type="button" onclick="btn_customBool1_no()" class="btn-style-header-smaller btn-constructor-yesNo-color">
+                                    <img class="true-false-icon" src="https://drive.google.com/thumbnail?id=10MgyAydHhSJ6Y-0RY4OOc5ej7sNw_QpL">
+                                </button>
+                            </div>
+                            <input value="@Model.Item.CustomBool1?.ToString().ToLower()" type="hidden" id="customBool1" name="CustomBool1" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomBool2_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomBool2_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <button id="btn2-yes" type="button" onclick="btn_customBool2_yes()" class="btn-style-header-smaller btn-constructor-yesNo-color">
+                                    <img class="true-false-icon" src="https://drive.google.com/thumbnail?id=1-Ta_PZSXoBbyp5DCWAWUicee7dtDbMlf">
+                                </button>
+                            </div>
+                            <div class="col d-flex justify-content-center">
+                                <button id="btn2-no" type="button" onclick="btn_customBool2_no()" class="btn-style-header-smaller btn-constructor-yesNo-color">
+                                    <img class="true-false-icon" src="https://drive.google.com/thumbnail?id=10MgyAydHhSJ6Y-0RY4OOc5ej7sNw_QpL">
+                                </button>
+                            </div>
+                            <input value="@Model.Item.CustomBool2?.ToString().ToLower()" id="customBool2" type="hidden" name="CustomBool2" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomBool3_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomBool3_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <button id="btn3-yes" type="button" onclick="btn_customBool3_yes()" class="btn-style-header-smaller btn-constructor-yesNo-color">
+                                    <img class="true-false-icon" src="https://drive.google.com/thumbnail?id=1-Ta_PZSXoBbyp5DCWAWUicee7dtDbMlf">
+                                </button>
+                            </div>
+                            <div class="col d-flex justify-content-center">
+                                <button id="btn3-no" type="button" onclick="btn_customBool3_no()" class="btn-style-header-smaller btn-constructor-yesNo-color">
+                                    <img class="true-false-icon" src="https://drive.google.com/thumbnail?id=10MgyAydHhSJ6Y-0RY4OOc5ej7sNw_QpL">
+                                </button>
+                            </div>
+                            <input value="@Model.Item.CustomBool3?.ToString().ToLower()" id="customBool3" type="hidden" name="CustomBool3" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomDate1_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomDate1_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <input value="@Model.Item.CustomDate1?.ToString("yyyy-MM-dd")" type="date" name="CustomDate1" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomDate2_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomDate2_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <input value="@Model.Item.CustomDate2?.ToString("yyyy-MM-dd")" type="date" name="CustomDate2" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomDate3_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomDate3_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <input value="@Model.Item.CustomDate3?.ToString("yyyy-MM-dd")" type="date" name="CustomDate3" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+
+    <section>
+        <div class="constructor-panel">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.LanguagePack.Value["tags_word"]</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        @{
+                            var tags = Model.Item.Tags.Select((tag) => tag.Name).ToArray();
+
+                            string tagsText = string.Empty;
+
+                            for (int i = 0; i < tags.Length; i++)
+                            {
+                                tagsText += tags[i];
+
+                                if(i != tags.Length - 1)
+                                {
+                                    tagsText += ' ';
+                                }
+                            }
+                        }
+                        <input value="@tagsText" type="text" name="Tags" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="constructor-panel">
+            <div class="container">
+                <div class="row">
+                    <div class="col d-flex justify-content-center text-center">
+                        <button type="button" id="submit-btn-itemCtor" onclick="createItem()" class="btn-style-header-smaller btn-main-header-color">
+                            <h5 class="p-2">@Model.LanguagePack.Value["submit_word"]</h5>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+<script src="~/js/itemConstructor.js"></script>

@@ -3,7 +3,6 @@ let lastname_field = document.getElementById("lastname_field");
 let email_field = document.getElementById("email_field");
 let password_field = document.getElementById("password_field");
 let confirmPassword_field = document.getElementById("confirmPassword_field");
-let serverUrl = window.location.origin;
 
 password_field.addEventListener("input", async function () {
     if (password_field.value == ' ') {

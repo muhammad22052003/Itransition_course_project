@@ -1,5 +1,4 @@
-﻿const serverUrl = window.location.origin;
-let lastLoadTime = new Date();
+﻿let lastLoadTime = new Date();
 let new_commentElement = document.getElementById('new-comment');
 
 let likeButton = document.getElementById('like-button');

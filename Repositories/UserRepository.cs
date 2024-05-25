@@ -6,6 +6,7 @@ using CourseProject_backend.Enums.Packages;
 using CourseProject_backend.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
 
@@ -66,11 +67,14 @@ namespace CourseProject_backend.Repositories
             {
                 case UsersDataFilter.byName:
                     {
-                        //  EF.Functions.ILike delegate no supported by linq query
-                        //LikeDelegate likeFunction = _dbContext.GetLikeDelegate();
+
+                        if (!value.IsNullOrEmpty())
+                        {
+                            sortedQuery = sortedQuery
+                                         .Where((c) => c.Name.ToLower() == value.ToLower());
+                        }
 
                         users = await sortedQuery
-                            .Where((c) => EF.Functions.ILike(c.Name.ToLower(), $"%{value.ToLower()}%"))
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include((u) => u.Collections)

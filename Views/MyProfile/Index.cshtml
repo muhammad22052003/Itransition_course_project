@@ -3,27 +3,19 @@
 @using CourseProject_backend.Enums
 @model MyProfileViewModel
 @{
-    Layout = "_MainLayout";
+    Layout = "_MyLayout";
     ViewData["Title"] = $"My Profile";
     ViewData.Add("Lang", Model.LanguagePack.Key);
 }
 
+<!------------------------------------------------------------------------>
 @{
-    if(Model.User == null)
+    if (Model.User == null)
     {
-        <div class="container mb-4 p-4">
-            <div class="row mb-4">
-                <div class="col text-center">
-                    <h4>@Model.LanguagePack.Value["you_must_authorized"]</h4>
-                </div>
-            </div>
-            <div class="row mb-4">
-                <div class="col text-center">
-                    <a href="~/login/index/@Model.LanguagePack.Key">
-                        <div class="button btn-style-medium btn-redirect-login text-center">
-                            @Model.LanguagePack.Value["login_word"]
-                        </div>
-                    </a>
+        <div class="container control-card">
+            <div class="row mb-3 d-flex justify-content-center align-content-center">
+                <div class="col d-flex justify-content-center">
+                    <h4 class="p-3">@Model.LanguagePack.Value["you_must_authorized"]</h4>
                 </div>
             </div>
         </div>
@@ -31,129 +23,175 @@
     else
     {
         <div class="myProfile-block" id="profile-block">
-            <section>
-                <div class="container mb-4 p-4">
-                    <div class="row mb-4">
-                        <div class="col text-center">
-                            <h4>@Model.LanguagePack.Value["my_profile"]</h4>
-                        </div>
-                    </div>
-                    <div class="data-block">
-                        <div class="row mb-4">
-                            <div class="col data-col">
-                                <h6>@Model.LanguagePack.Value["name_word"]</h6>
-                            </div>
-                            <div class="col">
-                                <h6>@Model.User.Name</h6>
-                            </div>
-                        </div>
-                        <div class="row mb-4">
-                            <div class="col">
-                                <h6>Email</h6>
-                            </div>
-                            <div class="col">
-                                <h6>@Model.User.Email</h6>
-                            </div>
-                        </div>
-                        <div class="row mb-4">
-                            <div class="col">
-                                <h6>@Model.LanguagePack.Value["registreted_word"]</h6>
-                            </div>
-                            <div class="col">
-                                <h6>@Model.User.RegistrationTime.Date.ToShortDateString()</h6>
-                            </div>
-                        </div>
-                        <div class="row mb-4">
-                            <div class="col">
-                                <h6>Role</h6>
-                            </div>
-                            <div class="col">
-                                <h6>@Model.User.Role.ToUpper()</h6>
-                            </div>
-                        </div>
-                        <div class="row ">
-                            <div class="col">
-                                <h6>@Model.LanguagePack.Value["collections_count_word"]</h6>
-                            </div>
-                            <div class="col">
-                                <h6>@Model.User.Collections.Count</h6>
-                            </div>
-                        </div>
+            <div class="container">
+                <div class="row mb-3">
+                    <div class="col d-flex justify-content-center">
+                        <h1>@Model.LanguagePack.Value["my_profile"]</h1>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <div class="container p-4">
-                <div class="row">
-                    <div class="col text-center">
-                        <button type="button" onclick="editProfile()" class="button btn-style-large btn-edit-color">
-                            <h5>@Model.LanguagePack.Value["Edit_settings_word"]</h5>
+            <div class="container control-card">
+                <div class="row mb-3 d-flex justify-content-center align-content-center">
+                    <div class="col d-flex justify-content-center">
+                        <button type="button" onclick="editProfile()" class="btn-all-select control-icon">
+                            <img src="~/img/edit.png" style="width: 30px;">
                         </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <section class="d-flex justify-content-center align-content-center">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-12 font-size-20">
+                                        @Model.LanguagePack.Value["name_word"] :
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="item-data">@Model.User.Name</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="d-flex justify-content-center align-content-center mb-3">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-12 font-size-20">
+                                        Email :
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="item-data">@Model.User.Email</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="d-flex justify-content-center align-content-center mb-3">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-12 font-size-20">
+                                        @Model.LanguagePack.Value["registrationDate_word"] :
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="item-data">@Model.User.RegistrationTime.Date.ToShortDateString()</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>
         </div>
 
         <div hidden class="editProfile-block" id="edit-block">
-            <section>
-                <form id="edit-profile-form">
-                    <input type="hidden" name="userId" value="@Model.User.Id" />
-
-                    <div class="container">
-                        <div class="row">
-                            <div class="col text-center">
-                                <h4>@Model.LanguagePack.Value["settings_word"]</h4>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col">
-
-                                <div hidden id="errorInputDataMessage">
-                                    <label class="form-label text-danger">Something went wrong with the input data</label>
-                                </div>
-
-                                <label class="form-label">@Model.LanguagePack.Value["name_word"]</label>
-                                <input type="text" class="form-control" value="@Model.User.Name" name="Name">
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col">
-                                <label class="form-label">@Model.LanguagePack.Value["current_pass"]</label>
-                                <input id="curPass_field" type="password" class="form-control" name="CurrentPassword">
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col">
-                                <label class="form-label">@Model.LanguagePack.Value["new_pass"]</label>
-                                <input id="newPass_field" type="password" class="form-control" name="NewPassword">
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col">
-                                <label class="form-label">@Model.LanguagePack.Value["confirm_new_pas"]</label>
-                                <input id="confPass_field" type="password" class="form-control" name="ConfirmPassword">
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col">
-                                <button type="button" onclick="sendUserEditForm()" class="button btn-style-large btn-edit-submit-color">
-                                    <h5>@Model.LanguagePack.Value["submit_word"]</h5>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </section>
-
             <div class="container">
                 <div class="row mb-3">
-                    <div class="col text-center">
-                        <button type="button" onclick="myProfile()" class="button btn-style-large btn-edit-color">
-                            <h5>@Model.LanguagePack.Value["my_profile"]</h5>
+                    <div class="col d-flex justify-content-center">
+                        <h1>@Model.LanguagePack.Value["edit_profile"]</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container control-card">
+                <div class="row mb-3 d-flex justify-content-center align-content-center">
+                    <div class="col d-flex justify-content-center">
+                        <button type="button" onclick="myProfile()" class="btn-all-select control-icon">
+                            <img src="~/img/admin.png" style="width: 30px;">
                         </button>
                     </div>
                 </div>
             </div>
+
+            <form id="edit-profile-form">
+
+                <input type="hidden" name="UserId" value="@Model.User.Id"/>
+                
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <section class="d-flex justify-content-center align-content-center">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20">
+                                            <div hidden id="errorInputDataMessage" class="font-size-12">
+                                                <label class="* form-label text-danger">Something went wrong with the input data</label>
+                                            </div>
+                                            @Model.LanguagePack.Value["name_word"] :
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <input type="text" class="form-control" value="@Model.User.Name" name="Name">
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20">
+                                            @Model.LanguagePack.Value["current_pass"] :
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <input id="curPass_field" type="password" class="form-control" name="CurrentPassword">
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20">
+                                            @Model.LanguagePack.Value["new_pass"] :
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <input id="newPass_field" type="password" class="form-control" name="NewPassword">
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20">
+                                            @Model.LanguagePack.Value["confirm_new_pas"] :
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <input id="confPass_field" type="password" class="form-control" name="ConfirmPassword">
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col d-flex justify-content-center">
+                                            <button type="button" onclick="sendUserEditForm()" class="btn-editProfile-submit">
+                                                @Model.LanguagePack.Value["edit_profile"]
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     }
 }

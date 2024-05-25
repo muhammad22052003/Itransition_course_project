@@ -2,21 +2,43 @@
 @using CourseProject_backend.Enums.Entities;
 @model CollectionListViewModel
 @{
-    Layout = "_MainLayout";
+    Layout = "_MyLayout";
     ViewData["Title"] = "Collection list";
     ViewData.Add("Lang", Model.LanguagePack.Key);
 }
 
-<form method="post" action="~/collection/delete">
+<div class="container">
+    <div class="row mb-3">
+        <div class="col d-flex justify-content-center">
+            <h1>@Model.LanguagePack.Value["collection_word"]</h1>
+        </div>
+    </div>
+</div>
 
+<div class="container">
+    <div class="row mb-3">
+        <div class="col d-flex justify-content-center">
+            <button type="button" onclick="selectAll()" class="btn-all-select">
+                @Model.LanguagePack.Value["select_all"]
+            </button>
+        </div>
+        <div class="col d-flex justify-content-center">
+            <button type="button" onclick="cancelAll()" class="btn-all-select">
+                @Model.LanguagePack.Value["cancel_all"]
+            </button>
+        </div>
+    </div>
+</div>
+
+<form method="post" action="~/collection/delete">
     @{
-        if(Model.User != null && Model.User.IsAdmin())
+        if (Model.User != null && Model.User.IsAdmin())
         {
-            <div class="container control-panel" id="control-panel">
-                <div class="row justify-content-center align-content-center header-col">
+            <div class="container control-card">
+                <div class="row mb-3 d-flex justify-content-center align-content-center">
                     <div class="col d-flex justify-content-center">
-                        <button id="delete-button" type="submit" class="btn-style-header-smaller btn-main-header-color">
-                            <img class="header-icon" src="https://drive.google.com/thumbnail?id=1-jMEYoBQO0Gw03LyLzgFwAZZxwMOoJFg">
+                        <button id="delete-button" type="submit" class="btn-all-select control-icon">
+                            <img src="~/img/trash.png" style="width: 30px;">
                         </button>
                     </div>
                 </div>
@@ -24,174 +46,140 @@
         }
     }
 
-    @{
-        if (Model.Collections.Count == 0)
-        {
-            <section class="selection-catalogs">
-                <div class="container">
-                    <div class="row">
-                        <div class="col">
-                            @Model.LanguagePack.Value["list_empty"];
-                        </div>
-                    </div>
-                </div>
-            </section>
-        }
-        else
-        {
-            <div class="container">
-                <div class="row">
-                    <div class="col text-center d-flex justify-content-center">
-                        <h1 class="d-flex text-center">@Model.LanguagePack.Value["collections_list_word"]</h1>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col text-center d-flex justify-content-center">
-                        <button type="button" onclick="selectAll()" class="btn-style-header-smaller btn-main-selectall-color">
-                            @Model.LanguagePack.Value["select_all"]
-                        </button>
-                    </div>
-                    <div class="col text-center d-flex justify-content-center">
-                        <button type="button" onclick="cancelAll()" class="btn-style-header-smaller btn-main-selectall-color">
-                            @Model.LanguagePack.Value["cancel_all"]
-                        </button>
-                    </div>
-                </div>
-            </div>
-        }
-
-        for (int i = 0; i < Model.Collections.Count; i++)
-        {
-            <a class="text-decoration-none text-reset"
-               href="@Url.Action("index","collection",
-                                    new{lang=Model.LanguagePack.Key,
-                                    id=Model.Collections[i].Id})">
-                <section class="selection-catalogs">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <!--<img class="content-image" src="../img/content.jpg">-->
-                            </div>
-                        </div>
-                        <div class="row data-header">
-                            <div class="col d-flex">
-                                <input name="collectionId" value="@Model.Collections[i].Id" class="form-check-input data-checkbox" type="checkbox" id="select-field" />
-                                <h3>@Model.Collections[i].Name</h3>
-                            </div>
-                            <div class="col d-flex justify-content-end">
-                                <h6>Id : @Model.Collections[i].Id</h6>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col d-flex justify-content-start">
-                                <h6>@Model.LanguagePack.Value["category_word"] : @Model.Collections[i].Category.Name</h6>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col d-flex justify-content-start">
-                                <h6>@Model.LanguagePack.Value["author_word"] : @Model.Collections[i].User.Email</h6>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col d-flex justify-content-start">
-                                <h6>@Model.LanguagePack.Value["category_word"] : @Model.Collections[i].Category.Name</h6>
-                            </div>
-                            <div class="col d-flex justify-content-start">
-                                <h6>@Model.LanguagePack.Value["created_word"] : @Model.Collections[i].CreatedTime.Date.ToShortDateString()</h6>
-                            </div>
-                            <div class="row">
-                                <div class="col d-flex justify-content-start">
-                                    <h6>@Model.LanguagePack.Value["items_count"] : @Model.Collections[i].Items.Count</h6>
+    <main>
+        <div class="container">
+            @{
+                for (int i = 0; i < Model.Collections.Count; i++)
+                {
+                    <div class="row d-flex justify-content-center align-content-center mb-3">
+                        <div class="col text-center">
+                            <div class="container collection-card">
+                                <div class="row mb-4">
+                                    <div class="col d-flex">
+                                        @{
+                                            if (Model.User.IsAdmin())
+                                            {
+                                                <input name="collectionId" value="@Model.Collections[i].Id" type="checkbox" id="select-field" class="form-check-input">
+                                            }
+                                        }
+                                    </div>
+                                    <div class="col d-flex justify-content-end align-content-center">
+                                        <div class="font-size-10">
+                                            id : @Model.Collections[i].Id
+                                        </div>
+                                    </div>
                                 </div>
-                        </div>
-                        <div class="row">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col text-center"></div>
-                                </div>
-                                <div class="row d-flex justify-content-start">
+                                <div class="row mb-4">
                                     <div class="col">
+                                        <a href="@Url.Action("index","collection",
+                                            new{lang=Model.LanguagePack.Key,
+                                            id=Model.Collections[i].Id})">
+                                            <div class="collection-header font-size-26">
+                                                @Model.Collections[i].Name
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row mb-4 font-size-20 mb-4">
+                                    <div class="col">
+                                        @Model.Collections[i].Description
+                                    </div>
+                                </div>
+                                <div class="row font-size-14 mb-1">
+                                    <div class="col">
+                                        @Model.LanguagePack.Value["author_word"] : <u>@Model.Collections[i].User.Name</u>
+                                    </div>
+                                </div>
+                                <div class="row font-size-14 mb-1">
+                                    <div class="col">
+                                        @Model.LanguagePack.Value["created_word"] : <u>@Model.Collections[i].CreatedTime.Date.ToShortDateString()</u>
+                                    </div>
+                                </div>
+                                <div class="row font-size-14 mb-1">
+                                    <div class="col">
+                                        @Model.LanguagePack.Value["category_word"] : <u>@Model.Collections[i].Category.Name</u>
+                                    </div>
+                                </div>
+                                <div class="row font-size-14 mb">
+                                    <div class="col">
+                                        @Model.LanguagePack.Value["items_count"] : <u>@Model.Collections[i].Items.Count</u>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
-            </a>
-        }
+                }
 
-        <section class="pages-section">
-            <div class="container">
-                <div class="row d-flex justify-content-center text-center">
-                    <div class="col">
+                <div class="row d-flex justify-content-center align-content-center mb-3">
+                    <div class="col text-center">
+                        <div class="container pagination-card">
 
-                        @{
-                            if (Model.CurrentPage > 1)
-                            {
-                                <a href="@Url.Action("index","collectionlist",
-                                    new{lang=Model.LanguagePack.Key,
-                                    filter=Model.Filter.ToString(),
-                                    value=Model.Value,
-                                    sort=Model.Sort,
-                                    page=Model.CurrentPage-1})" class="btn btn-page">
-                                    @{
-                                        char a = '<';
-                                    }@a
-                                </a>
-                            }
-                        }
-                        @{
-                            for (int i = 1; i <= Model.PagesCount; i++)
-                            {
-                                if (Model.CurrentPage == i)
+                            @{
+                                if (Model.CurrentPage > 1)
                                 {
                                     <a href="@Url.Action("index","collectionlist",
-                                    new{lang=Model.LanguagePack.Key,
-                                    filter=Model.Filter.ToString(),
-                                    value=Model.Value,
-                                    sort=Model.Sort,
-                                    page=i})" class="btn btn-page btn-page-current">@($"{i}")</a>
-                                }
-                                else if (i < Model.CurrentPage && i >= Model.CurrentPage - 3)
-                                {
-                                    <a href="@Url.Action("index","collectionlist",
-                                    new{lang=Model.LanguagePack.Key,
-                                    filter=Model.Filter.ToString(),
-                                    value=Model.Value,
-                                    sort=Model.Sort,
-                                    page=i})" class="btn btn-page">@($"{i}")</a>
-                                }
-                                else if (i > Model.CurrentPage && i <= Model.CurrentPage + 3)
-                                {
-                                    <a href="@Url.Action("index","collectionlist",
-                                    new{lang=Model.LanguagePack.Key,
-                                    filter=Model.Filter.ToString(),
-                                    value=Model.Value,
-                                    sort=Model.Sort,
-                                    page=i})" class="btn btn-page">@($"{i}")</a>
-                                }
-                                else
-                                {
-                                    continue;
+                                            new{lang=Model.LanguagePack.Key,
+                                            filter=Model.Filter.ToString(),
+                                            value=Model.Value,
+                                            sort=Model.Sort,
+                                            page=Model.CurrentPage-1})" class="btn_cust btn-page-select">
+                                        ⇐
+                                    </a>
                                 }
                             }
-                        }
-                        @{
-                            if (Model.CurrentPage < Model.PagesCount)
-                            {
-                                <a href="@Url.Action("index","collectionlist",
-                                    new{lang=Model.LanguagePack.Key,
-                                    filter=Model.Filter.ToString(),
-                                    value=Model.Value,
-                                    sort=Model.Sort,
-                                    page=Model.CurrentPage+1})" class="btn btn-page">
-                                    >
-                                </a>
+                            @{
+                                for (int i = 1; i <= Model.PagesCount; i++)
+                                {
+                                    if (Model.CurrentPage == i)
+                                    {
+                                        <a href="@Url.Action("index","collectionlist",
+                                            new{lang=Model.LanguagePack.Key,
+                                            filter=Model.Filter.ToString(),
+                                            value=Model.Value,
+                                            sort=Model.Sort,
+                                            page=i})" class="btn_cust btn-page-select-current">@($"{i}")</a>
+                                    }
+                                    else if (i < Model.CurrentPage && i >= Model.CurrentPage - 3)
+                                    {
+                                        <a href="@Url.Action("index","collectionlist",
+                                            new{lang=Model.LanguagePack.Key,
+                                            filter=Model.Filter.ToString(),
+                                            value=Model.Value,
+                                            sort=Model.Sort,
+                                            page=i})" class="btn_cust btn-page-select">@($"{i}")</a>
+                                    }
+                                    else if (i > Model.CurrentPage && i <= Model.CurrentPage + 3)
+                                    {
+                                        <a href="@Url.Action("index","collectionlist",
+                                            new{lang=Model.LanguagePack.Key,
+                                            filter=Model.Filter.ToString(),
+                                            value=Model.Value,
+                                            sort=Model.Sort,
+                                            page=i})" class="btn_cust btn-page-select">@($"{i}")</a>
+                                    }
+                                    else
+                                    {
+                                        continue;
+                                    }
+                                }
                             }
-                        }
+                            @{
+                                if (Model.CurrentPage < Model.PagesCount)
+                                {
+                                    <a href="@Url.Action("index","collectionlist",
+                                            new{lang=Model.LanguagePack.Key,
+                                            filter=Model.Filter.ToString(),
+                                            value=Model.Value,
+                                            sort=Model.Sort,
+                                            page=Model.CurrentPage-1})" class="btn_cust btn-page-select">
+                                        ⇒
+                                    </a>
+                                }
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-    }
+            }
+        </div>
+    </main>
 </form>

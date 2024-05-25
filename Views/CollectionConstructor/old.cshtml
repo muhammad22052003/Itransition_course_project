@@ -1,0 +1,141 @@
+﻿@model KeyValuePair<string,IDictionary<string, string>>
+@{
+    Layout = "_MainLayout";
+    ViewData["Title"] = "Collection constructor";
+    ViewData.Add("Lang", Model.Key);
+}
+
+<div id="sections-block">
+    <section>
+        <div class="constructor-panel">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.Value["enter_collection_name"] : </h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <input id="collectionName" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="constructor-panel">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.Value["change_category"] : </h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <select id="categoryName" class="form-control" name="Category" id="">
+                            @{
+                                if (ViewData.ContainsKey("categories"))
+                                {
+                                    List<string> categories = ViewData["categories"] as List<string>;
+
+                                    for (int i = 0; i < categories.Count; i++)
+                                    {
+                                        <option value="@categories[i]">@categories[i]</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="constructor-panel">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.Value["enter_description"] : </h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <textarea id="collectionDescription" type="text" class="constructor-text-area form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section hidden id="columnInfo" name="CustomText1_name" value="Sehrli qalpoqcha">
+        <div class="constructor-panel">
+            <div class="container">
+                <div class="row text-center">
+                    <div class="col">
+                        <div>
+                            <h4 id="columnName">Sehrli qalpoqcha</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row text-center mt-4">
+                    <div class="col">
+                        <div>
+                            <h5 id="columnTypeName">Turi : "Text"</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="addCollumnConstructor">
+        <div class="constructor-panel">
+            <div class="container">
+                <div class="row mb-3">
+                    <div class="col">
+                        <h5>@Model.Value["adding_new_column"]</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="" class="form-label">@Model.Value["column_type"]</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <select id="column-types" class="form-control region-select">
+                            <option value="Text">Text</option>
+                            <option value="String">String</option>
+                            <option value="Number">Number</option>
+                            <option value="Date">Date</option>
+                            <option value="Yes/No">Yes/No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col">
+                        <label for="" class="form-label">@Model.Value["column_name"]</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col d-flex fl">
+                        <input id="columnName" type="text" class="form-control"></input>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="d-flex justify-content-center">
+                        <button onclick="addConstructor()" class="btn-style-header-smaller btn-main-header-color">
+                            <h5 class="p-2">@Model.Value["add_word"]</h5>
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="d-flex justify-content-center">
+                        <button onclick="createCollection()" class="btn-style-header-smaller btn-main-header-color">
+                            <h5 class="p-2">@Model.Value["create_collection"]</h5>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="~/js/collectionConstructor.js"></script>

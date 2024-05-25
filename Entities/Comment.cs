@@ -1,5 +1,6 @@
 ﻿using CourseProject_backend.Interfaces.Entities;
 using Microsoft.EntityFrameworkCore;
+using NpgsqlTypes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -33,6 +34,8 @@ namespace CourseProject_backend.Entities
         public Item Item { get; set; }
         [Required]
         public DateTime CreatedTime { get; set; }
+
+        public NpgsqlTsVector SearchVector { get; set; }
 
         public object Clone()
         {

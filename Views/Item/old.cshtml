@@ -1,0 +1,594 @@
+﻿@using CourseProject_backend.Models.ViewModels
+@using CourseProject_backend.Enums.Entities
+@using CourseProject_backend.Enums
+@model ItemViewModel
+@{
+    Layout = "_MainLayout";
+    ViewData["Title"] = $"Item {Model.Item.Name}";
+    ViewData.Add("Lang", Model.LanguagePack.Key);
+}
+
+<input type="hidden" name="itemId" value="@Model.Item.Id" id="item-id" />
+
+<form method="post" action="~/item/delete">
+
+
+    @{
+        if (Model.User != null)
+        {
+            <div class="container control-panel" id="control-panel">
+                <div class="row justify-content-center align-content-center header-col">
+
+            @{
+                    if ((Model.User.Role.ToLower() == UserRoles.Admin.ToString().ToLower() ||
+                    Model.User.Collections.FirstOrDefault((c) => c.Items.Contains(Model.Item)) != null))
+                    {
+                            <div class="col d-flex justify-content-center">
+                                <a href="~/itemconstructor/edit/@Model.LanguagePack.Key/@Model.Item.Id" id="edit-button" onclick="editItem()" class="btn-style-header-smaller btn-main-header-color">
+                                    <img class="header-icon" src="https://drive.google.com/thumbnail?id=10UTj9Z9Ln1VBW0NeNQfO_6dBkwzZoweX">
+                                </a>
+                            </div>
+
+                            <div class="col d-flex justify-content-center">
+                                <button type="submit" name="itemId" value="@Model.Item.Id" id="delete-button" class="btn-style-header-smaller btn-main-header-color">
+                                    <img class="header-icon" src="https://drive.google.com/thumbnail?id=1-jMEYoBQO0Gw03LyLzgFwAZZxwMOoJFg">
+                                </button>
+                            </div>
+                    }
+            }
+                @{
+                    bool isLikedByUser = false;
+
+                    if (Model.Item.PositiveReact.FirstOrDefault(li => li.User.Id == Model.User.Id) != null)
+                    {
+                        isLikedByUser = true;
+                    }
+
+                    <input type="hidden" name="itemId" value="@isLikedByUser.ToString().ToLower()" id="is-liked" />
+                }
+
+                    <div class="col d-flex justify-content-center">
+                        <button type="button" id="like-button" onclick="addLike()" class="btn-style-header-smaller btn-like-header-color">
+                            <img class="header-icon" src="https://drive.google.com/thumbnail?id=10F40NHwk-8EbXnbVyN0CGouzWiDwUgzQ">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+    <div class="container">
+        <div class="row">
+            <div class="col text-center d-flex justify-content-center">
+                <h1 class="d-flex text-center">@Model.LanguagePack.Value["item_constructor"]</h1>
+            </div>
+        </div>
+    </div>
+
+    <section>
+        <div class="constructor-panel">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.LanguagePack.Value["item_name"] : </h5>
+                    </div>
+                    <div class="col">
+                        <h5>@Model.Item.Name</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.LanguagePack.Value["likes_word"] : </h5>
+                    </div>
+                    <div class="col">
+                        <h5>@Model.Item.PositiveReact.Count</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.LanguagePack.Value["views_word"] : </h5>
+                    </div>
+                    <div class="col">
+                        <h5>@Model.Item.Views.Count</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.LanguagePack.Value["created_date"] : </h5>
+                    </div>
+                    <div class="col">
+                        <h5>@Model.Item.CreatedTime.Date.ToShortDateString()</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @{
+        if (Model.Item.Collection.CustomString1_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomString1_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area">
+                                    <h6>@Model.Item.CustomString1</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomString2_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomString2_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area">
+                                    <h6>@Model.Item.CustomString2</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomString3_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomString3_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area">
+                                    <h6>@Model.Item.CustomString3</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomText1_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomText1_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area">
+                                    <h6>@Model.Item.CustomText1</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomText2_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomText2_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area">
+                                    <h6>@Model.Item.CustomText2</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomText3_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomText3_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area">
+                                    <h6>@Model.Item.CustomText3</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomInt1_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomInt1_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area">
+                                    <h6>@Model.Item.CustomInt1</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomInt2_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomInt2_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area">
+                                    <h6>@Model.Item.CustomInt2</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomInt3_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomInt3_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area">
+                                    <h6>@Model.Item.CustomInt3</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomBool1_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomBool1_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area  d-flex justify-content-center">
+                                    @{
+                                        if (Model.Item.CustomBool1 == true)
+                                        {
+                                            <img src="https://drive.google.com/thumbnail?id=1-Ta_PZSXoBbyp5DCWAWUicee7dtDbMlf" class="true-false-icon">
+                                        }
+                                        else
+                                        {
+                                            <img src="https://drive.google.com/thumbnail?id=10MgyAydHhSJ6Y-0RY4OOc5ej7sNw_QpL" class="true-false-icon">
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomBool2_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomBool2_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area  d-flex justify-content-center">
+                                    @{
+                                        if (Model.Item.CustomBool2 == true)
+                                        {
+                                            <img src="https://drive.google.com/thumbnail?id=1-Ta_PZSXoBbyp5DCWAWUicee7dtDbMlf" class="true-false-icon">
+                                        }
+                                        else
+                                        {
+                                            <img src="https://drive.google.com/thumbnail?id=10MgyAydHhSJ6Y-0RY4OOc5ej7sNw_QpL" class="true-false-icon">
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomBool3_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomBool3_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area  d-flex justify-content-center">
+                                    @{
+                                        if (Model.Item.CustomBool3 == true)
+                                        {
+                                            <img src="https://drive.google.com/thumbnail?id=1-Ta_PZSXoBbyp5DCWAWUicee7dtDbMlf" class="true-false-icon">
+                                        }
+                                        else
+                                        {
+                                            <img src="https://drive.google.com/thumbnail?id=10MgyAydHhSJ6Y-0RY4OOc5ej7sNw_QpL" class="true-false-icon">
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomDate1_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomDate1_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area">
+                                    <h6>@Model.Item.CustomDate1?.Date.ToShortDateString()</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomDate2_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomDate2_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area">
+                                    <h6>@Model.Item.CustomDate2?.Date.ToShortDateString()</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    @{
+        if (Model.Item.Collection.CustomDate3_state)
+        {
+            <section>
+                <div class="constructor-panel">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@Model.Item.Collection.CustomDate3_name</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="data-area">
+                                    <h6>@Model.Item.CustomDate3?.Date.ToShortDateString()</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+
+    <section>
+        <div class="constructor-panel">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <h5>@Model.LanguagePack.Value["tags_word"]</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="data-area">
+                            @{
+                                var tags = Model.Item.Tags.ToList();
+
+                                for (int j = 0; j < tags.Count; j++)
+                                {
+                                    <a href="~/itemlist/index?lang=@Model.LanguagePack.Key&filter=@ItemsDataFilter.byTag&value=@tags[j].Name">
+                                        #@tags[j].Name
+                                    </a>
+                                }
+                            }
+                            <h6>@Model.Item.CustomDate3?.Date.ToShortDateString()</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="row">
+            <div class="col text-center d-flex justify-content-center">
+                <h1 class="d-flex text-center">@Model.LanguagePack.Value["comentaries_word"]</h1>
+            </div>
+        </div>
+    </div>
+
+    <div id="comentaries-block">
+        @{
+            var comments = Model.Item.Comments.OrderBy((x) => x.CreatedTime).ToArray();
+
+            for (int i = 0; i < comments.Length; i++)
+            {
+                <section class="selection-comments d-flex justify-content-center">
+                    <div class="comment-panel">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                    <h5>@comments[i].User.Name</h5>
+                                    <div class="comment-area">
+                                        @comments[i].Text
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col text-end" id="date-field">
+                                    @comments[i].CreatedTime.Date.ToShortDateString()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            }
+        }
+    </div>
+
+    @{
+        if (Model.User != null)
+        {
+            <section class="selection-comments d-flex justify-content-center">
+                <div class="comment-panel-new">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h5>@(Model.User.Name + "(" + Model.LanguagePack.Value["new_comment"] + ")")</h5>
+                                <div class="comment-area">
+                                    <textarea id="comment-area" class="constructor-text-area form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" onclick="sendComment()" class="btn-style-header-smaller btn-main-selectall-color">
+                                    @Model.LanguagePack.Value["send_word"]
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+
+    <div hidden>
+        <section id="comment-template" class="selection-comments d-flex justify-content-center">
+            <div class="comment-panel">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <h5 id="author-field">author</h5>
+                            <div id="comment-text-field" class="comment-area">comment</div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col text-end" id="date-field">
+                            date
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</form>
+
+<script src="~/js/itemControl.js"></script>

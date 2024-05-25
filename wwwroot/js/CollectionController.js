@@ -4,7 +4,7 @@
 
 async function exportToCsv() {
 
-    const collectionId = document.getElementById('collectonId');
+    const collectionId = document.getElementById('collectionId');
 
     const url = serverUrl + '/collection/exporttocsv?id=' + collectionId.value;
 

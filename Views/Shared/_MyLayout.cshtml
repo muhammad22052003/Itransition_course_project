@@ -1,0 +1,182 @@
+﻿
+@using CourseProject_backend.Enums.Packages
+@using CourseProject_backend.Enums
+
+<!DOCTYPE html>
+@{
+    var languages = Enum.GetNames(typeof(AppLanguage));
+
+    List<string> categories = new List<string>();
+
+    if (ViewData.ContainsKey("categories"))
+    {
+        categories = ViewData["categories"] as List<string>;
+    }
+
+    List<string> sorts = new List<string>();
+
+    if (ViewData.ContainsKey("sorts"))
+    {
+        sorts = ViewData["sorts"] as List<string>;
+    }
+}
+
+<html lang="@(ViewData["lang"] ?? "en")">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bytech - @(ViewData["Title"])</title>
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/baseStyle.css" rel="stylesheet">
+
+    <link id="darkStyleFile" href="~/css/style_dark.css" rel="">
+    <link id="lightStyleFile" href="~/css/style_light.css" rel="">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <form action="~/@ViewData["searchUrl"]" id="search-panel-form" method="post">
+        <header class="">
+            <div class="container">
+                <div class="row d-flex justify-content-center align-content-center">
+                    <div class="col-6 d-flex justify-content-center align-content-center">
+                        <a href="@Url.Action("index","home", new {lang = ViewData["lang"].ToString()} )">
+                            <img src="~/img/logo_light.png" style="width: 200px;">
+                        </a>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center align-content-center">
+                        <a href="@Url.Action("index","myProfile", new {lang = ViewData["lang"].ToString()} )" class="btn-header-menus">
+                            <img class="header-card-menus" src="~/img/admin.png">
+                        </a>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center align-content-center">
+                        <a href="@Url.Action("index","users", new {lang = ViewData["lang"].ToString()} )" class="btn-header-menus">
+                            <img class="header-card-menus" src="~/img/users.png">
+                        </a>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center align-content-center">
+                        <a href="@Url.Action("index","login", new {lang = ViewData["lang"].ToString()} )" class="btn-header-menus">
+                            <img class="header-card-menus" src="~/img/enter.png">
+                        </a>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-6">
+                        <div class="search">
+                            <i class="fa fa-search"></i>
+                            <input name="searchText" type="text" class="form-control" placeholder="Search Just Now!">
+                            <button type="submit" class="btn btn-primary">
+                                <img class="header-icon" src="https://drive.google.com/thumbnail?id=10lGHPP1ti0eq3tP4BurEmT6MDbOjz4YP">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center align-content-center">
+                        <a href="@Url.Action("index","collectionlist", new {lang = ViewData["lang"].ToString()} )" class="btn-header-menus">
+                            <img class="header-card-menus" src="~/img/category.png">
+                        </a>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center align-content-center">
+                        <a href="@Url.Action("index","itemlist", new {lang = ViewData["lang"].ToString()} )" class="btn-header-menus">
+                            <img class="header-card-menus" src="~/img/list.png">
+                        </a>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center align-content-center">
+                        <a href="@Url.Action("logout","login", new {lang = ViewData["lang"].ToString()} )" class="btn-header-menus">
+                            <img class="header-card-menus" src="~/img/exit.png">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="selects-block mb-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-1 d-flex justify-content-center align-content-center">
+                        <a href="@Url.Action("index","cabinet", new {lang = ViewData["lang"].ToString()} )" class="btn-header-menus">
+                            <img class="header-card-menus" src="~/img/documents.png">
+                        </a>
+                    </div>
+                    <div class="col d-flex justify-content-center align-content-center">
+                        <select name="categoryName" id="select-categories" class="form-control region-select">
+                            <option value="">Category : </option>
+                            @{
+                                for (int i = 0; i < categories.Count; i++)
+                                {
+                                    <option value="@categories[i].ToLower()">@categories[i]</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col d-flex justify-content-center align-content-center">
+                        <select name="sort" id="select-sortBy" class="form-control region-select">
+                            <option value="">Sort by : </option>
+                            @{
+                                for (int i = 0; i < sorts.Count; i++)
+                                {
+                                    <option value="@sorts[i].ToLower()">@sorts[i]</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <!--onchange="changeLang()"-->
+                    <div class="col d-flex justify-content-center align-content-center">
+                        <select name="lang" id="select-regions" class="form-control region-select">
+                            @{
+                                for (int i = 0; i < languages.Length; i++)
+                                {
+                                    ViewData.TryGetValue("lang", out object curLang);
+
+                                    if (curLang != null &&
+                                    curLang.ToString().ToLower() == languages[i].ToLower())
+                                    {
+                                        <option selected>@languages[i].ToUpper()</option>
+                                    }
+                                    else
+                                    {
+                                        <option>@languages[i].ToUpper()</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col d-flex justify-content-center align-content-center">
+                        <button onclick="darkModeOnOff()" class="darkMode" type="button">
+                            <img src="~/img/moon.png" style="width: 30px;">
+                        </button>
+                        <input type="hidden" id="isDarkMode" value="1"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    @RenderBody()
+
+    <div class="footer-card">
+        <div class="container">
+            <div class="row">
+                <div class="col d-flex justify-content-center align-items-center mt-3">
+                    <div class="col-6 d-flex justify-content-center align-content-center">
+                        <img src="~/img/logo_light.png" style="width: 200px;">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/controller.js"></script>
+</body>
+
+</html>

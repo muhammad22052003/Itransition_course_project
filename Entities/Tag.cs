@@ -1,5 +1,6 @@
 ﻿using CourseProject_backend.Interfaces.Entities;
 using Microsoft.EntityFrameworkCore;
+using NpgsqlTypes;
 using Org.BouncyCastle.Crmf;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;

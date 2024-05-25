@@ -7,21 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace CourseProject_backend.Entities
 {
-    [Index(nameof(CustomString1))]
-    [Index(nameof(CustomString2))]
-    [Index(nameof(CustomString3))]
-    [Index(nameof(CustomText1))]
-    [Index(nameof(CustomText2))]
-    [Index(nameof(CustomText3))]
-    [Index(nameof(CustomInt1))]
-    [Index(nameof(CustomInt2))]
-    [Index(nameof(CustomInt3))]
-    [Index(nameof(CustomBool1))]
-    [Index(nameof(CustomBool2))]
-    [Index(nameof(CustomBool3))]
-    [Index(nameof(CustomDate1))]
-    [Index(nameof(CustomDate2))]
-    [Index(nameof(CustomDate3))]
+    [Index(nameof(Name))]
     [Index(nameof(CreatedTime))]
     public class Item : IDBModel
     {
@@ -58,6 +44,8 @@ namespace CourseProject_backend.Entities
         public DateTime? CustomDate1 { get; set; }
         public DateTime? CustomDate2 { get; set; }
         public DateTime? CustomDate3 { get; set; }
+
+        public NpgsqlTsVector SearchVector { get; set; }
 
         [Required]
         public bool IsDeleted { get; set; }

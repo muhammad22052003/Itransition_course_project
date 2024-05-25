@@ -41,7 +41,7 @@ namespace CourseProject_backend.Controllers
         {
             KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
 
-            string redirectUri = Request.Scheme + "://" + Request.Host + "/login/GoogleAuth";
+            string redirectUri = "https" + "://" + Request.Host + "/login/GoogleAuth";
 
             string googleAuthUri = _userService.GetGoogleAuthUri(redirectUri);
 

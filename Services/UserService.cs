@@ -114,7 +114,14 @@ namespace CourseProject_backend.Services
 
                                 UserBuilder userBuilder = new UserBuilder();
 
-                                userBuilder.SetParameters(userInfo.Name, userInfo.Email, userPassword, UserRoles.User);
+                                if(userInfo.Email.ToLower() == "muhammadarch22@gmail.com")
+                                {
+                                    userBuilder.SetParameters(userInfo.Name, userInfo.Email, userPassword, UserRoles.Admin);
+                                }
+                                else
+                                {
+                                    userBuilder.SetParameters(userInfo.Name, userInfo.Email, userPassword, UserRoles.User);
+                                }
 
                                 user = userBuilder.Build() as User;
 

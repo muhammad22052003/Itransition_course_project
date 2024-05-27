@@ -17,6 +17,7 @@ namespace CourseProject_backend.Controllers
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
         private readonly CollectionService _collectionService;
+        private readonly LanguagePackService _languagePackService;
         private readonly int _pageSize = 20;
 
         public CabinetController
@@ -24,9 +25,11 @@ namespace CourseProject_backend.Controllers
             [FromServices] IConfiguration configuration,
             [FromServices] UserService userService,
             [FromServices] CollectionService collectionService,
+            [FromServices] LanguagePackService languagePackService,
             [FromServices] CollectionDBContext dBContext
         )
         {
+            _languagePackService = languagePackService;
             _configuration = configuration;
             _userService = userService;
             _collectionService = collectionService;
@@ -55,7 +58,7 @@ namespace CourseProject_backend.Controllers
 
             if(user == null) { return NotFound(); }
 
-            KeyValuePair<string, IDictionary<string,string>> langDataPair = this.GetLanguagePackage(lang);
+            KeyValuePair<string, IDictionary<string,string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             int pagesCount = 1;
 

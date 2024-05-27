@@ -114,6 +114,8 @@ namespace CourseProject_backend.Services
 
             item.Tags = tags;
 
+            item.Name = model.Name;
+
             if (collection.CustomText1_state) { item.CustomText1 = model.CustomText1; }
             if (collection.CustomText2_state) { item.CustomText2 = model.CustomText2; }
             if (collection.CustomText3_state) { item.CustomText3 = model.CustomText3; }

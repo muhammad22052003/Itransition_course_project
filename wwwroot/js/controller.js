@@ -6,16 +6,16 @@ let categoriesSelect = document.getElementById('select-categories');
 let sortSelect = document.getElementById('select-sortBy');
 let regionsSelect = document.getElementById('select-regions');
 
-let isDarkModeInput = document.getElementById('isDarkMode');
+let isDarkModeInput;
 
 function darkModeOnOff() {
 
-    if (isDarkModeInput.value == '0') {
-        isDarkModeInput.value = '1';
+    if (isDarkModeInput == '0') {
+        isDarkModeInput = '1';
         setDarkMode();
     }
-    else if (isDarkModeInput.value == '1') {
-        isDarkModeInput.value = '0';
+    else if (isDarkModeInput == '1') {
+        isDarkModeInput = '0';
         setLightMode();
     }
 }
@@ -24,6 +24,8 @@ function setDarkMode() {
     console.log('darkMode');
     let darkStyleFile = document.getElementById('darkStyleFile');
     let lightStyleFile = document.getElementById('lightStyleFile');
+
+    isDarkModeInput = '1';
 
     lightStyleFile.rel = '';
     darkStyleFile.rel = 'stylesheet';
@@ -35,6 +37,8 @@ function setLightMode() {
     console.log('lightMode');
     let darkStyleFile = document.getElementById('darkStyleFile');
     let lightStyleFile = document.getElementById('lightStyleFile');
+
+    isDarkModeInput = '0';
 
     lightStyleFile.rel = 'stylesheet';
     darkStyleFile.rel = '';
@@ -95,7 +99,7 @@ async function defineAllCategories() {
         categories_select.appendChild(option);
     }
 }
-async function defineAllLanguages() {
+/*async function defineAllLanguages() {
 
     try {
         const response = await fetch(serverUrl + '/apilang' + '/getall', {
@@ -117,7 +121,7 @@ async function defineAllLanguages() {
     } catch (e) {
         console.log(e);
     }
-}
+}*/
 
 function changeLang() {
     let langSelect = document.getElementById('select-regions');

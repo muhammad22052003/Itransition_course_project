@@ -73,6 +73,8 @@ namespace CourseProject_backend.Repositories
                                                       int pageSize,
                                                       string categoryName)
         {
+            page = page == 0 ? 1 : page;
+
             var sortedQuery = SortData(sort);
             List<Item> items = new List<Item>();
 
@@ -91,7 +93,6 @@ namespace CourseProject_backend.Repositories
                 case ItemsDataFilter.byDefault:
                     {
                         items = await sortedQuery
-                            .Where((item) => true)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include(i => i.Tags)
@@ -106,7 +107,7 @@ namespace CourseProject_backend.Repositories
                 case ItemsDataFilter.byId:
                     {
                         items = await sortedQuery
-                            .Where((item) => item.Id == value)
+                            .Where((item) => item.Id.ToLower() == value.ToLower())
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include(i => i.Tags)
@@ -121,7 +122,7 @@ namespace CourseProject_backend.Repositories
                 case ItemsDataFilter.byTag:
                     {
                         items = await sortedQuery
-                            .Where((item) => item.Tags.Where(t => t.Name == value).FirstOrDefault() != null)
+                            .Where((item) => item.Tags.Where(t => t.Name.ToLower() == value.ToLower()).FirstOrDefault() != null)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include(i => i.Tags)
@@ -136,7 +137,7 @@ namespace CourseProject_backend.Repositories
                 case ItemsDataFilter.byCollectionId:
                     {
                         items = await sortedQuery
-                            .Where((item) => item.Collection.Id == value)
+                            .Where((item) => item.Collection.Id.ToLower() == value.ToLower())
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include(i => i.Tags)
@@ -217,45 +218,39 @@ namespace CourseProject_backend.Repositories
                 case ItemsDataFilter.byDefault:
                     {
                         return await sortedQuery
-                            .Where((item) => true)
                             .CountAsync();
                     }
                 case ItemsDataFilter.byId:
                     {
                         return await sortedQuery
-                            .Where((item) => item.Id == value)
+                            .Where((item) => item.Id.ToLower() == value.ToLower())
                             .CountAsync();
                     }
                 case ItemsDataFilter.byTag:
                     {
                         return await sortedQuery
                             .Where((item) => item.Tags
-                            .FirstOrDefault((x) => x.Name == value) != null)
+                            .FirstOrDefault((x) => x.Name.ToLower() == value.ToLower()) != null)
                             .CountAsync();
                     }
                 case ItemsDataFilter.byCollectionId:
                     {
                         return await sortedQuery
-                            .Where((item) => item.Collection.Id == value)
+                            .Where((item) => item.Collection.Id.ToLower() == value.ToLower())
                             .CountAsync();
                     }
                 case ItemsDataFilter.bySearch:
                     {
-                        //  EF.Functions.ILike delegate no supported by linq query
-                        //LikeDelegate likeFunction = _dbContext.GetLikeDelegate();
+                        if(value.Replace(" ", "").IsNullOrEmpty())
+                        {
+                            return await sortedQuery.CountAsync();
+                        }
 
                         return await sortedQuery
-                            .Where((x) => EF.Functions.ILike(x.Name.ToLower(), $"%{value.ToLower()}%")
-                                       || EF.Functions.ILike(x.CustomText1.ToLower(), $"%{value.ToLower()}%")
-                                       || EF.Functions.ILike(x.CustomText2.ToLower(), $"%{value.ToLower()}%")
-                                       || EF.Functions.ILike(x.CustomText3.ToLower(), $"%{value.ToLower()}%")
-                                       || EF.Functions.ILike(x.CustomString1.ToLower(), $"%{value.ToLower()}%")
-                                       || EF.Functions.ILike(x.CustomString2.ToLower(), $"%{value.ToLower()}%")
-                                       || EF.Functions.ILike(x.CustomString3.ToLower(), $"%{value.ToLower()}%")
-                                       || x.Comments
-                                       .FirstOrDefault((c) => EF.Functions.ILike(c.Text, $"%{value}%")) != null
-                                       || x.Tags.FirstOrDefault((c) => EF.Functions.ILike(c.Name, $"%{value.ToLower()}%")) != null)
-                            .CountAsync();
+                            .Where((x) => x.SearchVector.Matches(value) ||
+                                x.Comments.FirstOrDefault(c => c.SearchVector.Matches(value)) != null ||
+                                x.Tags.FirstOrDefault(t => t.Name.ToLower() == value.ToLower()) != null)
+                                .CountAsync();
                     }
                 default:
                     break;

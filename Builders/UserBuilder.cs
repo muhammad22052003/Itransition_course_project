@@ -39,7 +39,7 @@ namespace CourseProject_backend.Builders
             User user = _model as User;
 
             user.Name = name;
-            user.Email = email;
+            user.Email = email.ToLower();
             user.Password = password;
             user.Role = role.ToString();
             user.IsBlocked = isBlocked;

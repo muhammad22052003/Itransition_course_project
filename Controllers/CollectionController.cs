@@ -20,6 +20,7 @@ namespace CourseProject_backend.Controllers
         private readonly ItemService _itemService;
         private readonly CollectionService _collectionService;
         private readonly UserService _userService;
+        private readonly LanguagePackService _languagePackService;
         private readonly int pageSize = 20;
 
         public CollectionController
@@ -28,9 +29,11 @@ namespace CourseProject_backend.Controllers
             [FromServices] ItemService itemService,
             [FromServices] CollectionService collectionService,
             [FromServices] UserService userService,
+            [FromServices] LanguagePackService languagePackService,
             [FromServices] CollectionDBContext dBContext
         )
         {
+            _languagePackService = languagePackService;
             _configuration = configuration;
             _itemService = itemService;
             _collectionService = collectionService;
@@ -61,7 +64,7 @@ namespace CourseProject_backend.Controllers
                 user = await _userService.GetUserFromToken(token);
             }
 
-            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             int pagesCount = 1;
 
@@ -104,7 +107,7 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string[] collectionId)
+        public async Task<IActionResult> Delete(string[] collectionId, AppLanguage lang)
         {
             string? token = null;
 
@@ -119,7 +122,7 @@ namespace CourseProject_backend.Controllers
 
                 await _collectionService.DeleteRange(collectionId, user.Id);
 
-                return RedirectToAction("index", "cabinet");
+                return RedirectToAction("index", "cabinet", new { lang = lang.ToString() });
             }
 
             return NotFound();

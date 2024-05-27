@@ -5,20 +5,20 @@ using System.Text.Json.Serialization;
 
 namespace CourseProject_backend.Packages
 {
-    public class LanguagePackSingleton
+    public class LanguagePackService
     {
-        private static LanguagePackSingleton _instance = null;
+        private static LanguagePackService _instance = null;
 
-        private LanguagePackSingleton()
+        private LanguagePackService()
         {
             Packages = new Dictionary<string, IDictionary<string, string>>();
         }
 
-        public static LanguagePackSingleton GetInstance()
+        public static LanguagePackService GetInstance()
         {
             if(_instance == null)
             {
-                _instance = new LanguagePackSingleton();
+                _instance = new LanguagePackService();
             }
 
             return _instance;
@@ -26,6 +26,8 @@ namespace CourseProject_backend.Packages
 
         public IDictionary<string, string> GetLanguagePack(AppLanguage language)
         {
+
+
             if (!Packages.ContainsKey(language.ToString()))
             {
                 StringBuilder json = new StringBuilder();
@@ -40,6 +42,15 @@ namespace CourseProject_backend.Packages
             }
 
             return Packages[language.ToString()];
+        }
+
+        public KeyValuePair<string, IDictionary<string, string>> GetLanguagePackPair(AppLanguage language)
+        {
+            IDictionary<string, string> langPack = GetLanguagePack(language);
+
+            return new KeyValuePair<string, IDictionary<string, string>>(key: language.ToString(),
+                                                                         value: langPack);
+
         }
 
         private IDictionary<string, IDictionary<string, string>> Packages { get; set; }

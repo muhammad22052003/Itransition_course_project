@@ -15,19 +15,20 @@ namespace CourseProject_backend.Controllers
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
         private readonly CollectionService _collectionService;
-        private readonly CollectionDBContext _dbContext;
+        private readonly LanguagePackService _languagePackService;
 
         public CollectionConstructorController
         (
             [FromServices] IConfiguration configuration,
             [FromServices] UserService userService,
             [FromServices] CollectionService collectionService,
+            [FromServices] LanguagePackService languagePackService,
             [FromServices] CollectionDBContext dBContext
         )
         {
+            _languagePackService = languagePackService;
             _configuration = configuration;
             _userService = userService;
-            _dbContext = dBContext;
             _collectionService = collectionService;
 
             _userService.Initialize(dBContext);
@@ -51,7 +52,7 @@ namespace CourseProject_backend.Controllers
                 return RedirectToAction("index", "home", new { lang = lang.ToString()});
             }
 
-            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             return View(langDataPair);
         }

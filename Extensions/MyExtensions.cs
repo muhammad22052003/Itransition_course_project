@@ -100,17 +100,5 @@ namespace CourseProject_backend.Extensions
         {
             controller.ViewData.Add("searchUrl", "search/User");
         }
-
-        public static KeyValuePair<string, IDictionary<string, string>> GetLanguagePackage(this Controller controller, 
-                                                                                            AppLanguage lang)
-        {
-            var langPackSingleton = LanguagePackSingleton.GetInstance();
-            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
-
-            KeyValuePair<string, IDictionary<string, string>> langDataPair = new KeyValuePair
-                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
-
-            return langDataPair;
-        }
     }
 }

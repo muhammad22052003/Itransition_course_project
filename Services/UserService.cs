@@ -272,7 +272,7 @@ namespace CourseProject_backend.Services
 
         public async Task<User?> GetByEmail(string email)
         {
-            return (await _userRepository.GetValue((p) => p.Email == email)).FirstOrDefault();
+            return (await _userRepository.GetValue((p) => p.Email.ToLower() == email.ToLower())).FirstOrDefault();
         }
 
         public async Task<User?> GetById(string id)

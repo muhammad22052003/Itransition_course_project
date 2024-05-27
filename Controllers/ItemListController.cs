@@ -13,19 +13,22 @@ namespace CourseProject_backend.Controllers
 {
     public class ItemListController : Controller
     {
-        private readonly int _pageSize = 20;
+        private readonly int _pageSize = 12;
         private readonly IConfiguration _configuration;
         private readonly ItemService _itemService;
         private readonly UserService _userService;
+        private readonly LanguagePackService _languagePackService;
 
         public ItemListController
         (
             [FromServices] IConfiguration configuration,
             [FromServices] ItemService itemService,
+            [FromServices] LanguagePackService languagePackService,
             [FromServices] UserService userService,
             [FromServices] CollectionDBContext dBContext
         )
         {
+            _languagePackService = languagePackService;
             _configuration = configuration;
             _itemService = itemService;
             _userService = userService;
@@ -46,7 +49,7 @@ namespace CourseProject_backend.Controllers
             this.SetItemSearch();
             this.DefineItemsSorts();
 
-            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             int pagesCount = 1;
             var items = (await _itemService.GetItemsList

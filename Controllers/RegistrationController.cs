@@ -24,14 +24,17 @@ namespace CourseProject_backend.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
+        private readonly LanguagePackService _languagePackService;
 
         public RegistrationController
         (
             [FromServices] IConfiguration configuration,
             [FromServices] UserService userService,
+            [FromServices] LanguagePackService languagePackService,
             [FromServices] CollectionDBContext dBContext
         )
         {
+            _languagePackService = languagePackService;
             _configuration = configuration;
             _userService = userService;
 
@@ -41,7 +44,7 @@ namespace CourseProject_backend.Controllers
         [HttpGet]
         public IActionResult Index([FromRoute]AppLanguage lang = AppLanguage.en)
         {
-            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             RegistrationModel registrationModel = new RegistrationModel()
             {
@@ -55,12 +58,7 @@ namespace CourseProject_backend.Controllers
         [HttpPost]
         public async Task<IActionResult> Index([FromRoute] AppLanguage lang, UserRegistrationModel model)
         {
-            var langPackSingleton = LanguagePackSingleton.GetInstance();
-            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
-            if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
-
-            var langDataPair = new KeyValuePair
-                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+            var langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             var errorsDictionary = ModelState.GetErrors();
             RegistrationModel registrationModel = new RegistrationModel()
@@ -88,7 +86,7 @@ namespace CourseProject_backend.Controllers
             {
                 errorsDictionary = ModelState.GetErrors();
 
-                errorsDictionary.Add("Email", $"{langPackCollection["there_email"]}");
+                errorsDictionary.Add("Email", $"{langDataPair.Value["there_email"]}");
 
                 registrationModel.Errors = errorsDictionary;
 

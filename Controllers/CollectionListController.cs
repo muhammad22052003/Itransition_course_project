@@ -17,16 +17,19 @@ namespace CourseProject_backend.Controllers
         private readonly IConfiguration _configuration;
         private readonly CollectionService _collectionService;
         private readonly UserService _userService;
-        private int _pageSize = 20;
+        private readonly LanguagePackService _languagePackService;
+        private int _pageSize = 12;
 
         public CollectionListController
         (
             [FromServices] IConfiguration configuration,
             [FromServices] CollectionService collectionService,
             [FromServices] UserService userService,
+            [FromServices] LanguagePackService languagePackService,
             [FromServices] CollectionDBContext dBContext
         )
         {
+            _languagePackService = languagePackService;
             _configuration = configuration;
             _collectionService = collectionService;
             _userService = userService;
@@ -47,7 +50,7 @@ namespace CourseProject_backend.Controllers
             this.SetCollectionSearch();
             this.DefineCollectionSorts();
 
-            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             User? user = null;
 

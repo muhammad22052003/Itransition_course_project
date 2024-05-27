@@ -32,6 +32,7 @@
 </div>
 
 <form method="post" action="~/collection/delete">
+    <input type="hidden" name="lang" value="@Model.LanguagePack.Key" />
     <div class="container control-card">
         <div class="row mb-3 d-flex justify-content-center align-content-center">
             <div class="col d-flex justify-content-center">
@@ -159,7 +160,7 @@
                                     <a href="@Url.Action("index","cabinet",
                                             new{lang=Model.LanguagePack.Key,
                                             id = Model.User.Id,
-                                            page=Model.CurrentPage-1})" class="btn_cust btn-page-select">
+                                            page=Model.CurrentPage+1})" class="btn_cust btn-page-select">
                                         ⇒
                                     </a>
                                 }

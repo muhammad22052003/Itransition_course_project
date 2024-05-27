@@ -157,11 +157,11 @@
                                     @{
                                         if (Model.Items[i].Tags != null)
                                         {
-                                            var tags = Model.Items[i].Tags.ToList();
-                                            for (int j = 0; j < tags.Count; j++)
+                                            var popularTags = Model.Items[i].Tags.ToList();
+                                            for (int j = 0; j < popularTags.Count; j++)
                                             {
-                                                <a href="~/itemlist/index?lang=@Model.LanguagePack.Key&filter=@ItemsDataFilter.byTag&value=@tags[j].Name">
-                                                    #@(tags[j].Name)
+                                                <a href="~/itemlist/index?lang=@Model.LanguagePack.Key&filter=@ItemsDataFilter.byTag&value=@popularTags[j].Name">
+                                                    #@(popularTags[j].Name)
                                                 </a>
                                             }
                                         }
@@ -174,4 +174,46 @@
             }
         }
     </div>
+
+    if (Model.Tags.Count == 0)
+    {
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col text-center d-flex justify-content-center">
+                    <h1 class="d-flex text-center">@Model.LanguagePack.Value["tags_cloud"]</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row d-flex justify-content-center align-content-center mb-3">
+                <div class="col d-flex justify-content-end align-content-center">
+                    <div class="container collection-card">
+                        <div class="row">
+                            <div class="col-12 font-size-20">
+                                @Model.LanguagePack.Value["popular_tags"]
+                            </div>
+                            <div class="col-12">
+                                <div class="item-data">
+                                    @{
+                                        var tags = Model.Tags.ToList();
+
+                                        for (int j = 0; j < tags.Count; j++)
+                                        {
+                                            <a href="~/itemlist/index?lang=@Model.LanguagePack.Key&filter=@ItemsDataFilter.byTag&value=@tags[j].Name">
+                                                #@tags[j].Name
+                                            </a>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }    
 }

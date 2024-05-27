@@ -15,15 +15,18 @@ namespace CourseProject_backend.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
+        private readonly LanguagePackService _languagePackService;
         private readonly int _pageSize = 20;
 
         public UsersController
         (
             [FromServices] IConfiguration configuration,
             [FromServices] UserService userService,
+            [FromServices] LanguagePackService languagePackService,
             [FromServices] CollectionDBContext dBContext
         )
         {
+            _languagePackService = languagePackService;
             _configuration = configuration;
             _userService = userService;
 
@@ -41,7 +44,7 @@ namespace CourseProject_backend.Controllers
             this.SetUserSearch();
             this.DefineUsersSorts();
 
-            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             User? user = null;
 
@@ -76,7 +79,7 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Promote(string[] userId)
+        public async Task<IActionResult> Promote(string[] userId,AppLanguage lang = AppLanguage.en)
         {
             this.DefineCategories();
             this.SetItemSearch();
@@ -96,7 +99,7 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Demote(string[] userId)
+        public async Task<IActionResult> Demote(string[] userId, AppLanguage lang = AppLanguage.en)
         {
             this.DefineCategories();
             this.SetItemSearch();
@@ -116,7 +119,7 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string[] userId)
+        public async Task<IActionResult> Delete(string[] userId, AppLanguage lang = AppLanguage.en)
         {
             this.DefineCategories();
             this.SetItemSearch();

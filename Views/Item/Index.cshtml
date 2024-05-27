@@ -32,6 +32,13 @@
             @Model.LanguagePack.Value["views_word"] : @Model.Item.Views.Count
         </div>
     </div>
+    <div class="row mb-3 d-flex justify-content-center align-content-center">
+        <div class="col d-flex justify-content-center">
+            @Model.LanguagePack.Value["collection_wor"] : <a href="~/collection/index/@Model.LanguagePack.Key/@Model.Item.Collection.Id">
+                                                             @Model.Item.Collection.Name
+                                                          </a>
+        </div>
+    </div>
 </div>
 
 <form method="post" action="~/item/delete">
@@ -492,25 +499,32 @@
                 }
             </div>
 
-            <section class="new-comment d-flex justify-content-center align-content-center mb-3">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12 font-size-20">
-                            @Model.LanguagePack.Value["your_new_comment"]
+            @{
+                if(Model.User != null)
+                {
+                    <section class="new-comment d-flex justify-content-center align-content-center mb-3">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12 font-size-20">
+                                    @Model.LanguagePack.Value["your_new_comment"]
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <textarea id="comment-area" class="form-control"></textarea>
+                                </div>
+                                <div class="col d-flex justify-content-center mt-3">
+                                    <button type="button" onclick="sendComment()" class="btn-all-select control-icon">
+                                        <img src="~/img/send.png" style="width: 20px;">
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <textarea id="comment-area" class="form-control"></textarea>
-                        </div>
-                        <div class="col d-flex justify-content-center mt-3">
-                            <button type="button" onclick="sendComment()" class="btn-all-select control-icon">
-                                <img src="~/img/send.png" style="width: 20px;">
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                    </section>
+                }
+            }
+
+           
 
             <div hidden>
                 <section id="comment-template" class="d-flex justify-content-center align-content-center mb-3">
@@ -525,7 +539,7 @@
                                 <div id="comment-text-field" class="item-data"></div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mt-2">
                             <div class="col-12 font-size-12" id="date-field">
                                 
                             </div>

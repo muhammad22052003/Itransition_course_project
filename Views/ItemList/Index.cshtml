@@ -34,6 +34,9 @@
 
 
 <form method="post" action="~/item/delete">
+
+    <input type="hidden" name="lang" value="@Model.LanguagePack.Key"/>
+
     @{
         if (Model.User != null && Model.User.IsAdmin())
         {
@@ -196,7 +199,7 @@
                                     filter=Model.Filter.ToString(),
                                     value=Model.Value,
                                     sort=Model.Sort,
-                                    page=Model.CurrentPage-1})" class="btn_cust btn-page-select">
+                                    page=Model.CurrentPage+1})" class="btn_cust btn-page-select">
                                     ⇒
                                 </a>
                             }

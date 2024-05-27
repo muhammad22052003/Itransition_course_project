@@ -4,6 +4,7 @@ using CourseProject_backend.Enums.Packages;
 using CourseProject_backend.Extensions;
 using CourseProject_backend.Models.RequestModels;
 using CourseProject_backend.Models.ViewModels;
+using CourseProject_backend.Packages;
 using CourseProject_backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,14 +13,17 @@ namespace CourseProject_backend.Controllers
     public class MyProfileController : Controller
     {
         private readonly UserService _userService;
+        private readonly LanguagePackService _languagePackService;
 
         public MyProfileController
         (
             [FromServices] UserService userService,
-            [FromServices] CollectionDBContext dbContext
+            [FromServices] CollectionDBContext dbContext,
+            [FromServices] LanguagePackService languagePackService
         )
         {
             _userService = userService;
+            _languagePackService = languagePackService;
 
             _userService.Initialize(dbContext);
         }
@@ -38,7 +42,7 @@ namespace CourseProject_backend.Controllers
                 user = await _userService.GetUserFromToken(token);
             }
 
-            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             MyProfileViewModel viewModel = new MyProfileViewModel()
             {

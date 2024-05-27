@@ -71,6 +71,7 @@ namespace CourseProject_backend.Repositories
                                                                     int pageSize,
                                                                     string categoryName)
         {
+            page = page == 0 ? 1 : page;
 
             var sortedQuery = SortData(sort);
             List<MyCollection> collections = new List<MyCollection>();
@@ -89,9 +90,6 @@ namespace CourseProject_backend.Repositories
             {
                 case CollectionDataFilter.byName:
                     {
-                        //  EF.Functions.ILike delegate no supported by linq query
-                        //LikeDelegate likeFunction = _dbContext.GetLikeDelegate();
-
                         if (!value.IsNullOrEmpty())
                         {
                             sortedQuery = sortedQuery
@@ -110,7 +108,7 @@ namespace CourseProject_backend.Repositories
                 case CollectionDataFilter.byId:
                     {
                         collections = await sortedQuery
-                            .Where((c) => c.Id == value)
+                            .Where((c) => c.Id.ToLower() == value.ToLower())
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include(c => c.Items)
@@ -122,7 +120,7 @@ namespace CourseProject_backend.Repositories
                 case CollectionDataFilter.byAuthorId:
                     {
                         collections = await sortedQuery
-                            .Where((c) => c.User.Id == value)
+                            .Where((c) => c.User.Id.ToLower() == value.ToLower())
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include(c => c.Items)
@@ -134,7 +132,6 @@ namespace CourseProject_backend.Repositories
                 case CollectionDataFilter.byDefault:
                     {
                         collections = await sortedQuery
-                            .Where((c) => true)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include(c => c.Items)
@@ -165,26 +162,25 @@ namespace CourseProject_backend.Repositories
                 case CollectionDataFilter.byName:
                     {
                          return await sortedQuery
-                            .Where((c) => EF.Functions.ILike(c.Name.ToLower(), $"%{value.ToLower()}%"))
+                            .Where((c) => c.Name.ToLower() == value.ToLower())
                             .CountAsync();
                     }
                 case CollectionDataFilter.byId:
                     {
                         return await sortedQuery
-                            .Where((c) => c.Id == value)
+                            .Where((c) => c.Id.ToLower() == value.ToLower())
                             .CountAsync();
                     }
                 case CollectionDataFilter.byAuthorId:
                     {
                         return await sortedQuery
-                            .Where((c) => c.User.Id == value)
+                            .Where((c) => c.User.Id.ToLower() == value.ToLower())
                             .CountAsync();
                     }
                     break;
                 case CollectionDataFilter.byDefault:
                     {
                         return await sortedQuery
-                            .Where((c) => true)
                             .CountAsync();
                     }
             }

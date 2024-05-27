@@ -22,23 +22,30 @@ namespace CourseProject_backend.Controllers
         private readonly ItemService _itemService;
         private readonly UserService _userService;
         private readonly CollectionService _collectionService;
+        private readonly TagService _tagService;
+        private readonly LanguagePackService _languagePackService;
         public HomeController
         (
+            [FromServices] LanguagePackService languagePackService,
             [FromServices] IConfiguration configuration,
             [FromServices] UserService userService,
             [FromServices] ItemService itemService,
             [FromServices] CollectionService collectionService,
-            [FromServices] CollectionDBContext dBContext
+            [FromServices] CollectionDBContext dBContext,
+            [FromServices] TagService tagService
         )
         {
+            _languagePackService = languagePackService;
             _configuration = configuration;
             _collectionService = collectionService;
             _userService = userService;
             _itemService = itemService;
+            _tagService = tagService;
 
             _collectionService.Initialize(dBContext);
             _userService.Initialize(dBContext);
             _itemService.Initialize(dBContext);
+            _tagService.Initialize(dBContext);
         }
 
         [HttpGet]
@@ -55,7 +62,7 @@ namespace CourseProject_backend.Controllers
                 if (user != null && user.IsAdmin()) { ViewData.Add("usersMenu", "show"); }
             }
 
-            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             List<Item> items = (await _itemService
                 .GetItemsList(filter: ItemsDataFilter.byDefault,
@@ -73,11 +80,17 @@ namespace CourseProject_backend.Controllers
                                       pageSize: _topCollectionsCount,
                                       categoryName: "")).ToList();
 
+            List<Tag> tags = (await _tagService.GetTagsList(filter: TagsDataFilter.byPopular,
+                                                     value: "",
+                                                     page: 1,
+                                                     pageSize: 50)).ToList();
+
             HomeViewModel viewModel = new HomeViewModel()
             {
                 Collections = collections,
                 Items = items,
-                LanguagePack = langDataPair
+                LanguagePack = langDataPair,
+                Tags = tags,
             };
 
             return View(viewModel);

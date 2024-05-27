@@ -9,12 +9,15 @@ namespace CourseProject_backend.Controllers
     public class StartController : Controller
     {
         private readonly IConfiguration _configuration;
+        private readonly LanguagePackService _languagePackService;
 
         public StartController
         (
-            IConfiguration configuration
+            IConfiguration configuration,
+            [FromServices] LanguagePackService languagePackService
         )
         {
+            _languagePackService = languagePackService;
             _configuration = configuration;
         }
 
@@ -23,7 +26,7 @@ namespace CourseProject_backend.Controllers
         {
             this.DefineCategories();
 
-            KeyValuePair<string, IDictionary<string,string>> langDataPair = this.GetLanguagePackage(lang);
+            KeyValuePair<string, IDictionary<string,string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             return View(langDataPair);
         }

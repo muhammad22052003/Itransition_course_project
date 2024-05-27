@@ -96,7 +96,7 @@ namespace CourseProject_backend.Repositories
                 case UsersDataFilter.byId:
                     {
                         users = await sortedQuery
-                            .Where((c) => c.Id == value)
+                            .Where((c) => c.Id.ToLower() == value.ToLower())
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include((u) => u.Collections)
@@ -107,7 +107,7 @@ namespace CourseProject_backend.Repositories
                 case UsersDataFilter.byEmail:
                     {
                         users = await sortedQuery
-                            .Where((c) => c.Email == value)
+                            .Where((c) => c.Email.ToLower() == value.ToLower())
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include((u) => u.Collections)
@@ -118,7 +118,6 @@ namespace CourseProject_backend.Repositories
                 case UsersDataFilter.byDefault:
                     {
                         users = await sortedQuery
-                            .Where((c) => true)
                             .Skip((page - 1) * pageSize)
                             .Take(pageSize)
                             .Include((u) => u.Collections)
@@ -147,27 +146,25 @@ namespace CourseProject_backend.Repositories
             {
                 case UsersDataFilter.byName:
                     {
-                        //  EF.Functions.ILike delegate no supported by linq query
-                        //LikeDelegate likeFunction = _dbContext.GetLikeDelegate();
-
                         return await sortedQuery
-                            .Where((c) => EF.Functions
-                            .ILike(c.Name.ToLower(), $"%{value.ToLower()}%")).CountAsync();
+                            .Where((c) => c.Name.ToLower() == value.ToLower())
+                            .CountAsync();
                     }
                 case UsersDataFilter.byStatus:
                     {
                         return await sortedQuery
-                            .Where((c) => c.Role.ToLower() == value.ToLower()).CountAsync();
+                            .Where((c) => c.Role.ToLower() == value.ToLower())
+                            .CountAsync();
                     }
                 case UsersDataFilter.byId:
                     {
                         return await sortedQuery
-                            .Where((c) => c.Id == value).CountAsync();
+                            .Where((c) => c.Id.ToLower() == value.ToLower())
+                            .CountAsync();
                     }
                 case UsersDataFilter.byDefault:
                     {
-                        return await sortedQuery
-                            .Where((c) => true).CountAsync();
+                        return await sortedQuery.CountAsync();
                     }
             }
 

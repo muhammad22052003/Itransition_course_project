@@ -3,6 +3,7 @@ using CourseProject_backend.Entities;
 using CourseProject_backend.Enums;
 using CourseProject_backend.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace CourseProject_backend.Repositories
@@ -25,7 +26,7 @@ namespace CourseProject_backend.Repositories
             foreach (var tag in tags)
 
             {
-                Tag newTag = new Tag(tag, item);
+                Tag newTag = new Tag(tag.ToLower(), item);
 
                 resultTags.Add(newTag);
             }
@@ -45,6 +46,57 @@ namespace CourseProject_backend.Repositories
             return await _dBContext.Tags
                 .Where(predicate)
                 .ToArrayAsync();
+        }
+
+        public async Task<IEnumerable<Tag>> GetTagsList(TagsDataFilter filter,
+                                                        string value,
+                                                        int page = 1,
+                                                        int pageSize = int.MaxValue)
+        {
+            page = page == 0 ? 1 : page;
+
+            List<Tag> tags = new List<Tag>();
+
+            switch (filter)
+            {
+                case TagsDataFilter.byDefault:
+                    {
+                        tags = await _dBContext.Tags
+                            .ToListAsync();
+                    }
+                    break;
+                case TagsDataFilter.byPopular:
+                    {
+                        var items = await _dBContext.Items
+                            .ToListAsync();
+
+                        tags = (await _dBContext.Tags
+                            .GroupBy(x => x.Name)
+                            .Select(x => x.First())
+                            .Take(500)
+                            .ToListAsync())
+                                .OrderByDescending(x => items
+                                    .Where(i => i.Tags.FirstOrDefault(y => y.Name == x.Name) != null)
+                                    .Count())
+                                .Skip((page - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToList();
+
+
+                    }
+                    break;
+                case TagsDataFilter.byItemId:
+                    {
+                        tags = await _dBContext.Tags
+                            .Where(x => x.Item.Id.ToLower() == value.ToLower())
+                            .Skip((page - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToListAsync();
+                    }
+                    break;
+            }
+
+            return tags;
         }
 
         public async Task Delete(Tag tag)

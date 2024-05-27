@@ -18,6 +18,7 @@
 <form action="~/itemconstructor/edit/@Model.LanguagePack.Key" id="form-data" method="post">
     <input type="hidden" name="CollectionId" value="@Model.Item.Collection.Id" />
     <input type="hidden" name="Id" value="@Model.Item.Id" />
+    <input type="hidden" name="lang" value="@Model.LanguagePack.Key" />
 
     <div class="container">
         <div class="row">

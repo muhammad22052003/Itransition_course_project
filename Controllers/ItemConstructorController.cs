@@ -19,6 +19,7 @@ namespace CourseProject_backend.Controllers
         private readonly UserService _userService;
         private readonly ItemService _itemService;
         private readonly CollectionService _collectionService;
+        private readonly LanguagePackService _languagePackService;
 
 
         public ItemConstructorController
@@ -27,9 +28,11 @@ namespace CourseProject_backend.Controllers
             [FromServices] UserService userService,
             [FromServices] CollectionDBContext dBContext,
             [FromServices] ItemService itemService,
+            [FromServices] LanguagePackService languagePackService,
             [FromServices] CollectionService collectionService
         )
         {
+            _languagePackService = languagePackService;
             _configuration = configuration;
             _userService = userService;
             _itemService = itemService;
@@ -63,7 +66,7 @@ namespace CourseProject_backend.Controllers
                 return RedirectToAction("index", "home", new { lang = lang.ToString() });
             }
 
-            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             MyCollection? collection = await _collectionService.GetById(id);
 
@@ -85,7 +88,7 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromRoute] AppLanguage lang ,ItemPostModel model)
+        public async Task<IActionResult> Add(ItemPostModel model, [FromRoute] AppLanguage lang = AppLanguage.en)
         {
             if (!Request.Cookies.TryGetValue("userData", out string? token))
             {
@@ -109,7 +112,7 @@ namespace CourseProject_backend.Controllers
                 return Problem("An error occurred. Item was not created.");
             }
 
-            return RedirectToAction("index", "Home", lang);
+            return RedirectToAction("index", "Home", new { lang = lang });
         }
 
 
@@ -134,12 +137,11 @@ namespace CourseProject_backend.Controllers
                 return RedirectToAction("index", "home", new { lang = lang.ToString() });
             }
 
-            var langPackSingleton = LanguagePackSingleton.GetInstance();
+            var langPackSingleton = LanguagePackService.GetInstance();
             var langPackCollection = langPackSingleton.GetLanguagePack(lang);
             if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
 
-            var langDataPair = new KeyValuePair
-                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+            var langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             Item? item = await _itemService.GetById(id);
 
@@ -163,7 +165,7 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit([FromRoute] AppLanguage lang, [FromForm]ItemPostModel model)
+        public async Task<IActionResult> Edit([FromForm]ItemPostModel model, [FromRoute] AppLanguage lang = AppLanguage.en)
         {
             if (!Request.Cookies.TryGetValue("userData", out string? token) ||
                 model.Id == null)

@@ -20,15 +20,18 @@ namespace CourseProject_backend.Controllers
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
         private readonly AppSecrets _appSecrets;
+        private readonly LanguagePackService _languagePackService;
 
         public LoginController
         (
             [FromServices] IConfiguration configuration,
             [FromServices] UserService userService,
             [FromServices] CollectionDBContext dBContext,
+            [FromServices] LanguagePackService languagePackService,
             [FromServices] AppSecrets appSecrets
         )
         {
+            _languagePackService = languagePackService;
             _configuration = configuration;
             _userService = userService;
             _appSecrets = appSecrets;
@@ -39,7 +42,7 @@ namespace CourseProject_backend.Controllers
         [HttpGet]
         public IActionResult Index([FromRoute] AppLanguage lang = AppLanguage.en)
         {
-            KeyValuePair<string, IDictionary<string, string>> langDataPair = this.GetLanguagePackage(lang);
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             string redirectUri = "https" + "://" + Request.Host + "/login/GoogleAuth";
 
@@ -58,12 +61,7 @@ namespace CourseProject_backend.Controllers
         [HttpPost]
         public async Task<IActionResult> Index([FromRoute] AppLanguage lang, UserLoginModel model)
         {
-            var langPackSingleton = LanguagePackSingleton.GetInstance();
-            var langPackCollection = langPackSingleton.GetLanguagePack(lang);
-            if (langPackCollection.IsNullOrEmpty()) { return NotFound(); }
-
-            var langDataPair = new KeyValuePair
-                               <string, IDictionary<string, string>>(lang.ToString(), langPackCollection);
+            var langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             var errorsDictionary = ModelState.GetErrors();
 
@@ -93,7 +91,7 @@ namespace CourseProject_backend.Controllers
             {
                 errorsDictionary = ModelState.GetErrors();
 
-                errorsDictionary.Add("Email", $"{langPackCollection["there_email_incorrect"]}");
+                errorsDictionary.Add("Email", $"{langDataPair.Value["there_email_incorrect"]}");
 
                 registrationModel.Errors = errorsDictionary;
 

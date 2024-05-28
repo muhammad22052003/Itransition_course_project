@@ -27,8 +27,9 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddCategory(string categoryName,string desc)
+        public async Task<IActionResult> AddCategory([FromRoute]string categoryName)
         {
+            
             if (!Request.Cookies.TryGetValue("userData", out string? token))
             {
                 return NotFound();
@@ -38,30 +39,45 @@ namespace CourseProject_backend.Controllers
 
             if(user != null && user.IsAdmin())
             {
-                int count = await _dBContext.Categories
-                .Where(c => c.Name.ToLower() == categoryName.ToLower())
-                .CountAsync();
-
-                if (count > 0) { return BadRequest("Categoryname already exist"); }
-
-                Category category = new Category(categoryName, desc);
-
-                _dBContext.Categories.Add(category);
-
-                await _dBContext.SaveChangesAsync();
-
-                await CategoriesPackage.Initialize(_dBContext);
-
-                var json = new
+                try
                 {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Description = category.Description,
-                };
+                    int count = await _dBContext.Categories
+                                    .Where(c => c.Name.ToLower() == categoryName.ToLower())
+                                    .CountAsync();
 
-                JsonDocument jsonDocument = JsonDocument.Parse(JsonSerializer.Serialize(json));
+                    if (count > 0) { return BadRequest("Categoryname already exist"); }
 
-                return Ok(json);
+                    Category category = new Category(categoryName, "Category Description");
+
+                    _dBContext.Categories.Add(category);
+
+                    await _dBContext.SaveChangesAsync();
+
+                    await CategoriesPackage.Initialize(_dBContext);
+
+                    var json = new
+                    {
+                        Id = category.Id,
+                        Name = category.Name,
+                        Description = category.Description,
+                    };
+
+                    try
+                    {
+                        JsonDocument jsonDocument = JsonDocument.Parse(JsonSerializer.Serialize(json));
+                        return Ok(json);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        return Ok();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
 
             return NotFound();

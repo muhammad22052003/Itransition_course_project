@@ -61,8 +61,6 @@ public class Program
         // User Service
         builder.Services.AddSingleton<UserService>((service) =>
         {
-            var dbContext = service.GetService<CollectionDBContext>();
-
             UserService? userService = new UserService(tokenHelper: jwtTokenHelper,
                                                   configuration: configuration,
                                                   passwordHasher: passwordHasher,
@@ -73,8 +71,6 @@ public class Program
         // Item Service
         builder.Services.AddSingleton<ItemService>((service) =>
         {
-            var dbContext = service.GetService<CollectionDBContext>();
-
             ItemService itemService = new ItemService(configuration);
 
             return itemService;

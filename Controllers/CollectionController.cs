@@ -55,7 +55,7 @@ namespace CourseProject_backend.Controllers
 
             this.DefineCategories();
             this.SetItemSearch();
-            this.DefineCollectionSorts();
+            this.DefineItemsSorts();
 
             User? user = null;
 
@@ -120,7 +120,7 @@ namespace CourseProject_backend.Controllers
                     return NotFound();
                 }
 
-                await _collectionService.DeleteRange(collectionId, user.Id);
+                await _collectionService.DeleteRange(collectionId, user);
 
                 return RedirectToAction("index", "cabinet", new { lang = lang.ToString() });
             }

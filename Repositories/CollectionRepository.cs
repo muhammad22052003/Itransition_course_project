@@ -37,13 +37,12 @@ namespace CourseProject_backend.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteRangeById(string[] collectionsId, string userId)
+        public async Task DeleteRangeById(string[] collectionsId, User user)
         {
             IQueryable<MyCollection> query = _dbContext.Collections;
 
             query = query.Where((col) => collectionsId.Contains(col.Id) &&
-            (col.User.Role == UserRoles.Admin.ToString() ||
-            col.User.Id == userId));
+            (user.IsAdmin() || col.User.Id == user.Id));
 
             var collections = await query.ToListAsync();
 

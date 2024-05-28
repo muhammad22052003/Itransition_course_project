@@ -65,29 +65,29 @@ namespace CourseProject_backend.Services
 
             item.Tags = tags;
 
-            if (collection.CustomText1_state) { item.CustomText1 = model.CustomText1; }
-            if (collection.CustomText2_state) { item.CustomText2 = model.CustomText2; }
-            if (collection.CustomText3_state) { item.CustomText3 = model.CustomText3; }
+            item.CustomText1 = collection.CustomText1_state ? model.CustomText1 : null;
+            item.CustomText2 = collection.CustomText2_state ? model.CustomText2 : null;
+            item.CustomText3 = collection.CustomText3_state ? model.CustomText3 : null;
 
-            if (collection.CustomString1_state) { item.CustomString1 = model.CustomString1; }
-            if (collection.CustomString2_state) { item.CustomString2 = model.CustomString2; }
-            if (collection.CustomString3_state) { item.CustomString3 = model.CustomString3; }
+            item.CustomString1 = collection.CustomString1_state ? model.CustomString1 : null;
+            item.CustomString2 = collection.CustomString2_state ? model.CustomString2 : null;
+            item.CustomString3 = collection.CustomString3_state ? model.CustomString3 : null;
 
-            if (collection.CustomInt1_state) { item.CustomInt1 = model.CustomInt1; }
-            if (collection.CustomInt2_state) { item.CustomInt2 = model.CustomInt2; }
-            if (collection.CustomInt3_state) { item.CustomInt3 = model.CustomInt3; }
+            item.CustomInt1 = collection.CustomInt1_state ? model.CustomInt1 : null;
+            item.CustomInt2 = collection.CustomInt2_state ? model.CustomInt2 : null;
+            item.CustomInt3 = collection.CustomInt3_state ? model.CustomInt3 : null;
 
-            if (collection.CustomBool1_state) { item.CustomBool1 = model.CustomBool1; }
-            if (collection.CustomBool2_state) { item.CustomBool2 = model.CustomBool2; }
-            if (collection.CustomBool3_state) { item.CustomBool3 = model.CustomBool3; }
+            item.CustomBool1 = collection.CustomBool1_state ? model.CustomBool1 : null;
+            item.CustomBool2 = collection.CustomBool2_state ? model.CustomBool2 : null;
+            item.CustomBool3 = collection.CustomBool3_state ? model.CustomBool3 : null;
 
-            if (collection.CustomDate1_state) { item.CustomDate1 = model.CustomDate1?.ToUniversalTime(); }
-            if (collection.CustomDate2_state) { item.CustomDate2 = model.CustomDate2?.ToUniversalTime(); }
-            if (collection.CustomDate3_state) { item.CustomDate3 = model.CustomDate3?.ToUniversalTime(); }
+            item.CustomDate1 = collection.CustomDate1_state ? model.CustomDate1?.ToUniversalTime() : null;
+            item.CustomDate2 = collection.CustomDate2_state ? model.CustomDate2?.ToUniversalTime() : null;
+            item.CustomDate3 = collection.CustomDate3_state ? model.CustomDate3?.ToUniversalTime() : null;
 
-            //collection.Items.Add(item);
+            collection.Items.Add(item);
 
-            await _itemRepository.Add(item);
+            await SaveUpdates();
 
             return true;
         }
@@ -116,25 +116,25 @@ namespace CourseProject_backend.Services
 
             item.Name = model.Name;
 
-            if (collection.CustomText1_state) { item.CustomText1 = model.CustomText1; }
-            if (collection.CustomText2_state) { item.CustomText2 = model.CustomText2; }
-            if (collection.CustomText3_state) { item.CustomText3 = model.CustomText3; }
+            item.CustomText1 = collection.CustomText1_state ? model.CustomText1 : null;
+            item.CustomText2 = collection.CustomText2_state ? model.CustomText2 : null;
+            item.CustomText3 = collection.CustomText3_state ? model.CustomText3 : null;
 
-            if (collection.CustomString1_state) { item.CustomString1 = model.CustomString1; }
-            if (collection.CustomString2_state) { item.CustomString2 = model.CustomString2; }
-            if (collection.CustomString3_state) { item.CustomString3 = model.CustomString3; }
+            item.CustomString1 = collection.CustomString1_state ? model.CustomString1 : null;
+            item.CustomString2 = collection.CustomString2_state ? model.CustomString2 : null;
+            item.CustomString3 = collection.CustomString3_state ? model.CustomString3 : null;
 
-            if (collection.CustomInt1_state) { item.CustomInt1 = model.CustomInt1; }
-            if (collection.CustomInt2_state) { item.CustomInt2 = model.CustomInt2; }
-            if (collection.CustomInt3_state) { item.CustomInt3 = model.CustomInt3; }
+            item.CustomInt1 = collection.CustomInt1_state ? model.CustomInt1 : null;
+            item.CustomInt2 = collection.CustomInt2_state ? model.CustomInt2 : null;
+            item.CustomInt3 = collection.CustomInt3_state ? model.CustomInt3 : null;
 
-            if (collection.CustomBool1_state) { item.CustomBool1 = model.CustomBool1; }
-            if (collection.CustomBool2_state) { item.CustomBool2 = model.CustomBool2; }
-            if (collection.CustomBool3_state) { item.CustomBool3 = model.CustomBool3; }
+            item.CustomBool1 = collection.CustomBool1_state ? model.CustomBool1 : null;
+            item.CustomBool2 = collection.CustomBool2_state ? model.CustomBool2 : null;
+            item.CustomBool3 = collection.CustomBool3_state ? model.CustomBool3 : null;
 
-            if (collection.CustomDate1_state) { item.CustomDate1 = model.CustomDate1?.ToUniversalTime(); }
-            if (collection.CustomDate2_state) { item.CustomDate2 = model.CustomDate2?.ToUniversalTime(); }
-            if (collection.CustomDate3_state) { item.CustomDate3 = model.CustomDate3?.ToUniversalTime(); }
+            item.CustomDate1 = collection.CustomDate1_state ? model.CustomDate1?.ToUniversalTime() : null;
+            item.CustomDate2 = collection.CustomDate2_state ? model.CustomDate2?.ToUniversalTime() : null;
+            item.CustomDate3 = collection.CustomDate3_state ? model.CustomDate3?.ToUniversalTime() : null;
 
             await SaveUpdates();
 

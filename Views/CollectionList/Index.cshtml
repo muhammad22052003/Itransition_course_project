@@ -57,7 +57,7 @@
                                 <div class="row mb-4">
                                     <div class="col d-flex">
                                         @{
-                                            if (Model.User.IsAdmin())
+                                            if (Model.User != null && Model.User.IsAdmin())
                                             {
                                                 <input name="collectionId" value="@Model.Collections[i].Id" type="checkbox" id="select-field" class="form-check-input">
                                             }

@@ -1,0 +1,159 @@
+﻿@model KeyValuePair<string,IDictionary<string, string>>
+@{
+    Layout = "_MyLayout";
+    ViewData["Title"] = "Collection constructor";
+    ViewData.Add("Lang", Model.Key);
+
+    List<string> categories = new List<string>();
+
+    if (ViewData.ContainsKey("categories"))
+    {
+        categories = ViewData["categories"] as List<string>;
+    }
+
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col d-flex justify-content-center">
+            <h1>@Model.Value["collection_constructor"]</h1>
+        </div>
+    </div>
+</div>
+
+<form action="~/CollectionConstructor/add/@Model.Key" id="data-form" method="post">
+    <input type="hidden" name="lang" value="@Model.Key"/>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <section class="d-flex justify-content-center align-content-center mb-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 font-size-20">
+                                @Model.Value["name_word"] :
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <input id="collectionName" name="Name" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="d-flex justify-content-center align-content-center mb-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 font-size-20">
+                                @Model.Value["change_category"] :
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <select id="collectionCategory" name="CategoryName" class="form-control">
+                                    @{
+                                        for (int i = 0; i < categories.Count; i++)
+                                        {
+                                            <option value="@categories[i]">@categories[i]</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="d-flex justify-content-center align-content-center mb-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 font-size-20">
+                                @Model.Value["description_word"] :
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <textarea name="Description" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div id="columns-block">
+                </div>
+                <div id="">
+                    <section id="add-column-select" class="d-flex justify-content-center align-content-center mb-3">
+                        <div class="container">
+                            <div id="add-new-column-block">
+                                <div class="row">
+                                    <div class="col-12 d-flex font-size-20">
+                                        @Model.Value["adding_new_column"]
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <button onclick="addColumn()" class="btn-all-select control-icon" type="button">
+                                            <img src="~/img/plus.png" style="width: 30px;">
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <select id="new-column-type-select" class="form-control">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 d-flex justify-content-center">
+                                    <button id="submit-button" class="btn-all-select control-icon font-size-20" type="button">
+                                        @Model.Value["create_collection"]
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div hidden>
+    <section id="columnTemplate" class="d-flex justify-content-center align-content-center mb-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 font-size-20 mb-4">
+                    @Model.Value["column_word"]
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="font-size-16">@Model.Value["column_name"]</div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <input id="column-name" name="" class="form-control"></select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="font-size-16">@Model.Value["column_type"]</div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="item-data" id="type-text" type="text"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                    <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                        <img src="~/img/trash.png" style="width: 30px;">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/js/newCollectionConstructor.js"></script>

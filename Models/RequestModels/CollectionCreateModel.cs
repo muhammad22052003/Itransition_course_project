@@ -4,6 +4,8 @@ namespace CourseProject_backend.Models.RequestModels
 {
     public class CollectionCreateModel
     {
+        public string? CollectionId { get; set; }
+
         [Required]
         public string CategoryName { get; set; }
         [Required]

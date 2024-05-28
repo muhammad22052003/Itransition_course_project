@@ -81,6 +81,9 @@ namespace CourseProject_backend.Controllers
                 User = user
             };
 
+            ViewData.Add("currentCategory", categoryName);
+            ViewData.Add("currentSort", sort.ToString());
+
             return View(viewModel);
         }
     }

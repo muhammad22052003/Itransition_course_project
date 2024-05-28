@@ -36,7 +36,7 @@
     <div class="container control-card">
         <div class="row mb-3 d-flex justify-content-center align-content-center">
             <div class="col d-flex justify-content-center">
-                <a id="add-button" href="~/collectionconstructor/index/@Model.LanguagePack.Key">
+                <a id="add-button" href="~/collectionconstructor/add/@Model.LanguagePack.Key">
                     <div class="btn-all-select control-icon">
                         <img src="~/img/plus.png" style="width: 30px;">
                     </div>
@@ -86,7 +86,7 @@
                                 </div>
                                 <div class="row font-size-14 mb-1">
                                     <div class="col">
-                                        @Model.LanguagePack.Value["author_word"] : <u>@Model.Collections[i].User.Name</u>
+                                        @Model.LanguagePack.Value["author_email"] : <u>@Model.Collections[i].User.Email</u>
                                     </div>
                                 </div>
                                 <div class="row font-size-14 mb-1">
@@ -132,21 +132,21 @@
                                         <a href="@Url.Action("index","cabinet",
                                             new{lang=Model.LanguagePack.Key,
                                             id = Model.User.Id,
-                                            page=Model.CurrentPage-1})" class="btn_cust btn-page-select-current">@($"{i}")</a>
+                                            page=i})" class="btn_cust btn-page-select-current">@($"{i}")</a>
                                     }
                                     else if (i < Model.CurrentPage && i >= Model.CurrentPage - 3)
                                     {
                                         <a href="@Url.Action("index","cabinet",
                                             new{lang=Model.LanguagePack.Key,
                                             id = Model.User.Id,
-                                            page=Model.CurrentPage-1})" class="btn_cust btn-page-select">@($"{i}")</a>
+                                            page=i})" class="btn_cust btn-page-select">@($"{i}")</a>
                                     }
                                     else if (i > Model.CurrentPage && i <= Model.CurrentPage + 3)
                                     {
                                         <a href="@Url.Action("index","cabinet",
                                             new{lang=Model.LanguagePack.Key,
                                             id = Model.User.Id,
-                                            page=Model.CurrentPage-1})" class="btn_cust btn-page-select">@($"{i}")</a>
+                                            page=i})" class="btn_cust btn-page-select">@($"{i}")</a>
                                     }
                                     else
                                     {

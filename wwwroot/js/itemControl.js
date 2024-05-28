@@ -5,42 +5,50 @@ let likeButton = document.getElementById('like-button');
 let isLiked = document.getElementById('is-liked');
 
 async function addLike() {
-    console.log(isLiked.value);
 
-    if (isLiked.value === 'true') {
-        isLiked.value = 'false';
-        likeButton.style.backgroundColor = '#fff'
-        await deleteLike()
-    }
-    else {
-        isLiked.value = 'true';
-        likeButton.style.backgroundColor = '#d85e55'
-        await sendLike();
+    if (isLiked != null) {
+        //console.log(isLiked.value);
+
+        if (isLiked.value === 'true') {
+            isLiked.value = 'false';
+            likeButton.style.backgroundColor = '#fff'
+            await deleteLike()
+        }
+        else {
+            isLiked.value = 'true';
+            likeButton.style.backgroundColor = '#d85e55'
+            await sendLike();
+        }
     }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    console.log(isLiked.value);
+    if (isLiked != null) {
+        console.log(isLiked.value);
 
-    if (isLiked.value === 'true') {
-        likeButton.style.backgroundColor = '#d85e55'
-    }
-    else {
-        likeButton.style.backgroundColor = '#fff'
+        if (isLiked.value === 'true') {
+            likeButton.style.backgroundColor = '#d85e55'
+        }
+        else {
+            likeButton.style.backgroundColor = '#fff'
+        }
     }
 
     new Promise((async function (resolve) {
 
         while (true) {
 
+            await sleep(10000);
+
+            //console.log('Receiving comments');
+
             try {
                 await defineComentariesBlock();
             } catch (e) {
+                console.log('Error in Reciving Comments');
                 console.log(e);
             }
-
-            await sleep(10000);
         }
     }));
 });
@@ -116,7 +124,7 @@ async function sendComment() {
         });
 
         if (response.ok) {
-            console.log('Comment added');
+            //console.log('Comment added');
             document.getElementById('comment-area').value = '';
         }
     } catch (e) {
@@ -168,7 +176,11 @@ async function getNewComentaries() {
 
         lastLoadTime = new Date();
 
-        if (response.ok) {
+        if (response.status === 204) {
+            //console.log('response 204 no content')
+            return null;
+        }
+        else if (response.ok) {
             return response.json()
         }
         else {

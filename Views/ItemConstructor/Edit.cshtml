@@ -107,7 +107,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
-                                        <textarea value="@Model.Item.CustomText1" name="CustomText1" class="constructor-text-area form-control"></textarea>
+                                        <textarea name="CustomText1" class="constructor-text-area form-control">@Model.Item.CustomText1</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +124,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
-                                        <textarea value="@Model.Item.CustomText2" name="CustomText2" class="constructor-text-area form-control"></textarea>
+                                        <textarea name="CustomText2" class="constructor-text-area form-control">@Model.Item.CustomText2</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -141,7 +141,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
-                                        <textarea value="@Model.Item.CustomText3" name="CustomText3" class="constructor-text-area form-control"></textarea>
+                                        <textarea name="CustomText3" class="constructor-text-area form-control">@Model.Item.CustomText3</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -224,7 +224,18 @@
                                             <img src="~/img/false.png" style="width: 30px;">
                                         </button>
                                     </div>
-                                    <input value="@Model.Item.CustomBool1?.ToString().ToLower()" type="hidden" id="customBool1" name="CustomBool1" />
+
+                                    @{
+                                        if (Model.Item.CustomBool1 == null)
+                                        {
+                                            <input value="false" type="hidden" id="customBool1" name="CustomBool1" />
+                                        }
+                                        else
+                                        {
+                                            <input value="@Model.Item.CustomBool1?.ToString().ToLower()" type="hidden" id="customBool1" name="CustomBool1" />
+                                        }
+                                    }
+
                                 </div>
                             </div>
                         </section>
@@ -250,7 +261,16 @@
                                             <img src="~/img/false.png" style="width: 30px;">
                                         </button>
                                     </div>
-                                    <input value="@Model.Item.CustomBool2?.ToString().ToLower()" type="hidden" id="customBool2" name="CustomBool2" />
+                                    @{
+                                        if (Model.Item.CustomBool2 == null)
+                                        {
+                                            <input value="false" type="hidden" id="customBool2" name="CustomBool2" />
+                                        }
+                                        else
+                                        {
+                                            <input value="@Model.Item.CustomBool2?.ToString().ToLower()" type="hidden" id="customBool2" name="CustomBool2" />
+                                        }
+                                    }
                                 </div>
                             </div>
                         </section>
@@ -276,7 +296,16 @@
                                             <img src="~/img/false.png" style="width: 30px;">
                                         </button>
                                     </div>
-                                    <input value="@Model.Item.CustomBool3?.ToString().ToLower()" type="hidden" id="customBool3" name="CustomBool3" />
+                                    @{
+                                        if (Model.Item.CustomBool3 == null)
+                                        {
+                                            <input value="false" type="hidden" id="customBool3" name="CustomBool3" />
+                                        }
+                                        else
+                                        {
+                                            <input value="@Model.Item.CustomBool3?.ToString().ToLower()" type="hidden" id="customBool3" name="CustomBool3" />
+                                        }
+                                    }
                                 </div>
                             </div>
                         </section>

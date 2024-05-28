@@ -9,9 +9,18 @@
 }
 
 <!------------------------------------------------------------------------>
+
 @{
     if (Model.User == null)
     {
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col d-flex justify-content-center">
+                    <h1>@Model.LanguagePack.Value["my_profile"]</h1>
+                </div>
+            </div>
+        </div>
+
         <div class="container control-card">
             <div class="row mb-3 d-flex justify-content-center align-content-center">
                 <div class="col d-flex justify-content-center">
@@ -23,6 +32,7 @@
     else
     {
         <div class="myProfile-block" id="profile-block">
+
             <div class="container">
                 <div class="row mb-3">
                     <div class="col d-flex justify-content-center">
@@ -44,7 +54,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <section class="d-flex justify-content-center align-content-center">
+                        <section class="d-flex mb-3 justify-content-center align-content-center">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-12 font-size-20">
@@ -117,7 +127,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col">
-                            <section class="d-flex justify-content-center align-content-center">
+                            <section class="d-flex justify-content-center align-content-center mb-3">
                                 <div class="container">
                                     <div class="row">
                                         <div class="col-12 font-size-20">

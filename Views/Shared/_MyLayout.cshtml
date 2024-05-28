@@ -106,9 +106,28 @@
                         <select name="categoryName" id="select-categories" class="form-control region-select">
                             <option value="">Category : </option>
                             @{
-                                for (int i = 0; i < categories.Count; i++)
+                                if (ViewData.TryGetValue("currentCategory" ,out object currentCategory))
                                 {
-                                    <option value="@categories[i].ToLower()">@categories[i]</option>
+                                    for (int i = 0; i < categories.Count; i++)
+                                    {
+                                        if (currentCategory.ToString().ToLower() == categories[i].ToLower())
+                                        {
+                                            <option selected value="@categories[i].ToLower()">@categories[i]</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@categories[i].ToLower()">@categories[i]</option>
+
+                                        }
+
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < categories.Count; i++)
+                                    {
+                                        <option value="@categories[i].ToLower()">@categories[i]</option>
+                                    }
                                 }
                             }
                         </select>
@@ -117,9 +136,28 @@
                         <select name="sort" id="select-sortBy" class="form-control region-select">
                             <option value="">Sort by : </option>
                             @{
-                                for (int i = 0; i < sorts.Count; i++)
+                                if (ViewData.TryGetValue("currentSort", out object currentSort))
                                 {
-                                    <option value="@sorts[i].ToLower()">@sorts[i]</option>
+                                    for (int i = 0; i < sorts.Count; i++)
+                                    {
+                                        if (currentSort.ToString().ToLower() == sorts[i].ToLower())
+                                        {
+                                            <option selected value="@sorts[i].ToLower()">@sorts[i]</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@sorts[i].ToLower()">@sorts[i]</option>
+
+                                        }
+
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < sorts.Count; i++)
+                                    {
+                                        <option value="@sorts[i].ToLower()">@sorts[i]</option>
+                                    }
                                 }
                             }
                         </select>

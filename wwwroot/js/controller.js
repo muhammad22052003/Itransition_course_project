@@ -64,9 +64,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (!themeDefined) {
         setDarkMode();
     }
-
-    await defineAllCategories();
-    await defineAllLanguages();
 })
 
 categoriesSelect.addEventListener('change', function () {
@@ -99,29 +96,6 @@ async function defineAllCategories() {
         categories_select.appendChild(option);
     }
 }
-/*async function defineAllLanguages() {
-
-    try {
-        const response = await fetch(serverUrl + '/apilang' + '/getall', {
-            method: "GET"
-        });
-
-        let regions = await response.json();
-        const regions_select = document.getElementById('select-regions');
-
-        regions_select.innerHTML = '';
-
-        for (var i = 0; i < regions.length; i++) {
-            let option = document.createElement('option');
-            option.value = i;
-            option.textContent = regions[i];
-
-            regions_select.appendChild(option);
-        }
-    } catch (e) {
-        console.log(e);
-    }
-}*/
 
 function changeLang() {
     let langSelect = document.getElementById('select-regions');

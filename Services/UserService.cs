@@ -207,7 +207,7 @@ namespace CourseProject_backend.Services
                 throw new Exception("Not founded values from appsettings.json");
             }
 
-            List<Claim>? claims = _jwtTokenHelper.DeserializeToken(token, key).ToList();
+            List<Claim>? claims = _jwtTokenHelper.DeserializeToken(token, key)?.ToList();
 
             if(claims == null) { return null; }
 

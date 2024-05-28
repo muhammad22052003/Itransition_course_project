@@ -64,7 +64,7 @@
                                 <div class="row mb-4">
                                     <div class="col d-flex">
                                         @{
-                                            if (Model.User.IsAdmin())
+                                            if (Model.User != null && Model.User.IsAdmin())
                                             {
                                                 <input type="checkbox" name="itemId" value="@Model.Items[i].Id" id="select-field" class="form-check-input">
                                             }
@@ -103,7 +103,7 @@
                                 </div>
                                 <div class="row font-size-14 mb-1">
                                     <div class="col">
-                                        @Model.LanguagePack.Value["created_word"] : <u>@Model.Items[i].Collection.User.Name</u>
+                                        @Model.LanguagePack.Value["author_email"] : <u>@Model.Items[i].Collection.User.Email</u>
                                     </div>
                                 </div>
                                 <div class="row font-size-14 mb-1">

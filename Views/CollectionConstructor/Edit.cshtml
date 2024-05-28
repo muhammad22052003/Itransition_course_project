@@ -1,0 +1,793 @@
+﻿@using CourseProject_backend.Models.ViewModels
+@model CollectionConstructorViewModel
+@{
+    Layout = "_MyLayout";
+    ViewData["Title"] = "Collection constructor";
+    ViewData.Add("Lang", Model.LanguagePack.Key);
+
+    List<string> categories = new List<string>();
+
+    if (ViewData.ContainsKey("categories"))
+    {
+        categories = ViewData["categories"] as List<string>;
+    }
+
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col d-flex justify-content-center">
+            <h1>@Model.LanguagePack.Value["collection_constructor"] - @Model.Collection.Name</h1>
+        </div>
+    </div>
+</div>
+
+<form action="~/CollectionConstructor/edit/@Model.LanguagePack.Key" id="data-form" method="post">
+    <input type="hidden" name="lang" value="@Model.LanguagePack.Key" />
+    <input type="hidden" name="CollectionId" value="@Model.Collection.Id" />
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <section class="d-flex justify-content-center align-content-center mb-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 font-size-20">
+                                @Model.LanguagePack.Value["name_word"] :
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <input value="@Model.Collection.Name" id="collectionName" name="Name" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="d-flex justify-content-center align-content-center mb-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 font-size-20">
+                                @Model.LanguagePack.Value["category_word"] :
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="item-data" id="type-text" type="text">@Model.Collection.Category.Name</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="d-flex justify-content-center align-content-center mb-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 font-size-20">
+                                @Model.LanguagePack.Value["description_word"] :
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <textarea name="Description" class="form-control">@Model.Collection.Description</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div id="columns-block">
+                    @{
+                        if (Model.Collection.CustomString1_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomString1" value="@Model.Collection.CustomString1_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="text">String</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        if (Model.Collection.CustomString2_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomString2" value="@Model.Collection.CustomString2_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="text">String</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        if (Model.Collection.CustomString3_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomString3" value="@Model.Collection.CustomString3_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="text">String</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+                    }
+
+                    @{
+                        if (Model.Collection.CustomText1_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomText1" value="@Model.Collection.CustomText1_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="text">Text</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        if (Model.Collection.CustomText2_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomText2" value="@Model.Collection.CustomText2_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="text">Text</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        if (Model.Collection.CustomText3_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomText3" value="@Model.Collection.CustomText3_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="text">Text</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+                    }
+
+                    @{
+                        if (Model.Collection.CustomInt1_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomInt1" value="@Model.Collection.CustomInt1_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="text">Number</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        if (Model.Collection.CustomInt2_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomInt2" value="@Model.Collection.CustomInt2_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="Number">Text</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        if (Model.Collection.CustomInt3_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomInt3" value="@Model.Collection.CustomInt3_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="text">Number</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+                    }
+
+                    @{
+                        if (Model.Collection.CustomBool1_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomBool1" value="@Model.Collection.CustomBool1_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="text">Yes/No</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        if (Model.Collection.CustomBool2_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomBool2" value="@Model.Collection.CustomBool2_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="Number">Yes/No</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        if (Model.Collection.CustomBool3_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomBool3" value="@Model.Collection.CustomBool3_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="text">Yes/No</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+                    }
+
+                    @{
+                        if (Model.Collection.CustomDate1_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomDate1" value="@Model.Collection.CustomDate1_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="text">Date</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        if (Model.Collection.CustomDate2_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomDate2" value="@Model.Collection.CustomDate2_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="Number">Date</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+
+                        if (Model.Collection.CustomDate3_state)
+                        {
+                            <section id="column-data" class="d-flex justify-content-center align-content-center mb-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 font-size-20 mb-4">
+                                            @Model.LanguagePack.Value["column_word"]
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <input id="column-name" name="CustomDate3" value="@Model.Collection.CustomDate3_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="item-data" id="type-text" type="text">Date</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center">
+                                            <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                                                <img src="~/img/trash.png" style="width: 30px;">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        }
+                    }
+                </div>
+                <div id="">
+                    <section id="add-column-select" class="d-flex justify-content-center align-content-center mb-3">
+                        <div class="container">
+                            <div id="add-new-column-block">
+                                <div class="row">
+                                    <div class="col-12 d-flex font-size-20">
+                                        @Model.LanguagePack.Value["adding_new_column"]
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <button onclick="addColumn()" class="btn-all-select control-icon" type="button">
+                                            <img src="~/img/plus.png" style="width: 30px;">
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <select id="new-column-type-select" class="form-control">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 d-flex justify-content-center">
+                                    <button id="submit-button" class="btn-all-select control-icon font-size-20" type="button">
+                                        @Model.LanguagePack.Value["create_collection"]
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div hidden>
+    <section id="columnTemplate" class="d-flex justify-content-center align-content-center mb-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 font-size-20 mb-4">
+                    @Model.LanguagePack.Value["column_word"]
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="font-size-16">@Model.LanguagePack.Value["column_name"]</div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <input id="column-name" name="" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="font-size-16">@Model.LanguagePack.Value["column_type"]</div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="item-data" id="type-text" type="text"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                    <button id="erase-column-button" class="btn-all-select control-icon" type="button">
+                        <img src="~/img/trash.png" style="width: 30px;">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/js/newCollectionConstructor.js"></script>

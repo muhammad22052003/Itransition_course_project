@@ -2,12 +2,23 @@
 let collectionDescription = document.getElementById('collectionDescription');
 let categoryName = document.getElementById('categoryName');
 
+categoryName.ondragenter
+
 collectionName.addEventListener('input', function(){
     collectionData.Name = collectionName.value;
 });
 
 collectionDescription.addEventListener('input', function(){
     collectionData.Description = collectionDescription.value;
+
+    olumnEraserButton.onclick = async function (event) {
+
+        let columnElement = event.target.parentElement
+            .parentElement.parentElement
+            .parentElement.parentElement;
+
+        columnElement.outerHTML = '';
+    }
 });
 
 categoryName.addEventListener('change', function(){
@@ -56,8 +67,8 @@ function createNewAddConstructor(){
 function checkConstructorData(constructor){
     let columnInfoSection = document.getElementById('columnInfo').cloneNode(true);
     let columnName = getAddConstructor()
-    .querySelector('#columnName').value;       
-    
+    .querySelector('#columnName').value;     
+
     let typeName = getTypesSelect(constructor).value;
 
     if(thisTextEmpty(columnName) || thisTextEmpty(typeName)){

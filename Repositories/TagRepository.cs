@@ -68,6 +68,7 @@ namespace CourseProject_backend.Repositories
                 case TagsDataFilter.byPopular:
                     {
                         var items = await _dBContext.Items
+                            .Include(x => x.Tags)
                             .ToListAsync();
 
                         tags = (await _dBContext.Tags

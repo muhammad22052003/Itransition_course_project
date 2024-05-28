@@ -84,6 +84,9 @@ namespace CourseProject_backend.Controllers
                 PagesCount = pagesCount
             };
 
+            ViewData.Add("currentCategory", categoryName);
+            ViewData.Add("currentSort", sort.ToString());
+
             return View(viewModel);
         }
     }

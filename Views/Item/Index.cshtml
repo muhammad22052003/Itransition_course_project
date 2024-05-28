@@ -34,9 +34,15 @@
     </div>
     <div class="row mb-3 d-flex justify-content-center align-content-center">
         <div class="col d-flex justify-content-center">
-            @Model.LanguagePack.Value["collection_wor"] : <a href="~/collection/index/@Model.LanguagePack.Key/@Model.Item.Collection.Id">
-                                                             @Model.Item.Collection.Name
+            @Model.LanguagePack.Value["collection_wor"] : @(" ")<a href="~/collection/index/@Model.LanguagePack.Key/@Model.Item.Collection.Id">
+                                                             @(Model.Item.Collection.Name)
                                                           </a>
+        </div>
+    </div
+
+    <div class="row mb-3 d-flex justify-content-center align-content-center">
+        <div class="col d-flex justify-content-center">
+            @Model.LanguagePack.Value["category_word"] :@(" ")<u>@(Model.Item.Collection.Category.Name)</u>
         </div>
     </div>
 </div>

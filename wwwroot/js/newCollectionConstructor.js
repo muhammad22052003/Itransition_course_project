@@ -201,7 +201,7 @@ submitButton.addEventListener("click", async function (event) {
 
         if (typeText === 'number') {
             columnNameElement.name = 'CustomInt' + intCount + '_name';
-            intColumnsLimit++;
+            intCount++;
         }
 
         if (typeText === 'yes/no') {

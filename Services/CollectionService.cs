@@ -176,9 +176,67 @@ namespace CourseProject_backend.Services
             collection.CustomDate3_name = model.CustomDate3_name;
             #endregion
 
+            DefineCollectionItems(collection);
+
             await SaveUpdates();
 
             return true;
+        }
+
+        public async void DefineCollectionItems(MyCollection collection)
+        {
+            Item[] items = collection.Items.ToArray();
+
+            for (int i = 0; i < collection.Items.Count; i++)
+            {
+                if (collection.CustomString1_state)
+                    items[i].CustomString1 = items[i].CustomString1 == null ? string.Empty : items[i].CustomString1;
+
+                if (collection.CustomString2_state)
+                    items[i].CustomString2 = items[i].CustomString2 == null ? string.Empty : items[i].CustomString2;
+
+                if (collection.CustomString3_state)
+                    items[i].CustomString3 = items[i].CustomString3 == null ? string.Empty : items[i].CustomString3;
+                ////////////
+                if (collection.CustomText1_state)
+                    items[i].CustomText1 = items[i].CustomText1 == null ? string.Empty : items[i].CustomText1;
+
+                if (collection.CustomText2_state)
+                    items[i].CustomText2 = items[i].CustomText2 == null ? string.Empty : items[i].CustomText2;
+
+                if (collection.CustomText3_state)
+                    items[i].CustomText3 = items[i].CustomText3 == null ? string.Empty : items[i].CustomText3;
+                ////////////
+                if (collection.CustomInt1_state)
+                    items[i].CustomInt1 = items[i].CustomInt1 == null ? 0 : items[i].CustomInt1;
+
+                if (collection.CustomInt2_state)
+                    items[i].CustomInt2 = items[i].CustomInt2 == null ? 0 : items[i].CustomInt2;
+
+                if (collection.CustomInt3_state)
+                    items[i].CustomInt3 = items[i].CustomInt3 == null ? 0 : items[i].CustomInt3;
+                ////////////
+                if (collection.CustomBool1_state)
+                    items[i].CustomBool1 = items[i].CustomBool1 == null ? false : items[i].CustomBool1;
+
+                if (collection.CustomBool2_state)
+                    items[i].CustomBool2 = items[i].CustomBool2 == null ? false : items[i].CustomBool2;
+
+                if (collection.CustomBool3_state)
+                    items[i].CustomBool3 = items[i].CustomBool3 == null ? false : items[i].CustomBool3;
+                ////////////
+                if (collection.CustomDate1_state)
+                    items[i].CustomDate1 = items[i].CustomDate1 == null ? DateTime.MinValue.ToUniversalTime() : items[i].CustomDate1;
+
+                if (collection.CustomDate2_state)
+                    items[i].CustomDate2 = items[i].CustomDate2 == null ? DateTime.MinValue.ToUniversalTime() : items[i].CustomDate2;
+
+                if (collection.CustomDate3_state)
+                    items[i].CustomDate3 = items[i].CustomDate3 == null ? DateTime.MinValue.ToUniversalTime() : items[i].CustomDate3;
+            }
+
+            collection.Items = items;
+
         }
 
         public byte[] GetCollectionCsv(MyCollection collection)

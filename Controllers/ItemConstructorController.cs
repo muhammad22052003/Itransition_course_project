@@ -112,7 +112,7 @@ namespace CourseProject_backend.Controllers
                 return Problem("An error occurred. Item was not created.");
             }
 
-            return RedirectToAction("index", "Home", new { lang = lang });
+            return RedirectToAction("index", "collection", new { lang = lang, id = model.CollectionId });
         }
 
 

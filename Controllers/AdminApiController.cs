@@ -27,7 +27,7 @@ namespace CourseProject_backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddCategory([FromRoute]string categoryName)
+        public async Task<IActionResult> AddCategory(string categoryName)
         {
             
             if (!Request.Cookies.TryGetValue("userData", out string? token))

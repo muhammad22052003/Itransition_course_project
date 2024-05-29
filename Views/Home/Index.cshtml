@@ -160,9 +160,12 @@
                                             var popularTags = Model.Items[i].Tags.ToList();
                                             for (int j = 0; j < popularTags.Count; j++)
                                             {
-                                                <a href="~/itemlist/index?lang=@Model.LanguagePack.Key&filter=@ItemsDataFilter.byTag&value=@popularTags[j].Name">
-                                                    #@(popularTags[j].Name)
-                                                </a>
+                                                <a href="@Url.Action("index","itemlist",
+                                                new{
+                                                    lang = Model.LanguagePack.Key,
+                                                    filter = ItemsDataFilter.byTag,
+                                                    value = popularTags[j].Name,
+                                                })">#@(popularTags[j].Name)</a>
                                             }
                                         }
                                     }
@@ -203,9 +206,12 @@
 
                                         for (int j = 0; j < tags.Count; j++)
                                         {
-                                            <a href="~/itemlist/index?lang=@Model.LanguagePack.Key&filter=@ItemsDataFilter.byTag&value=@tags[j].Name">
-                                                #@tags[j].Name
-                                            </a>
+                                            <a href="@Url.Action("index","itemlist",
+                                                new{
+                                                    lang = Model.LanguagePack.Key,
+                                                    filter = ItemsDataFilter.byTag,
+                                                    value = tags[j].Name
+                                                })">#@(tags[j].Name)</a>
                                         }
                                     }
                                 </div>

@@ -52,7 +52,7 @@ public class Program
         // DbContext Service
         // Can be done as "AddSingleton" or as "AddScopped"
         // For this Service
-        builder.Services.AddSingleton<CollectionDBContext>((service) =>
+        builder.Services.AddScoped<CollectionDBContext>((service) =>
         {
             CollectionDBContext dbContext = new CollectionDBContext(appSecrets.NpgSql_connection, DBSystem.POSTGRES);
 

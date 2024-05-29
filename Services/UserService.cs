@@ -29,6 +29,7 @@ namespace CourseProject_backend.Services
         private readonly IJwtTokenHelper _jwtTokenHelper;
         private readonly IConfiguration _configuration;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IPasswordGenerator _passwordGenerator;
         private readonly AppSecrets _appSecrets;
    
         public UserService
@@ -36,12 +37,14 @@ namespace CourseProject_backend.Services
             IJwtTokenHelper tokenHelper,
             IConfiguration configuration,
             IPasswordHasher passwordHasher,
+            IPasswordGenerator passwordGenerator,
             [FromServices] AppSecrets appSecrets
         )
         {
             _jwtTokenHelper = tokenHelper;
             _configuration = configuration;
             _passwordHasher = passwordHasher;
+            _passwordGenerator = passwordGenerator;
             _appSecrets = appSecrets;
         }
 
@@ -110,18 +113,15 @@ namespace CourseProject_backend.Services
 
                             if (user == null)
                             {
-                                string userPassword = RNGCryptoPasswordGenerator.Generate(64);
+                                string userPassword = _passwordGenerator.Generate(64);
 
                                 UserBuilder userBuilder = new UserBuilder();
 
                                 if(userInfo.Email.ToLower() == "muhammadarch22@gmail.com")
-                                {
                                     userBuilder.SetParameters(userInfo.Name, userInfo.Email, userPassword, UserRoles.Admin);
-                                }
+
                                 else
-                                {
                                     userBuilder.SetParameters(userInfo.Name, userInfo.Email, userPassword, UserRoles.User);
-                                }
 
                                 user = userBuilder.Build() as User;
 
@@ -151,16 +151,17 @@ namespace CourseProject_backend.Services
 
             if (user != null) { return false; }
 
+            UserRoles role = UserRoles.User;
+            if (model.Email == "muhammadarch22@gmail.com")
+                role = UserRoles.Admin;
+            string hashedPassword = _passwordHasher.Generate(model.Password);
+
             UserBuilder userBuilder = new UserBuilder(_configuration);
-
+            userBuilder.SetParameters(name: model.Name,
+                                      email: model.Email,
+                                      password: hashedPassword,
+                                      role: role);
             User newUser = userBuilder.Build() as User;
-
-            newUser.Name = model.Name;
-            newUser.Email = model.Email;
-            newUser.Password = _passwordHasher.Generate(model.Password);
-
-            if(newUser.Email == "muhammadarch22@gmail.com") { newUser.Role = UserRoles.Admin.ToString(); }
-            else { newUser.Role = UserRoles.User.ToString(); }
 
             await _userRepository.Add(newUser);
 

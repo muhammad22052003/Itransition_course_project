@@ -21,6 +21,7 @@ namespace CourseProject_backend.Controllers
         private readonly UserService _userService;
         private readonly AppSecrets _appSecrets;
         private readonly LanguagePackService _languagePackService;
+        private string _redirectUri; 
 
         public LoginController
         (
@@ -42,9 +43,11 @@ namespace CourseProject_backend.Controllers
         [HttpGet]
         public IActionResult Index([FromRoute] AppLanguage lang = AppLanguage.en)
         {
+            _redirectUri = "https" + "://" + Request.Host + "/login/GoogleAuth";
+
             KeyValuePair<string, IDictionary<string, string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
-            string redirectUri = "https" + "://" + Request.Host + "/login/GoogleAuth";
+            string redirectUri = _redirectUri;
 
             string googleAuthUri = _userService.GetGoogleAuthUri(redirectUri);
 
@@ -61,11 +64,13 @@ namespace CourseProject_backend.Controllers
         [HttpPost]
         public async Task<IActionResult> Index([FromRoute] AppLanguage lang, UserLoginModel model)
         {
+            _redirectUri = "https" + "://" + Request.Host + "/login/GoogleAuth";
+
             var langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             var errorsDictionary = ModelState.GetErrors();
 
-            string redirectUri = "https" + "://" + Request.Host + "/login/GoogleAuth";
+            string redirectUri = _redirectUri;
 
             string googleAuthUri = _userService.GetGoogleAuthUri(redirectUri);
 
@@ -102,7 +107,9 @@ namespace CourseProject_backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GoogleAuth(string code)
         {
-            string redirectUri = "https" + "://" + Request.Host + "/login/GoogleAuth";
+            _redirectUri = "https" + "://" + Request.Host + "/login/GoogleAuth";
+
+            string redirectUri = _redirectUri;
 
             string? token = await _userService.GoogleLogin(code, redirectUri);
 

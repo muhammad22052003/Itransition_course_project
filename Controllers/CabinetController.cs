@@ -49,26 +49,25 @@ namespace CourseProject_backend.Controllers
             this.DefineItemsSorts();
             this.SetItemSearch();
 
-            if (!Request.Cookies.TryGetValue("userData", out string? token))
+            User? user = null;
+
+            if (Request.Cookies.TryGetValue("userData", out string? token))
             {
-                return RedirectToAction("index", "start", lang);
+                user = await _userService.GetUserFromToken(token);
             }
-
-            User? user = await _userService.GetUserFromToken(token);
-
-            if(user == null) { return NotFound(); }
 
             KeyValuePair<string, IDictionary<string,string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
 
             int pagesCount = 1;
 
-            List<MyCollection> collections = (await _collectionService
+            List<MyCollection>? collections = user != null ? 
+                (await _collectionService
                 .GetCollectionList(filter: CollectionDataFilter.byAuthorId,
                                    value: user.Id,
                                    DataSort.byDefault,
                                    page: page,
                                    pageSize: _pageSize,
-                                   categoryName: categoryName)).ToList();
+                                   categoryName: categoryName)).ToList() : null;
 
             if (!collections.IsNullOrEmpty())
             {

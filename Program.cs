@@ -38,6 +38,7 @@ public class Program
 
         IJwtTokenHelper jwtTokenHelper = new JwtTokenHelper();
         IPasswordHasher passwordHasher = new Sha3_256PasswordHasher();
+        IPasswordGenerator passwordGenerator = new RNGCryptoPasswordGenerator();
 
         CollectionAdapter collectionAdapter = new CollectionAdapter();
         CSVHepler csvHelper = new CSVHepler();
@@ -64,6 +65,7 @@ public class Program
             UserService? userService = new UserService(tokenHelper: jwtTokenHelper,
                                                   configuration: configuration,
                                                   passwordHasher: passwordHasher,
+                                                  passwordGenerator : passwordGenerator,
                                                   appSecrets: appSecrets);
             return userService;
         });

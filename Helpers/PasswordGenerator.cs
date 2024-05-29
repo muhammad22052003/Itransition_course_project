@@ -1,10 +1,11 @@
-﻿using System.Security.Cryptography;
+﻿using CourseProject_backend.Interfaces.Helpers;
+using System.Security.Cryptography;
 
 namespace CourseProject_backend.Helpers
 {
-    public static class RNGCryptoPasswordGenerator
+    public class RNGCryptoPasswordGenerator : IPasswordGenerator
     {
-        public static string Generate(int length)
+        public string Generate(int length)
         {
             const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
             var randomBytes = new byte[length];
@@ -13,7 +14,7 @@ namespace CourseProject_backend.Helpers
                 rng.GetBytes(randomBytes);
             }
 
-            var password = new char[length];
+            char[] password = new char[length];
             for (int i = 0; i < length; i++)
             {
                 password[i] = validChars[randomBytes[i] % validChars.Length];

@@ -76,21 +76,34 @@
 
 <div class="container">
     <div class="row mb-3">
-        <div class="col d-flex justify-content-center">
-            <button type="button" onclick="selectAll()" class="btn-all-select">
-                @Model.LanguagePack.Value["select_all"]
-            </button>
-        </div>
+
+        @{
+            if (Model.User != null && (Model.User.IsAdmin() || Model.User.Id == Model.Collection.User.Id))
+            {
+                <div class="col d-flex justify-content-center">
+                    <button type="button" onclick="selectAll()" class="btn-all-select">
+                        @Model.LanguagePack.Value["select_all"]
+                    </button>
+                </div>
+            }
+        }
+        
         <div class="col d-flex justify-content-center">
             <button type="button" onclick="exportToCsv()" class="btn-all-select">
                 @Model.LanguagePack.Value["export_to_csv"]
             </button>
         </div>
-        <div class="col d-flex justify-content-center">
-            <button type="button" onclick="cancelAll()" class="btn-all-select">
-                @Model.LanguagePack.Value["cancel_all"]
-            </button>
-        </div>
+
+        @{
+            if (Model.User != null && (Model.User.IsAdmin() || Model.User.Id == Model.Collection.User.Id))
+            {
+                <div class="col d-flex justify-content-center">
+                    <button type="button" onclick="cancelAll()" class="btn-all-select">
+                        @Model.LanguagePack.Value["cancel_all"]
+                    </button>
+                </div>
+            }
+        }
     </div>
 </div>
 
@@ -171,7 +184,7 @@
                                 </div>
                                 <div class="row font-size-14 mb-1">
                                     <div class="col">
-                                        @Model.LanguagePack.Value["created_word"] : <u>@Model.Items[i].Collection.User.Name</u>
+                                        @Model.LanguagePack.Value["author_word"] : <u>@Model.Items[i].Collection.User.Name</u>
                                     </div>
                                 </div>
                                 <div class="row font-size-14 mb-1">

@@ -12,6 +12,7 @@ using CourseProject_backend.Packages;
 using CourseProject_backend.Repositories;
 using CourseProject_backend.Services;
 using CustomJiraTicketClient.Jira;
+using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using Npgsql;
 using System.Globalization;
@@ -55,9 +56,7 @@ public class Program
             return appSecrets;
         });
 
-        // DbContext Service
-        // Can be done as "AddSingleton" or as "AddScopped"
-        // For this Service
+        //  DB Context
         builder.Services.AddScoped<CollectionDBContext>((service) =>
         {
             CollectionDBContext dbContext = new CollectionDBContext(appSecrets.NpgSql_connection, DBSystem.POSTGRES);
@@ -66,7 +65,7 @@ public class Program
         });
 
         // User Service
-        builder.Services.AddSingleton<UserService>((service) =>
+        builder.Services.AddScoped<UserService>((service) =>
         {
             UserService? userService = new UserService(tokenHelper: jwtTokenHelper,
                                                   configuration: configuration,
@@ -77,7 +76,7 @@ public class Program
         });
 
         // Item Service
-        builder.Services.AddSingleton<ItemService>((service) =>
+        builder.Services.AddScoped<ItemService>((service) =>
         {
             ItemService itemService = new ItemService(configuration);
 
@@ -85,17 +84,18 @@ public class Program
         });
 
         // Collection Service
-        builder.Services.AddSingleton<CollectionService>((service) =>
+        builder.Services.AddScoped<CollectionService>((service) =>
         {
-            CollectionService collectionService = new CollectionService(configuration,
-                csvHelper,
-                collectionAdapter);
+            CollectionService collectionService = new CollectionService(
+                configuration : configuration,
+                csvHepler : csvHelper,
+                collectionAdapter : collectionAdapter);
 
             return collectionService;
         });
 
         // Reaction(Like) Service
-        builder.Services.AddSingleton<ReactionService>((service) =>
+        builder.Services.AddScoped<ReactionService>((service) =>
         {
             ReactionService reactionService = new ReactionService(configuration);
 
@@ -103,7 +103,7 @@ public class Program
         });
 
         // Tag Service
-        builder.Services.AddSingleton<TagService>((service) =>
+        builder.Services.AddScoped<TagService>((service) =>
         {
             TagService tagService = new TagService();
 
@@ -125,7 +125,6 @@ public class Program
             return languagePackService;
         });
 
-
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
@@ -135,7 +134,6 @@ public class Program
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 

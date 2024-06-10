@@ -5,8 +5,6 @@ VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CourseProject_backend", "CourseProject_backend.csproj", "{9462A93C-6A92-40AB-8DF8-4F23490C90F9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomJiraTicketClient", "..\CustomJiraTicketClient\CustomJiraTicketClient.csproj", "{181E31AD-D592-4E53-8C84-113A48CBD8AC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{9462A93C-6A92-40AB-8DF8-4F23490C90F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9462A93C-6A92-40AB-8DF8-4F23490C90F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9462A93C-6A92-40AB-8DF8-4F23490C90F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{181E31AD-D592-4E53-8C84-113A48CBD8AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{181E31AD-D592-4E53-8C84-113A48CBD8AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{181E31AD-D592-4E53-8C84-113A48CBD8AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{181E31AD-D592-4E53-8C84-113A48CBD8AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

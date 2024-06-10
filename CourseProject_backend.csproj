@@ -24,6 +24,7 @@
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+    <PackageReference Include="RestSharp" Version="111.2.0" />
     <PackageReference Include="SHA3.Net" Version="2.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
     <PackageReference Include="Telegram.Bot" Version="19.0.0" />
@@ -31,10 +32,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\img\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CustomJiraTicketClient\CustomJiraTicketClient.csproj" />
   </ItemGroup>
 
 </Project>

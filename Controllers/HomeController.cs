@@ -95,5 +95,17 @@ namespace CourseProject_backend.Controllers
 
             return View(viewModel);
         }
+
+        [HttpGet]
+        public IActionResult Message(string message, AppLanguage lang = AppLanguage.en)
+        {
+            MessageViewModel viewModel = new MessageViewModel()
+            {
+                LangPack = _languagePackService.GetLanguagePackPair(lang),
+                Message = message,
+            };
+
+            return View(viewModel);
+        }
     }
 }

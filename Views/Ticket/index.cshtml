@@ -1,0 +1,83 @@
+﻿@using CourseProject_backend.Models.ViewModels
+@model JiraTicketViewModel
+@{
+    Layout = "_MyLayout";
+    ViewData["Title"] = "Report Ticket";
+    ViewData.Add("Lang", Model.LangPack);
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col d-flex justify-content-center">
+            <h1>@Model.LangPack.Value["create_ticket"]</h1>
+        </div>
+    </div>
+</div>
+
+<form id="sendTicketForm" action="~/ticket/create" method="post">
+
+    <input type="hidden" name="Collection" value="@Model.Collection" />
+    <input type="hidden" name="Link" value="@Model.Link" />
+    <input type="hidden" name="lang" value="@Model.LangPack.Key"/>
+
+    <div class="container">
+        <div class="row d-flex justify-content-center justify-content-start mb-4">
+            <div class="col">
+                <div class="container collection-card">
+                    <div class="row mb-3">
+                        <div class="col font-size-20">@Model.LangPack.Value["theme_word"]</div>
+                    </div>
+                    <div class="row">
+                        <input id="ticketSummary" name="Summary" type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row d-flex justify-content-center justify-content-start mb-4">
+            <div class="col">
+                <div class="container collection-card">
+                    <div class="row mb-3">
+                        <div class="col font-size-20">@Model.LangPack.Value["description_word"]</div>
+                    </div>
+                    <div class="row">
+                        <textarea name="Description" type="text" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row d-flex justify-content-center justify-content-start mb-4">
+            <div class="col">
+                <div class="container collection-card">
+                    <div class="row mb-3">
+                        <div class="col font-size-20">@Model.LangPack.Value["priority"]</div>
+                    </div>
+                    <div class="row">
+                        <select name="Prioritet" class="form-control">
+                            <option value="Low">Low</option>
+                            <option value="Average">Average</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row d-flex justify-content-center justify-content-start mb-4">
+            <div class="col">
+                <div class="container collection-card">
+                    <div class="row">
+                        <button onclick="sendTicket()" class="p-4 btn-all-select control-icon font-size-20" type="button">
+                            @Model.LangPack.Value["send_word"]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

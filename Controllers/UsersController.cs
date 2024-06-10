@@ -52,6 +52,8 @@ namespace CourseProject_backend.Controllers
             {
                 user = await _userService.GetUserFromToken(token);
             }
+            else
+                return RedirectToAction("message", "home", new { lang = lang, message = langDataPair.Value["you_must_authorized"] });
 
             int pagesCount = 1;
             var users = (await _userService.GetUsersList

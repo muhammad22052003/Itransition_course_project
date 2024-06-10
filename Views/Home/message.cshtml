@@ -1,0 +1,33 @@
+﻿@using CourseProject_backend.Models.ViewModels
+@model MessageViewModel
+
+@{
+    Layout = "_MyLayout";
+    ViewData["Title"] = "Message";
+    ViewData.Add("Lang", Model.LangPack.Key);
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col d-flex justify-content-center">
+            <h1>@Model.LangPack.Value["message_word"]</h1>
+        </div>
+    </div>
+</div>
+
+<section class="d-flex justify-content-center align-content-center mb-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 font-size-24">
+                @Model.LangPack.Value["text_word"] :
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="item-data font-size-18">
+                    @Model.Message
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

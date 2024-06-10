@@ -20,6 +20,7 @@ using Org.BouncyCastle.Asn1.Ocsp;
 using System.Linq.Expressions;
 using System.Net;
 using System.Security.Claims;
+using CustomJiraTicketClient.Jira;
 
 namespace CourseProject_backend.Services
 {

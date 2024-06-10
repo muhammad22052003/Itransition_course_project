@@ -103,6 +103,8 @@ namespace CourseProject_backend.Controllers
                 User = user
             };
 
+            ViewData.Add("currentCollection", collection.Name);
+
             return View(viewModel);
         }
 

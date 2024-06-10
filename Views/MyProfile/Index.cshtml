@@ -45,8 +45,13 @@
                 <div class="row mb-3 d-flex justify-content-center align-content-center">
                     <div class="col d-flex justify-content-center">
                         <button type="button" onclick="editProfile()" class="btn-all-select control-icon">
-                            <img src="~/img/edit.png" style="width: 30px;">
+                            <img src="/img/edit.png" style="width: 30px;">
                         </button>
+                    </div>
+                    <div class="col d-flex justify-content-center">
+                        <a href="~/myProfile/myTickets" class="btn-all-select control-icon" type="button">
+                            @Model.LanguagePack.Value["my_tickets"]
+                        </a>
                     </div>
                 </div>
             </div>

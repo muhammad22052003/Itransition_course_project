@@ -33,4 +33,8 @@
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CustomJiraTicketClient\CustomJiraTicketClient.csproj" />
+  </ItemGroup>
+
 </Project>

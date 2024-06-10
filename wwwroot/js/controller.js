@@ -216,3 +216,27 @@ function clearPasswordFields() {
     confPassword.value = '';
 }
 
+function createTicket() {
+    let ticketForm = document.getElementById('ticketForm');
+
+    ticketForm.submit();
+}
+
+function sendTicket() {
+    let ticketForm = document.getElementById('sendTicketForm');
+
+    let ticketSummaryField = document.getElementById('ticketSummary');
+
+    if (thisTextEmpty(ticketSummaryField.value)){
+        alert("You must fill summary field")
+        return;
+    }
+
+    ticketForm.submit();
+}
+
+function thisTextEmpty(str) {
+    const trimmedStr = str.replace(/\s/g, '');
+
+    return (trimmedStr === '');
+}

@@ -19,6 +19,8 @@
     {
         sorts = ViewData["sorts"] as List<string>;
     }
+
+    string host = Url.ActionContext.HttpContext.Request.Scheme + "://" + Url.ActionContext.HttpContext.Request.Host.ToString();
 }
 
 <html lang="@(ViewData["lang"] ?? "en")">
@@ -196,23 +198,43 @@
 
     @RenderBody()
 
-    <div class="footer-card">
-        <div class="container">
-            <div class="row">
-                <div class="col d-flex justify-content-center align-items-center mt-3">
-                    <div class="col-6 d-flex justify-content-center align-content-center">
-                        <img src="~/img/logo_light.png" style="width: 200px;">
+    <form id="ticketForm" action="~/ticket/index" method="post">
+
+        <!--<input name="link" type="hidden" value="@Url.Action()">-->
+        <input name="link" type="hidden" value="@(host + Url.Action())">
+        <input name="lang" type="hidden" value="@Url.ActionContext.HttpContext.GetRouteValue("lang")">
+        @{
+            if (ViewData.TryGetValue("currentCollection", out object data))
+            {
+                <input name="Collection" type="hidden" value="@data.ToString()">
+            }
+        }
+
+        <div class="footer-card">
+            <div class="container">
+                <div class="row">
+                    <div class="col d-flex justify-content-center align-items-center mt-3">
+                        <button onclick="createTicket()" class="btn-all-select" type="button">
+                            Ticket
+                        </button>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col"></div>
-            </div>
-            <div class="row">
-                <div class="col"></div>
+                <div class="row">
+                    <div class="col d-flex justify-content-center align-items-center mt-3">
+                        <div class="col-6 d-flex justify-content-center align-content-center">
+                            <img src="~/img/logo_light.png" style="width: 200px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col"></div>
+                </div>
+                <div class="row">
+                    <div class="col"></div>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 
     <script src="~/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/controller.js"></script>

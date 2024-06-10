@@ -51,12 +51,14 @@ namespace CourseProject_backend.Controllers
 
             User? user = null;
 
+            KeyValuePair<string, IDictionary<string, string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
+
             if (Request.Cookies.TryGetValue("userData", out string? token))
             {
                 user = await _userService.GetUserFromToken(token);
             }
-
-            KeyValuePair<string, IDictionary<string,string>> langDataPair = _languagePackService.GetLanguagePackPair(lang);
+            else
+                return RedirectToAction("message", "home", new { lang = lang, message = langDataPair.Value["you_must_authorized"] });
 
             int pagesCount = 1;
 

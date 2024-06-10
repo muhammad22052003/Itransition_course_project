@@ -83,6 +83,8 @@ namespace CourseProject_backend.Controllers
             item.Views.Add(view);
             await _itemService.SaveUpdates();
 
+            ViewData.Add("currentCollection", collection.Name);
+
             return View(viewModel);
         }
 

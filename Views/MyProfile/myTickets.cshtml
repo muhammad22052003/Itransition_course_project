@@ -1,0 +1,113 @@
+﻿@using CourseProject_backend.Models.ViewModels
+@model MyTicketsViewModel
+@{
+    Layout = "_MyLayout";
+    ViewData["Title"] = $"My Tickets";
+    ViewData.Add("Lang", Model.LangPack.Key);
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col d-flex justify-content-center">
+            <h1>@Model.LangPack.Value["my_tickets"]</h1>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    @{
+        for (int i = 0; i < Model.Tickets.Count; i++)
+        {
+            <div class="row d-flex justify-content-center align-content-center mb-3">
+                <div class="col">
+                    <div class="container collection-card">
+                        <div class="row mb-4 text-center">
+                        </div>
+                        <div class="row mb-4 text-center">
+                            <div class="col">
+                                <a href="@(Model.BaseTicketsUrl + Model.Tickets[i].Key)">
+                                    <div class="collection-header font-size-26">
+                                        @Model.Tickets[i].Summary
+                                    </div>
+                                </a>
+                                
+                            </div>
+                        </div>
+                        <div class="row font-size-14 mb-2">
+                            <div class="col-12 font-size-20">
+                                <div>@Model.LangPack.Value["description_word"]</div>
+                            </div>
+                            <div class="col-12 font-size-16">
+                                <div class="item-data">@Model.Tickets[i].Description</div>
+                            </div>
+                        </div>
+                        <div class="row font-size-14 mb-2 text-center">
+                            <div class="col font-size-20">
+                                @Model.LangPack.Value["priority"] : @Model.Tickets[i].Prioritet.Value
+                            </div>
+                        </div>
+                        <div class="row font-size-14 text-center mb-2">
+                            <div class="col font-size-20">
+                                @Model.LangPack.Value["status"] : @Model.Tickets[i].Status
+                            </div>
+                        </div>
+                        <div class="row font-size-14 text-center">
+                            <div class="col font-size-20">
+                                @Model.LangPack.Value["created_date"] : @Model.Tickets[i].Created
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+    <div class="row d-flex justify-content-center align-content-center mb-3">
+        <div class="col text-center">
+            <div class="container pagination-card">
+
+                @{
+                    if (Model.CurrentPage > 1)
+                    {
+                        <a href="@Url.Action("myTickets", "myProfile", new 
+                        {
+                            lang = Model.LangPack.Key, 
+                            page = Model.CurrentPage - 1
+                        })" class="btn_cust btn-page-select">⇐</a>
+                    }
+
+                    for (int i = 1; i <= Model.CurrentPage; i++)
+                    {
+                        if(i == Model.CurrentPage)
+                        {
+                            <a href="@Url.Action("myTickets", "myProfile", new
+                        {
+                                lang = Model.LangPack.Key,
+                                page = i
+                            })" class="btn_cust btn-page-select-current">@(i)</a>
+                        }
+                        else if (i < Model.CurrentPage && i >= Model.CurrentPage - 3)
+                        {
+                            <a href="@Url.Action("myTickets", "myProfile", new
+                        {
+                                lang = Model.LangPack.Key,
+                                page = i
+                            })" class="btn_cust btn-page-select">@(i)</a>
+                        }
+                    }
+
+                    if(Model.Tickets.Count >= Model.PageSize)
+                    {
+                        <a href="@Url.Action("myTickets", "myProfile", new
+                        {
+                            lang = Model.LangPack.Key,
+                            page = Model.CurrentPage + 1
+                        })" class="btn_cust btn-page-select">⇒</a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

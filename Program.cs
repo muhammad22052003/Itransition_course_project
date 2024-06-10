@@ -11,8 +11,11 @@ using CourseProject_backend.Models;
 using CourseProject_backend.Packages;
 using CourseProject_backend.Repositories;
 using CourseProject_backend.Services;
+using CustomJiraTicketClient.Jira;
 using MySql.Data.MySqlClient;
+using Npgsql;
 using System.Globalization;
+using System.Text.Json;
 
 public class Program
 {
@@ -39,6 +42,9 @@ public class Program
         IJwtTokenHelper jwtTokenHelper = new JwtTokenHelper();
         IPasswordHasher passwordHasher = new Sha3_256PasswordHasher();
         IPasswordGenerator passwordGenerator = new RNGCryptoPasswordGenerator();
+        JiraTicketClient ticketClient = new JiraTicketClient(baseUrl: appSecrets.JiraBaseUrl,
+                                                             userName: appSecrets.JiraUserName,
+                                                             tokenOrPassword: appSecrets.JiraApiToken);
 
         CollectionAdapter collectionAdapter = new CollectionAdapter();
         CSVHepler csvHelper = new CSVHepler();
@@ -102,6 +108,13 @@ public class Program
             TagService tagService = new TagService();
 
             return tagService;
+        });
+
+        builder.Services.AddScoped<JiraTicketService>((service) =>
+        {
+            JiraTicketService jiraTicketService = new JiraTicketService(ticketClient, configuration.GetValue<string>("jiraProjectKey"));
+
+            return jiraTicketService;
         });
 
         //  Application Language Pack service
